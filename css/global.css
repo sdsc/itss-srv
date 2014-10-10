@@ -1,0 +1,47 @@
+table
+{
+    border-spacing: 0px;
+    border-collapse: collapse;
+}
+th, td
+{
+    text-align:  left;
+    vertical-align: top;
+    padding: 0 20px;
+}
+ul
+{
+    margin: 0px;
+}
+
+.add-on
+{
+    margin-left: 15px;
+    font-size: 13px;
+}
+
+input[type="text"]
+{
+    width: 50px;
+}
+
+.vm-1, .unix-vm-1
+{
+    background-color: #ccc;
+}
+
+.vm-1 tr:first-child
+{
+    padding-top: 10px;
+}
+
+.vm-1 tr:last-child
+{
+    padding-bottom: 10px;
+}
+
+.subtotal
+{
+    border: 0px;
+    background-color: transparent;
+}
