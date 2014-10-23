@@ -1,0 +1,391 @@
+<!-- Connect to the database -->
+<?php
+    try
+    {
+        $db = new PDO("mysql:host=localhost;dbname=itss_srv", "root", "");
+        $db->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
+        $db->exec("SET NAMES 'utf8'");
+    }
+    catch(Exception $e)
+    {
+        echo "ERROR: Could not connect to the database.";
+        exit;
+    }
+
+    try
+    {
+        $services = $db->query("SELECT * FROM services");
+    }
+    catch(Exception $e)
+    {
+        echo "ERROR: This action cannot be performed.";
+        exit;
+    }
+?>
+<html>
+    <head>
+        <title>SDSC Services Estimation Tool</title>
+        <link rel="stylesheet" type="text/css" href="css/global.css">
+        <!-- THIS IS JAVASCRIPT!!!!! -->
+        <script>
+        // keep track of the number of services in the quote
+            var vm_num = 0; //number of VM's ordered
+            var hs_num = 0; //number of HS VM's ordered
+            
+            /* list of variables for input/output */
+            var cpu_qty_in, cpu_sub_out, mem_qty_in, mem_sub_out, str_qty_in, str_sub_out, san_qty_in, san_sub_out;
+            
+            /* options variable for dropdown menus */
+            var option; 
+            
+            /* other variables and stuff */
+            var slice_text;
+            var slice_price;
+            var cpu_price_val;
+            var mem_price_val;
+            
+            function addProduct(id)
+            {
+                /* user has chosen standard vm */
+                if(id == 'ST_VM')
+                {
+                    slice_text = "Standard VM";
+                    slice_price = 69.75;
+                    cpu_price_val = 12.94;
+                    mem_price_val = 12.94;
+                }
+                
+                else if(id == 'HS_VM')
+                {
+                    slice_text = "High Security VM";
+                    slice_price = 93.75;
+                    cpu_price_val = 15.61;
+                    mem_price_val = 15.61;
+                }
+                
+                var table = document.getElementById('quote-table');
+                var rowCount = table.rows.length;
+                ++vm_num; //increase number of vm's
+                var row1 = table.insertRow(rowCount);
+                var cell1 = row1.insertCell(0);
+                var name = document.createTextNode(slice_text);                       cell1.appendChild(name);
+                cell1.setAttribute("colspan", "1");
+                cell1.className = "service-title";
+                    
+                var cell2 = row1.insertCell(1);
+                var os = document.createElement("select");
+                    
+                /* add all operating systems options */
+                option = new Option("Windows", 0, false, false);
+                os.appendChild(option);
+                    
+                option = new Option("Red Hat 6 64-bit", 1, false, false);
+                os.appendChild(option);
+                    
+                option = new Option("CentOS", 2, false, false);
+                os.appendChild(option);
+                    
+                option = new Option("Ubuntu", 3, false, false);
+                os.appendChild(option);
+                    
+                option = new Option("Other", 4, false, false);
+                os.appendChild(option);
+                    
+                cell2.appendChild(os);
+                cell2.setAttribute("colspan", "2");
+                    
+                var cell3 = row1.insertCell(2);
+                var price = document.createElement("input");
+                price.setAttribute("type", "text");
+                cell3.appendChild(price);
+                cell3.setAttribute("colspan", "1");
+                price.id = "service-price";
+                price.className = "sub vm-sub vm-sub" + vm_num;
+                price.value = "$" + slice_price;
+                document.getElementById("service-price").readOnly = true;
+                    
+                var row2 = table.insertRow(++rowCount);
+                
+                var cella = row2.insertCell(0);
+                var cpu = document.createTextNode("Additional CPUs");                       
+                cella.appendChild(cpu);
+                cella.setAttribute("colspan", "1");
+                
+                var cellb = row2.insertCell(1);
+                var cpu_price = document.createTextNode("$" + cpu_price_val + "/CPU");
+                cellb.appendChild(cpu_price);
+                cellb.setAttribute("colspan", "1");
+                var cellc = row2.insertCell(2);
+                var cpu_qty = document.createElement("select");
+                cpu_qty_in = "cpu-qty" + vm_num;
+                cpu_sub_out = "cpu-sub" + vm_num;
+                    
+                for(i = 0; i < 12; i++)
+                {
+                    option = new Option("" + i, i, false, false);
+                    cpu_qty.appendChild(option);
+                }
+                    
+                cellc.appendChild(cpu_qty);
+                cellc.setAttribute("colspan", "1");
+                cpu_qty.id = cpu_qty_in;
+                cpu_qty.className = "cpu_qty";
+                cpu_qty.setAttribute("onchange", "getEstimate('cpu', cpu_qty_in, cpu_price_val, cpu_sub_out, 'vm-sub' + vm_num)");
+                    
+                var celld = row2.insertCell(3);
+                var cpu_sub = document.createElement("input");
+                cpu_sub.setAttribute("type", "text");
+                celld.appendChild(cpu_sub);
+                celld.setAttribute("colspan", "1");
+                cpu_sub.id = cpu_sub_out;
+                document.getElementById(cpu_sub_out).readOnly = true;
+                cpu_sub.className = "sub vm-sub vm-sub" + vm_num;
+                    
+                var row3 = table.insertRow(++rowCount);
+                
+                var celle = row3.insertCell(0);
+                var mem = document.createTextNode("Additional RAM");                       
+                celle.appendChild(mem);
+                celle.setAttribute("colspan", "1");
+                
+                var cellf = row3.insertCell(1);
+                var mem_price = document.createTextNode("$" + mem_price_val + "/GB");
+                cellf.appendChild(mem_price);
+                cellf.setAttribute("colspan", "1");
+                    
+                var cellg = row3.insertCell(2);
+                var mem_qty = document.createElement("input");
+                mem_qty.setAttribute("type", "text");
+                mem_qty_in = "mem-qty" + vm_num;
+                mem_sub_out = "mem-sub" + vm_num;
+                cellg.appendChild(mem_qty);
+                cellg.setAttribute("colspan", "1");
+                mem_qty.id = mem_qty_in;
+                mem_qty.setAttribute("onchange", "getEstimate('mem', mem_qty_in, mem_price_val, mem_sub_out, 'vm-sub' + vm_num)");
+                    
+                var cellh = row3.insertCell(3);
+                var mem_sub = document.createElement("input");
+                mem_sub.setAttribute("type", "text");
+                cellh.appendChild(mem_sub);
+                cellh.setAttribute("colspan", "1");
+                mem_sub.id = mem_sub_out;
+                document.getElementById(mem_sub_out).readOnly = true;
+                mem_sub.className = "sub vm-sub vm-sub" + vm_num;
+                
+                
+                var row4 = table.insertRow(++rowCount);
+                
+                if(id == 'ST_VM')
+                {
+                    
+                    var celli = row4.insertCell(0);
+                    var str = document.createTextNode("Additional 'Silver' Storage");                        
+                    celli.appendChild(str);
+                    celli.setAttribute("colspan", "1");
+                
+                    var cellj = row4.insertCell(1);
+                    var str_price = document.createTextNode("$49.42/TB");
+                    cellj.appendChild(str_price);
+                    cellj.setAttribute("colspan", "1");
+                
+                    var cellk = row4.insertCell(2);
+                    var str_qty = document.createElement("input");
+                    str_qty.setAttribute("type", "text");
+                    str_qty_in = "str-qty" + vm_num;
+                    str_sub_out = "str-sub" + vm_num;
+                    cellk.appendChild(str_qty);
+                    cellk.setAttribute("colspan", "1");
+                    str_qty.id = str_qty_in;
+                    str_qty.setAttribute("onchange", "getEstimate('silver', str_qty_in, 49.42, str_sub_out, 'vm-sub' + vm_num)");
+                    
+                    var celll = row4.insertCell(3);
+                    var str_sub = document.createElement("input");
+                    str_sub.setAttribute("type", "text");
+                    celll.appendChild(str_sub);
+                    celll.setAttribute("colspan", "1");
+                    str_sub.id = str_sub_out;
+                    document.getElementById(str_sub_out).readOnly = true;
+                    str_sub.className = "sub vm-sub vm-sub" + vm_num;
+                }
+                
+                else if(id == 'HS_VM')
+                {
+                    var celli = row4.insertCell(0);
+                    var alert = document.createTextNode("Silver storage is unavailable for High Security VMs.");
+                    celli.appendChild(alert);
+                    celli.setAttribute("colspan", "4");
+                    celli.className = "alert";
+                }
+                
+                var row5 = table.insertRow(++rowCount);
+                    
+                var cellm = row5.insertCell(0);
+                var san = document.createTextNode("Additional 'Gold' Storage");                        
+                cellm.appendChild(san);
+                cellm.setAttribute("colspan", "1");
+                    
+                var celln = row5.insertCell(1);
+                var san_price = document.createTextNode("$125.00/TB");
+                celln.appendChild(san_price);
+                celln.setAttribute("colspan", "1");
+                    
+                var cello = row5.insertCell(2);
+                var san_qty = document.createElement("input");
+                san_qty.setAttribute("type", "text");
+                san_qty_in = "san-qty" + vm_num;
+                san_sub_out = "san-sub" + vm_num;
+                cello.appendChild(san_qty);
+                cello.setAttribute("colspan", "1");
+                san_qty.id = san_qty_in;
+                san_qty.setAttribute("onchange", "getEstimate('gold', san_qty_in, 125.00, san_sub_out, 'vm-sub' + vm_num)");
+                
+                var cellp = row5.insertCell(3);
+                var san_sub = document.createElement("input");
+                san_sub.setAttribute("type", "text");
+                cellp.appendChild(san_sub);
+                cellp.setAttribute("colspan", "1");
+                san_sub.id = san_sub_out;
+                document.getElementById(san_sub_out).readOnly = true;
+                san_sub.className = "sub vm-sub vm-sub" + vm_num;
+                
+                var row6 = table.insertRow(++rowCount);
+                
+                var cellq = row6.insertCell(0);
+                var subtext = document.createTextNode("Subtotal");
+                cellq.appendChild(subtext);
+                cellq.setAttribute("colspan", "3");
+                
+                var cellr = row6.insertCell(1);
+                var vmsubtotal = document.createElement("input");
+                vmsubtotal.setAttribute("type", "text");
+                cellr.appendChild(vmsubtotal);
+                cellr.setAttribute("colspan", "1");
+                vmsubtotal.id = "vm-sub" + vm_num + "-total";
+                vmsubtotal.className = "sub";
+                document.getElementById(vmsubtotal.id).readOnly = true;
+            }
+            
+            function getEstimate(type, id, price, dest, theclass)
+            {
+                var item = document.getElementById(id);
+                var subtotal = document.getElementById(dest);
+
+                if(item.value === null || item.value === "" || isNaN(item.value) )
+                {
+                    subtotal.value = "";
+                }
+                else
+                {
+                    if(validate(type, id, dest))
+                    {
+                        document.getElementById(dest).value = "$" +  (parseFloat(document.getElementById(id).value) * price).toFixed(2);
+                        sub(theclass);
+                    }
+                }
+            }
+            
+            function sub(theclass)
+            {
+                var subarray = document.getElementsByClassName(theclass);
+                var valtext;
+                var val;
+                var sum = 0;
+                for(i = 0; i < subarray.length; i++)
+                {
+                    if(subarray[i].value != null || subarray[i].value != "")
+                    {
+                        valtext = subarray[i].value.replace("$", "");
+                        val = parseFloat(valtext);
+                        if(!isNaN(val) && val != null)
+                        {
+                            sum += val;
+                        }
+                    }  
+                }
+                
+                document.getElementById(theclass + "-total").value = "$" + sum.toFixed(2);
+            }
+            
+            function validate(type, id, dest)
+            {
+                
+                var v = document.getElementById(id).value;
+                var d = document.getElementById(dest);
+                
+                
+                if(type == "mem")
+                {
+                    if(v < 0 || v > 190 )
+                    {
+                        d.value = "Please enter a number from 0 to 190";
+                        d.style = "color: #ff0000; font-size: 12px";
+                        return false; 
+                    }
+                }
+                
+                if(type == "silver")
+                {
+                    if(v < 0 || v > 30000)
+                    {
+                        d.value = "Please enter a number from 0 to 30000";
+                        d.style = "color: #ff0000; font-size: 12px";
+                        return false;
+                    }
+                }
+                
+                if(type == "gold")
+                {
+                    if(v < 0 || v > 4900)
+                    {
+                        d.value = "Please enter a number from 0 to 4900";
+                        d.style = "color: #ff0000; font-size: 12px";
+                        return false;
+                    }
+                }
+                
+                return true;
+            }
+        </script>
+    </head>
+    
+    
+    <!-- BEGIN THE HTML HERE -->
+    <body>
+        <?php
+            while($row = $services->fetch(PDO::FETCH_ASSOC))
+            {
+        ?>
+                <input type="button" class="add-button" onclick="addProduct('<?php echo $row['type']; ?>');" value="+">
+</button>
+                <div class="vm-services">
+                    <span class="service-name"> 
+                       <?php echo $row['name']; ?>
+                    </span>
+                    <span class="service-price">
+                        $<?php echo $row['monthly']; ?>
+                    </span>
+                </div><br/>
+        <?php
+            }
+        ?>
+        <strong>Your Quote: </strong>
+        <table id="quote-table" colspan="4">
+            
+        </table>
+        <table id="totals" colspan="4">
+            <tr>
+                <td colspan="3">
+                    <strong>Total: </strong>
+                </td>
+                <td colspan="1">
+                    <input type="text" id="vm-sub-total" class="sub" readonly>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <button onclick="sub('vm-sub')">Calculate Total</button>
+                </td>
+            </tr>
+        </table>
+    </body>
+</html>

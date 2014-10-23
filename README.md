@@ -1,4 +1,3 @@
-=============================
 SDSC Cost Estimate Tool v1.0
 =============================
 
@@ -7,13 +6,11 @@ Date Created: 10/09/2014
 Date Modified: 10/10/2014
 Language(s) Used: Javascript
 
-=============================
 Description
 =============================
 
 The SDSC Cost Estimate Tool is to be used on the SDSC services page. The user is able to enter their desired services and additional features, and the tool will automatically calculate the costs. This is great for quotes. 
 
-=============================
 About this Version
 =============================
 

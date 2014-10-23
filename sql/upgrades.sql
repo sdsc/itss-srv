@@ -16,7 +16,7 @@ INSERT INTO `upgrades` (`type`, `name`, `monthly`, `annually`, `desc`, `for_type
 INSERT INTO `upgrades` (`type`, `name`, `monthly`, `annually`, `desc`, `for_type`, `idx`) VALUES('SAN', 'Additional SAN Storage (TB)', 125.00, 1500.00, '10k fiber channel disk', 'ST_VM', 4);
 INSERT INTO `upgrades` (`type`, `name`, `monthly`, `annually`, `desc`, `for_type`, `idx`) VALUES('CPU', 'Additional CPUs', 15.61, 187.32, '', 'HS_VM', 1);
 INSERT INTO `upgrades` (`type`, `name`, `monthly`, `annually`, `desc`, `for_type`, `idx`) VALUES('MEM', 'Additional Memory (GB)', 15.61, 187.32, '', 'HS_VM', 2);
-INSERT INTO `upgrades` (`type`, `name`, `monthly`, `annually`, `desc`, `for_type`, `idx`) VALUES('SAN', 'Additional SAN Storage (TB)', 125.00, 1500.00, '10k fiber channel disk', 'ST_VM', 4);
+INSERT INTO `upgrades` (`type`, `name`, `monthly`, `annually`, `desc`, `for_type`, `idx`) VALUES('SAN', 'Additional SAN Storage (TB)', 125.00, 1500.00, '10k fiber channel disk', 'HS_VM', 4);
 
 CREATE TABLE `services_upgrades` (
     `service_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,

@@ -1,47 +1,78 @@
-table
+body
 {
-    border-spacing: 0px;
-    border-collapse: collapse;
+    font-family: Arial;
 }
-th, td
+
+.vm-services
 {
-    text-align:  left;
+    width: 500px;
+    height: 20px;
+    margin-bottom: 5px;
+    padding: 5px;
+    background-color: #e6e6e6;
+    display: inline-block;
     vertical-align: top;
-    padding: 0 20px;
-}
-ul
-{
-    margin: 0px;
 }
 
-.add-on
+.service-name
 {
-    margin-left: 15px;
-    font-size: 13px;
+    width: 400px;
+    font-weight: bold;
+    display: inline-block;
 }
 
-input[type="text"]
+.service-price
+{
+    width: 50px;
+    display: inline-block;
+}
+
+.service-title
+{
+    font-weight: bold;
+}
+.add-button
+{
+    height: 30px;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.endblock
+{
+    margin-bottom: 10px;
+}
+
+span
+{
+    display: inline-block;
+}
+
+input[type="text"], .cpu_qty
 {
     width: 50px;
 }
 
-.vm-1, .unix-vm-1
-{
-    background-color: #ccc;
-}
-
-.vm-1 tr:first-child
-{
-    padding-top: 10px;
-}
-
-.vm-1 tr:last-child
-{
-    padding-bottom: 10px;
-}
-
-.subtotal
+.sub
 {
     border: 0px;
     background-color: transparent;
+}
+
+input[readonly]
+{
+    width: 400px;
+}
+
+strong
+{
+    text-decoration: underline;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.alert
+{
+    color: #FF0000;
+    font-size: 12px;
 }

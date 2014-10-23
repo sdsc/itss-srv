@@ -14,7 +14,9 @@ catch(Exception $e)
 
 try
 {
-    $results = $db->query("SELECT name FROM services WHERE type = 'ST_VM'");
+    $services = $db->prepare("SELECT * FROM services");
+    $upgrades = $db->prepare("SELECT * FROM upgrades");
+    $sup = $db->query("SELECT * FROM services, upgrades WHERE (upgrades.for_type = services.type)");
 }
 catch(Exception $e)
 {
@@ -22,8 +24,12 @@ catch(Exception $e)
     exit;
 }
 
-echo "<pre>";
-var_dump($results->fetchAll());
+echo "<table>";
+
+while($row = $sup->fetch(PDO::FETCH_ASSOC))
+{
+    echo "<tr><td>" . $row['type'] . "</td><td>" . $row['name'] . "</td><td>" . $row['add_on_name'] . "</td><td>" . $row['add_on_monthly'] . "</td></tr>"; 
+}
 
 ?>
 
