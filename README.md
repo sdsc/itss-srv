@@ -3,13 +3,13 @@ SDSC Cost Estimate Tool v1.0
 
 Author: Kimberly Ly
 Date Created: 10/09/2014
-Date Modified: 10/10/2014
-Language(s) Used: Javascript
+Date Modified: 10/28/2014
+Language(s) Used: Javascript, PHP, MySQL
 
 Description
 =============================
 
-The SDSC Cost Estimate Tool is to be used on the SDSC services page. The user is able to enter their desired services and additional features, and the tool will automatically calculate the costs. This is great for quotes. 
+The SDSC Cost Estimate Tool is to be used on the SDSC services page. The user is able to enter their desired services and additional features, and the tool will automatically calculate the costs. User has the option of choosing either a standard or a high security VM slice, and then they are given the option to choose an operating system. In addition to prices, users are able to see the System Management options as well as the manager for their chosen VM. There is error checking to make sure numbers are within range. 
 
 About this Version
 =============================
