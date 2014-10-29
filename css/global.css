@@ -16,7 +16,7 @@ body
 
 .service-name
 {
-    width: 400px;
+    width: 398px;
     font-weight: bold;
     display: inline-block;
 }
@@ -30,6 +30,7 @@ body
 .service-title
 {
     font-weight: bold;
+    padding-left: 0px;
 }
 .add-button
 {
@@ -38,6 +39,12 @@ body
     vertical-align: top;
 }
 
+.remove-button
+{
+    height: 20px;
+    display: inline-block;
+    vertical-align: top;
+}
 .endblock
 {
     margin-bottom: 10px;
@@ -62,6 +69,7 @@ input[type="text"], .cpu_qty
 input[readonly]
 {
     width: 400px;
+    border: 0px;
 }
 
 strong
@@ -75,4 +83,16 @@ strong
 {
     color: #FF0000;
     font-size: 12px;
+}
+
+#vm-sub-total
+{
+    vertical-align: top;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+#quote-table td
+{
+    padding: 0 16px;
 }

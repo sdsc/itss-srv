@@ -1,37 +1,10 @@
-<!-- Connect to the database -->
-<?php
-    try
-    {
-        $db = new PDO("mysql:host=localhost;dbname=itss_srv", "root", "");
-        $db->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
-        $db->exec("SET NAMES 'utf8'");
-    }
-    catch(Exception $e)
-    {
-        echo "ERROR: Could not connect to the database.";
-        exit;
-    }
-
-    try
-    {
-        $services = $db->query("SELECT * FROM services");
-    }
-    catch(Exception $e)
-    {
-        echo "ERROR: This action cannot be performed.";
-        exit;
-    }
-?>
-<html>
-    <head>
-        <title>SDSC Services Estimation Tool</title>
-        <link rel="stylesheet" type="text/css" href="css/global.css">
-        <!-- THIS IS JAVASCRIPT!!!!! -->
-        <script>
-        // keep track of the number of services in the quote
+$(document).ready(function() {
+    sub('vm-sub');
+});
+// keep track of the number of services in the quote
             var vm_num = 0; //number of VM's ordered
             var hs_num = 0; //number of HS VM's ordered
-            
+            var row1, cell, rowCount;
             /* list of variables for input/output */
             var cpu_qty_in, cpu_sub_out, mem_qty_in, mem_sub_out, str_qty_in, str_sub_out, san_qty_in, san_sub_out;
             
@@ -44,6 +17,7 @@
             var cpu_price_val;
             var mem_price_val;
             
+
             function addProduct(id)
             {
                 /* user has chosen standard vm */
@@ -64,14 +38,25 @@
                 }
                 
                 var table = document.getElementById('quote-table');
-                var rowCount = table.rows.length;
+                rowCount = table.rows.length;
                 ++vm_num; //increase number of vm's
-                var row1 = table.insertRow(rowCount);
+                row1 = table.insertRow(rowCount);
+                row1.id = "row" + vm_num;
+                console.log("Just created " + row1.rowIndex + " row");
                 var cell1 = row1.insertCell(0);
+                var remove = document.createElement("button");
+                var remove_text = document.createTextNode("-");
+                remove.appendChild(remove_text);
+                cell1.appendChild(remove);
                 var name = document.createTextNode(slice_text);                       cell1.appendChild(name);
                 cell1.setAttribute("colspan", "1");
                 cell1.className = "service-title";
-                    
+                remove.className = "remove-button";
+                remove.setAttribute("value", "-");
+                remove.setAttribute("rownumber", "row" + vm_num);
+                remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'))");
+                console.log("the value of row1.rowIndex is: " + row1.rowIndex);
+                
                 var cell2 = row1.insertCell(1);
                 var os = document.createElement("select");
                     
@@ -90,10 +75,14 @@
                     
                 option = new Option("Other", 4, false, false);
                 os.appendChild(option);
-                    
                 cell2.appendChild(os);
                 cell2.setAttribute("colspan", "2");
-                    
+                os.id = "os" + vm_num;
+                os.setAttribute("sys", "sys" + vm_num);
+                os.setAttribute("manager", "manager" + vm_num);
+                os.setAttribute("vm-type", id);
+                os.setAttribute("onchange", "processOS(this.getAttribute('vm-type'), document.getElementById(this.id).value, this.getAttribute('sys'), this.getAttribute('manager'))");
+                
                 var cell3 = row1.insertCell(2);
                 var price = document.createElement("input");
                 price.setAttribute("type", "text");
@@ -106,16 +95,16 @@
                     
                 var row2 = table.insertRow(++rowCount);
                 
-                var cella = row2.insertCell(0);
+                var cell = row2.insertCell(0);
                 var cpu = document.createTextNode("Additional CPUs");                       
-                cella.appendChild(cpu);
-                cella.setAttribute("colspan", "1");
+                cell.appendChild(cpu);
+                cell.setAttribute("colspan", "1");
                 
-                var cellb = row2.insertCell(1);
+                var cell = row2.insertCell(1);
                 var cpu_price = document.createTextNode("$" + cpu_price_val + "/CPU");
-                cellb.appendChild(cpu_price);
-                cellb.setAttribute("colspan", "1");
-                var cellc = row2.insertCell(2);
+                cell.appendChild(cpu_price);
+                cell.setAttribute("colspan", "1");
+                var cell = row2.insertCell(2);
                 var cpu_qty = document.createElement("select");
                 cpu_qty_in = "cpu-qty" + vm_num;
                 cpu_sub_out = "cpu-sub" + vm_num;
@@ -126,11 +115,13 @@
                     cpu_qty.appendChild(option);
                 }
                     
-                cellc.appendChild(cpu_qty);
-                cellc.setAttribute("colspan", "1");
+                cell.appendChild(cpu_qty);
+                cell.setAttribute("colspan", "1");
                 cpu_qty.id = cpu_qty_in;
-                cpu_qty.className = "cpu_qty";
-                cpu_qty.setAttribute("onchange", "getEstimate('cpu', cpu_qty_in, cpu_price_val, cpu_sub_out, 'vm-sub' + vm_num)");
+                cpu_qty.className += " cpu_qty userinput";
+                cpu_qty.setAttribute("dest", "" + cpu_sub_out);
+                cpu_qty.setAttribute("num", vm_num);
+                cpu_qty.setAttribute("onchange", "getEstimate('cpu', this.id, cpu_price_val, this.getAttribute('dest'), 'vm-sub' + this.getAttribute('num'))");
                     
                 var celld = row2.insertCell(3);
                 var cpu_sub = document.createElement("input");
@@ -161,7 +152,10 @@
                 cellg.appendChild(mem_qty);
                 cellg.setAttribute("colspan", "1");
                 mem_qty.id = mem_qty_in;
-                mem_qty.setAttribute("onchange", "getEstimate('mem', mem_qty_in, mem_price_val, mem_sub_out, 'vm-sub' + vm_num)");
+                mem_qty.className += " userinput";
+                mem_qty.setAttribute("dest", mem_sub_out);
+                mem_qty.setAttribute("num", vm_num);
+                mem_qty.setAttribute("onchange", "getEstimate('mem', this.id, mem_price_val, this.getAttribute('dest'), 'vm-sub' + this.getAttribute('num'))");
                     
                 var cellh = row3.insertCell(3);
                 var mem_sub = document.createElement("input");
@@ -196,7 +190,10 @@
                     cellk.appendChild(str_qty);
                     cellk.setAttribute("colspan", "1");
                     str_qty.id = str_qty_in;
-                    str_qty.setAttribute("onchange", "getEstimate('silver', str_qty_in, 49.42, str_sub_out, 'vm-sub' + vm_num)");
+                    str_qty.className += " userinput";
+                    str_qty.setAttribute("dest", str_sub_out);
+                    str_qty.setAttribute("num", vm_num);
+                    str_qty.setAttribute("onchange", "getEstimate('silver', this.id, 49.42, this.getAttribute('dest'), 'vm-sub' + this.getAttribute('num'))");
                     
                     var celll = row4.insertCell(3);
                     var str_sub = document.createElement("input");
@@ -237,7 +234,10 @@
                 cello.appendChild(san_qty);
                 cello.setAttribute("colspan", "1");
                 san_qty.id = san_qty_in;
-                san_qty.setAttribute("onchange", "getEstimate('gold', san_qty_in, 125.00, san_sub_out, 'vm-sub' + vm_num)");
+                san_qty.className += " userinput";
+                san_qty.setAttribute("dest", san_sub_out);
+                san_qty.setAttribute("num", vm_num);
+                san_qty.setAttribute("onchange", "getEstimate('gold', this.id, 125.00, this.getAttribute('dest'), 'vm-sub' + this.getAttribute('num'))");
                 
                 var cellp = row5.insertCell(3);
                 var san_sub = document.createElement("input");
@@ -250,12 +250,54 @@
                 
                 var row6 = table.insertRow(++rowCount);
                 
-                var cellq = row6.insertCell(0);
-                var subtext = document.createTextNode("Subtotal");
+                cell = row6.insertCell(0);
+                var sysmanagement = document.createTextNode("System Management:");
+                cell.appendChild(sysmanagement);
+                cell.setAttribute("colspan", "1");
+                
+                cell = row6.insertCell(1);
+                var sysmanagement_text = document.createElement("input");
+                sysmanagement_text.setAttribute("type", "text");
+                cell.appendChild(sysmanagement_text);
+                cell.setAttribute("colspan", "3");
+                
+                sysmanagement_text.id = "sys" + vm_num;     
+                sysmanagement_text.className = "info";
+                document.getElementById(sysmanagement_text.id).readOnly = true;
+                if(id == 'ST_VM')
+                {
+                  document.getElementById(sysmanagement_text.id).value = "Included";  
+                }
+                else
+                {
+                    document.getElementById(sysmanagement_text.id).value = "User-managed OR Added Premium (Contact SDSC for details)";
+                }
+                
+                var row7 = table.insertRow(++rowCount);
+                
+                cell = row7.insertCell(0);
+                var manager = document.createTextNode("Manager:");
+                cell.appendChild(manager);
+                cell.setAttribute("colspan", "1");
+                
+                cell = row7.insertCell(1);
+                var themanager = document.createElement("input");
+                themanager.setAttribute("type", "text");
+                cell.appendChild(themanager);
+                cell.setAttribute("colspan", "3");
+                themanager.id = "manager" + vm_num;
+                sysmanagement_text.className = "info";
+                document.getElementById(themanager.id).readOnly = true;
+                document.getElementById(themanager.id).value = "Brian Balderston";
+                
+                var row8 = table.insertRow(++rowCount);
+                
+                var cellq = row8.insertCell(0);
+                var subtext = document.createTextNode("Subtotal:");
                 cellq.appendChild(subtext);
                 cellq.setAttribute("colspan", "3");
                 
-                var cellr = row6.insertCell(1);
+                var cellr = row8.insertCell(1);
                 var vmsubtotal = document.createElement("input");
                 vmsubtotal.setAttribute("type", "text");
                 cellr.appendChild(vmsubtotal);
@@ -263,13 +305,17 @@
                 vmsubtotal.id = "vm-sub" + vm_num + "-total";
                 vmsubtotal.className = "sub";
                 document.getElementById(vmsubtotal.id).readOnly = true;
+                document.getElementById(vmsubtotal.id).value = "$" + slice_price;
+                
+                console.log("Whoopee! There are a total of " + (rowCount+1) + " rows in this table.");
+                sub('vm-sub');
             }
             
             function getEstimate(type, id, price, dest, theclass)
             {
                 var item = document.getElementById(id);
                 var subtotal = document.getElementById(dest);
-
+                
                 if(item.value === null || item.value === "" || isNaN(item.value) )
                 {
                     subtotal.value = "";
@@ -280,6 +326,7 @@
                     {
                         document.getElementById(dest).value = "$" +  (parseFloat(document.getElementById(id).value) * price).toFixed(2);
                         sub(theclass);
+                        sub('vm-sub');
                     }
                 }
             }
@@ -311,14 +358,14 @@
                 
                 var v = document.getElementById(id).value;
                 var d = document.getElementById(dest);
-                
+                d.style.color = "#000";
                 
                 if(type == "mem")
                 {
                     if(v < 0 || v > 190 )
                     {
                         d.value = "Please enter a number from 0 to 190";
-                        d.style = "color: #ff0000; font-size: 12px";
+                        d.style.color = "#ff0000";
                         return false; 
                     }
                 }
@@ -328,7 +375,7 @@
                     if(v < 0 || v > 30000)
                     {
                         d.value = "Please enter a number from 0 to 30000";
-                        d.style = "color: #ff0000; font-size: 12px";
+                        d.style.color = "#ff0000";
                         return false;
                     }
                 }
@@ -338,54 +385,44 @@
                     if(v < 0 || v > 4900)
                     {
                         d.value = "Please enter a number from 0 to 4900";
-                        d.style = "color: #ff0000; font-size: 12px";
+                        d.style.color ="#ff0000";
                         return false;
                     }
                 }
-                
                 return true;
             }
-        </script>
-    </head>
-    
-    
-    <!-- BEGIN THE HTML HERE -->
-    <body>
-        <?php
-            while($row = $services->fetch(PDO::FETCH_ASSOC))
-            {
-        ?>
-                <input type="button" class="add-button" onclick="addProduct('<?php echo $row['type']; ?>');" value="+">
-</button>
-                <div class="vm-services">
-                    <span class="service-name"> 
-                       <?php echo $row['name']; ?>
-                    </span>
-                    <span class="service-price">
-                        $<?php echo $row['monthly']; ?>
-                    </span>
-                </div><br/>
-        <?php
-            }
-        ?>
-        <strong>Your Quote: </strong>
-        <table id="quote-table" colspan="4">
             
-        </table>
-        <table id="totals" colspan="4">
-            <tr>
-                <td colspan="3">
-                    <strong>Total: </strong>
-                </td>
-                <td colspan="1">
-                    <input type="text" id="vm-sub-total" class="sub" readonly>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="1">
-                    <button onclick="sub('vm-sub')">Calculate Total</button>
-                </td>
-            </tr>
-        </table>
-    </body>
-</html>
+            function removeProduct(rowNum)
+            {
+                var thetable = document.getElementById("quote-table");
+                var row = document.getElementById(rowNum);
+                var index = row.rowIndex;
+                for(i = 0, j = index; i < 8; i++)
+                {
+                    thetable.deleteRow(j);
+                }
+                sub('vm-sub');
+            }
+            
+            function processOS(id, o, system, manager)
+            {
+                /* determines the type of system management */
+                if((o == 0 || o == 1) && id != 'HS_VM')
+                {
+                    document.getElementById(system).value = "Included";
+                }
+                else
+                {
+                    document.getElementById(system).value = "User-managed OR Added Premium (Contact SDSC for details)";
+                }
+                
+                /* determines the manager */
+                if(o != 1 || id == 'HS_VM')
+                {
+                    document.getElementById(manager).value = "Brian Balderston";
+                }
+                else
+                {
+                    document.getElementById(manager).value = "Andrew Ferbert";
+                }
+            }
