@@ -1,6 +1,65 @@
+//http://springtricks.blogspot.com/2013/10/how-to-download-charts-to-pdf-formate.html
 $(document).ready(function() {
     sub('vm-sub');
+    
+    // THIS IS PERFECTLY FINE!!! 
+    /*$('#pdfbutton').click(function() {
+        var filename = prompt("Name the file: ");
+        html2canvas($('#quote-table'), {logging: true}).then(function(canvas) 
+        {
+            var imgData = canvas.toDataURL();
+            var doc = new jsPDF('p', 'pt', 'letter');
+            doc.setFontStyle('bold');
+            doc.text(20, 15, "Your Quote");
+            doc.addImage(imgData, 'JPEG', 20, 25);
+            //doc.output('dataurl');
+            doc.save(filename + '.pdf');
+            //document.body.appendChild(canvas);
+                            
+        });
+    }); */
+    
+    //EXPERIMENTAL
+    $("#pdfbutton").click(function () {
+        var filename = prompt("Name the file: ");
+        html2canvas($('#quote-table'), { background: '#ff0000' }).then(function(canvas)
+        {
+            var imageData = canvas.toDataURL("image/jpeg");
+            var image = new Image('p', 'pt', 'letter');
+            image = Canvas2Image.convertToJPEG(canvas);
+            var doc = new jsPDF();
+            doc.addImage(imageData, 'JPEG', 12, 10);
+            var croppingYPosition = 1095;
+            count = (image.height) / 1095;
+
+            for (var i =1; i < count; i++) {
+                doc.addPage();
+                var sourceX = 0;
+                var sourceY = croppingYPosition;
+                var sourceWidth = image.width;
+                var sourceHeight = 1095;
+                var destWidth = sourceWidth;
+                var destHeight = sourceHeight;
+                var destX = 0;
+                var destY = 0;
+                var canvas1 = document.createElement('canvas');
+                canvas1.setAttribute('height', destHeight);
+                canvas1.setAttribute('width', destWidth);                         
+                var ctx = canvas1.getContext("2d");
+                ctx.drawImage(image, sourceX, sourceY, sourceWidth, sourceHeight, destX, destY, destWidth, destHeight);
+                var image2 = new Image();
+                image2 = Canvas2Image.convertToJPEG(canvas1);
+                image2Data = image2.src;
+                doc.addImage(image2Data, 'JPEG', 12, 10);
+                croppingYPosition += destHeight;     
+                console.log("hellO");
+            } 
+            
+            doc.save(filename);
+        });
+    });
 });
+
 // keep track of the number of services in the quote
             var vm_num = 0; //number of VM's ordered
             var hs_num = 0; //number of HS VM's ordered
@@ -16,7 +75,8 @@ $(document).ready(function() {
             var slice_price;
             var cpu_price_val;
             var mem_price_val;
-            
+            var str_price_val = 49.42;
+            var san_price_val = 125.00;
 
             function addProduct(id)
             {
@@ -48,7 +108,8 @@ $(document).ready(function() {
                 var remove_text = document.createTextNode("-");
                 remove.appendChild(remove_text);
                 cell1.appendChild(remove);
-                var name = document.createTextNode(slice_text);                       cell1.appendChild(name);
+                var name = document.createTextNode(slice_text);                      
+                cell1.appendChild(name);
                 cell1.setAttribute("colspan", "1");
                 cell1.className = "service-title";
                 remove.className = "remove-button";
@@ -58,41 +119,48 @@ $(document).ready(function() {
                 console.log("the value of row1.rowIndex is: " + row1.rowIndex);
                 
                 var cell2 = row1.insertCell(1);
-                var os = document.createElement("select");
-                    
+                var os = document.createElement("select"); 
                 /* add all operating systems options */
-                option = new Option("Windows", 0, false, false);
+                option = new Option("Windows", "Windows", false, false);
+                option.id = "Windows" + vm_num;
                 os.appendChild(option);
                     
-                option = new Option("Red Hat 6 64-bit", 1, false, false);
+                option = new Option("Red Hat 6 64-bit", "Red Hat 6 64-bit", false, false);
+                option.id = "RedHat" + vm_num;
+                //option.setAttribute("selected", "selected");
                 os.appendChild(option);
                     
-                option = new Option("CentOS", 2, false, false);
+                option = new Option("CentOS", "CentOS", false, false);
+                option.id = "CentOS" + vm_num;
                 os.appendChild(option);
                     
-                option = new Option("Ubuntu", 3, false, false);
+                option = new Option("Ubuntu", "Ubuntu", false, false);
+                option.id = "Ubuntu" + vm_num;
                 os.appendChild(option);
                     
-                option = new Option("Other", 4, false, false);
+                option = new Option("Other", "Other", false, false);
+                option.id = "Other" + vm_num;
                 os.appendChild(option);
+                
                 cell2.appendChild(os);
                 cell2.setAttribute("colspan", "2");
                 os.id = "os" + vm_num;
+                os.setAttribute("optionval", vm_num);
                 os.setAttribute("sys", "sys" + vm_num);
                 os.setAttribute("manager", "manager" + vm_num);
                 os.setAttribute("vm-type", id);
-                os.setAttribute("onchange", "processOS(this.getAttribute('vm-type'), document.getElementById(this.id).value, this.getAttribute('sys'), this.getAttribute('manager'))");
+                os.setAttribute("onchange", "processOS(this.getAttribute('vm-type'), document.getElementById(this.id).value, this.getAttribute('sys'), this.getAttribute('manager'), this.getAttribute('optionval'))");
                 
                 var cell3 = row1.insertCell(2);
                 var price = document.createElement("input");
                 price.setAttribute("type", "text");
                 cell3.appendChild(price);
                 cell3.setAttribute("colspan", "1");
-                price.id = "service-price";
+                price.id = "service-price" + vm_num;
                 price.className = "sub vm-sub vm-sub" + vm_num;
                 price.value = "$" + slice_price;
-                document.getElementById("service-price").readOnly = true;
-                    
+                document.getElementById("service-price" + vm_num).readOnly = true;
+                
                 var row2 = table.insertRow(++rowCount);
                 
                 var cell = row2.insertCell(0);
@@ -105,15 +173,10 @@ $(document).ready(function() {
                 cell.appendChild(cpu_price);
                 cell.setAttribute("colspan", "1");
                 var cell = row2.insertCell(2);
-                var cpu_qty = document.createElement("select");
+                var cpu_qty = document.createElement("input");
+                cpu_qty.setAttribute("type", "text");
                 cpu_qty_in = "cpu-qty" + vm_num;
                 cpu_sub_out = "cpu-sub" + vm_num;
-                    
-                for(i = 0; i < 12; i++)
-                {
-                    option = new Option("" + i, i, false, false);
-                    cpu_qty.appendChild(option);
-                }
                     
                 cell.appendChild(cpu_qty);
                 cell.setAttribute("colspan", "1");
@@ -121,7 +184,8 @@ $(document).ready(function() {
                 cpu_qty.className += " cpu_qty userinput";
                 cpu_qty.setAttribute("dest", "" + cpu_sub_out);
                 cpu_qty.setAttribute("num", vm_num);
-                cpu_qty.setAttribute("onchange", "getEstimate('cpu', this.id, cpu_price_val, this.getAttribute('dest'), 'vm-sub' + this.getAttribute('num'))");
+                cpu_qty.setAttribute("cpu-price", cpu_price_val);
+                cpu_qty.setAttribute("onchange", "getEstimate('cpu', this.id, this.getAttribute('cpu-price'), this.getAttribute('dest'), 'vm-sub' + this.getAttribute('num'))");
                     
                 var celld = row2.insertCell(3);
                 var cpu_sub = document.createElement("input");
@@ -155,7 +219,8 @@ $(document).ready(function() {
                 mem_qty.className += " userinput";
                 mem_qty.setAttribute("dest", mem_sub_out);
                 mem_qty.setAttribute("num", vm_num);
-                mem_qty.setAttribute("onchange", "getEstimate('mem', this.id, mem_price_val, this.getAttribute('dest'), 'vm-sub' + this.getAttribute('num'))");
+                mem_qty.setAttribute("mem-price", mem_price_val);
+                mem_qty.setAttribute("onchange", "getEstimate('mem', this.id, this.getAttribute('mem-price'), this.getAttribute('dest'), 'vm-sub' + this.getAttribute('num'))");
                     
                 var cellh = row3.insertCell(3);
                 var mem_sub = document.createElement("input");
@@ -193,7 +258,8 @@ $(document).ready(function() {
                     str_qty.className += " userinput";
                     str_qty.setAttribute("dest", str_sub_out);
                     str_qty.setAttribute("num", vm_num);
-                    str_qty.setAttribute("onchange", "getEstimate('silver', this.id, 49.42, this.getAttribute('dest'), 'vm-sub' + this.getAttribute('num'))");
+                    str_qty.setAttribute("str-price", str_price_val);
+                    str_qty.setAttribute("onchange", "getEstimate('silver', this.id, this.getAttribute('str-price'), this.getAttribute('dest'), 'vm-sub' + this.getAttribute('num'))");
                     
                     var celll = row4.insertCell(3);
                     var str_sub = document.createElement("input");
@@ -237,7 +303,8 @@ $(document).ready(function() {
                 san_qty.className += " userinput";
                 san_qty.setAttribute("dest", san_sub_out);
                 san_qty.setAttribute("num", vm_num);
-                san_qty.setAttribute("onchange", "getEstimate('gold', this.id, 125.00, this.getAttribute('dest'), 'vm-sub' + this.getAttribute('num'))");
+                san_qty.setAttribute("san-price", san_price_val);
+                san_qty.setAttribute("onchange", "getEstimate('gold', this.id, this.getAttribute('san-price'), this.getAttribute('dest'), 'vm-sub' + this.getAttribute('num'))");
                 
                 var cellp = row5.insertCell(3);
                 var san_sub = document.createElement("input");
@@ -306,8 +373,6 @@ $(document).ready(function() {
                 vmsubtotal.className = "sub";
                 document.getElementById(vmsubtotal.id).readOnly = true;
                 document.getElementById(vmsubtotal.id).value = "$" + slice_price;
-                
-                console.log("Whoopee! There are a total of " + (rowCount+1) + " rows in this table.");
                 sub('vm-sub');
             }
             
@@ -359,6 +424,15 @@ $(document).ready(function() {
                 var v = document.getElementById(id).value;
                 var d = document.getElementById(dest);
                 d.style.color = "#000";
+                if(type == "cpu")
+                {
+                    if(v < 0 || v > 11)
+                    {
+                        d.value = "Please enter a number from 0 to 11";
+                        d.style.color = "#ff0000";
+                        return false;
+                    }
+                }
                 
                 if(type == "mem")
                 {
@@ -404,10 +478,21 @@ $(document).ready(function() {
                 sub('vm-sub');
             }
             
-            function processOS(id, o, system, manager)
+            function processOS(id, o, system, manager, num)
             {
+                var name; 
+                
+                if(o == 'Red Hat 6 64-bit')
+                {
+                    name = 'RedHat';
+                }
+                else
+                {
+                    name = "" + o;
+                }
+                
                 /* determines the type of system management */
-                if((o == 0 || o == 1) && id != 'HS_VM')
+                if((o == 'Windows' || o == 'Red Hat 6 64-bit') && id != 'HS_VM')
                 {
                     document.getElementById(system).value = "Included";
                 }
@@ -417,7 +502,7 @@ $(document).ready(function() {
                 }
                 
                 /* determines the manager */
-                if(o != 1 || id == 'HS_VM')
+                if(o != 'Red Hat 6 64-bit' || id == 'HS_VM')
                 {
                     document.getElementById(manager).value = "Brian Balderston";
                 }
@@ -425,4 +510,8 @@ $(document).ready(function() {
                 {
                     document.getElementById(manager).value = "Andrew Ferbert";
                 }
+                document.getElementById("os" + num).value = o;
+                console.log(document.getElementById("os" + num).value);
+                console.log("" + name + num);
+                document.getElementById("" + name + num).setAttribute("selected", "selected");
             }

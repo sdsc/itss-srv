@@ -3,6 +3,11 @@ body
     font-family: Arial;
 }
 
+.content
+{
+    margin: 0 auto;
+    width: 900px;
+}
 .vm-services
 {
     width: 500px;
@@ -95,4 +100,16 @@ strong
 #quote-table td
 {
     padding: 0 16px;
+    font-size: 14px;
+}
+
+#quote-table
+{
+    background-color: #fff;
+}
+
+
+tr:nth-child(8n) > td
+{
+    padding-bottom: 20px !important;
 }
