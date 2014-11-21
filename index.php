@@ -34,7 +34,7 @@
         <script type="text/javascript" src="js/FileSaver.min.js"></script>
         <script type="text/javascript" src="js/jspdf/jspdf.js"></script>
         <script type="text/javascript" src="js/jspdf/libs/base64.js"></script>-->
-        <script type="text/javascript" src="js/html2canvas.min.js"></script>
+        <script type="text/javascript" src="js/html2canvas.js"></script>
         <script type="text/javascript" src="js/canvas2image.js"></script>
         <script type="text/javasript" src="js/jspdf.plugin.addimage.js"></script>
         <script type="text/javascript" src="js/downloadify.min.js"></script>
@@ -60,26 +60,42 @@
                     <span class="service-price">
                         $<?php echo $row['monthly']; ?>
                     </span>
-                </div><br/>
+                </div>
             <?php
             }
             ?>
-            <strong>Your Quote: </strong>
-            <form name="quote" method="post">
-                <table id="quote-table" colspan="4">
-
-                </table>
-                <table id="totals" colspan="4">
-                    <tr>
-                        <td colspan="3" width="430">
-                            <strong>Total: </strong>
-                        </td>
-                        <td colspan="1">
-                            <input type="text" id="vm-sub-total" class="sub" readonly>
-                        </td>
-                    </tr>
-                </table>
-            </form>
+            <div id = "quote-content">
+                <strong id="table-title">Your SDSC Cost Estimate </strong>
+                <!--<form name="quote" method="post">-->
+                    <table id="quote-table" colspan="4">
+                        <tr>
+                            <td colspan="1" width="249">
+                                Service Name
+                            </td>
+                            <td colspan="1" width="152">
+                                Price/Unit
+                            </td>
+                            <td colspan="1" width="53">
+                                Quantity
+                            </td>
+                            <td colspan="1" width="400">
+                                Subtotal
+                            </td>
+                        </tr>
+                    </table>
+                    <table id="totals" colspan="4">
+                        <tr>
+                            <td colspan="3" width="450">
+                                <strong>Total: </strong>
+                            </td>
+                            <td colspan="1">
+                                <input type="text" id="vm-sub-total" class="sub" readonly>
+                            </td>
+                        </tr>
+                    </table>
+                <!--</form>-->
+            </div>
+            
             <button id="pdfbutton">Save as PDF</button>
        </div>
         

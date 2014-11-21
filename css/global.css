@@ -1,3 +1,8 @@
+html
+{
+    background: #fff;
+}
+
 body
 {
     font-family: Arial;
@@ -6,22 +11,23 @@ body
 .content
 {
     margin: 0 auto;
-    width: 900px;
+    width: 950px;
 }
 .vm-services
 {
-    width: 500px;
+    width: 400px;
     height: 20px;
     margin-bottom: 5px;
     padding: 5px;
-    background-color: #e6e6e6;
+    background-color: #FFABAB;
     display: inline-block;
     vertical-align: top;
+    margin-right: 25px;
 }
 
 .service-name
 {
-    width: 398px;
+    width: 328px;
     font-weight: bold;
     display: inline-block;
 }
@@ -42,6 +48,7 @@ body
     height: 30px;
     display: inline-block;
     vertical-align: top;
+    background-color: #fff;
 }
 
 .remove-button
@@ -49,6 +56,7 @@ body
     height: 20px;
     display: inline-block;
     vertical-align: top;
+    background-color: #fff;
 }
 .endblock
 {
@@ -58,6 +66,11 @@ body
 span
 {
     display: inline-block;
+}
+
+input[type="text"].system-name
+{
+    width: 150px;
 }
 
 input[type="text"], .cpu_qty
@@ -71,6 +84,12 @@ input[type="text"], .cpu_qty
     background-color: transparent;
 }
 
+input[readonly].varprice
+{
+    width: 60px;
+    border: 0px;
+}
+
 input[readonly]
 {
     width: 400px;
@@ -82,6 +101,7 @@ strong
     text-decoration: underline;
     margin-bottom: 10px;
     display: block;
+    background-color: #fff;
 }
 
 .alert
@@ -106,10 +126,48 @@ strong
 #quote-table
 {
     background-color: #fff;
+    width: 900px
 }
 
-
-tr:nth-child(8n) > td
+td.pad-bottom
 {
     padding-bottom: 20px !important;
+}
+
+#quote-table tr:first-child > td
+{
+    background-color: #ccc; 
+    font-weight: bold;
+    font-size: 15px;
+    padding-bottom: 10px;
+    line-height: 20px;
+}
+table td
+{
+    background: #fff;
+    vertical-align: top;
+}
+
+.smalltext
+{
+    font-size: 10px;
+}
+
+table#totals
+{
+    border: 0px;
+    border-color: #fff;
+    width: 900px;
+    margin-top: 20px;
+}
+
+#quote-content
+{
+    background: #fff;
+}
+
+#table-title
+{
+    margin-top: 30px;
+    font-size: 20px;
 }
