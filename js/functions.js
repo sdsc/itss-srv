@@ -1,50 +1,4 @@
 //http://springtricks.blogspot.com/2013/10/how-to-download-charts-to-pdf-formate.html
-$(document).ready(function() {
-    
-    /* perform initial subtotaling */
-    sub('vm-sub');
-    
-    /* Create PDF from the content */
-    $("#pdfbutton").click(function () {
-        var filename = prompt("Name the file: ");
-        html2canvas($('#quote-content'), { background: '#ffffff' }).then(function(canvas)
-        {
-            var imageData = canvas.toDataURL("image/jpeg");
-            var image = new Image('p', 'pt', 'letter');
-            image = Canvas2Image.convertToJPEG(canvas);
-            var doc = new jsPDF();
-            doc.addImage(imageData, 'JPEG', 12, 10);
-            var croppingYPosition = 1095;
-            count = (image.height) / 1095;
-
-            /* to split up the document into multiple pages if the canvas is too large */
-            for (var i =1; i < count; i++) {
-                doc.addPage();
-                var sourceX = 0;
-                var sourceY = croppingYPosition;
-                var sourceWidth = image.width;
-                var sourceHeight = 1095;
-                var destWidth = sourceWidth;
-                var destHeight = sourceHeight;
-                var destX = 0;
-                var destY = 0;
-                var canvas1 = document.createElement('canvas');
-                canvas1.setAttribute('height', destHeight);
-                canvas1.setAttribute('width', destWidth);                         
-                var ctx = canvas1.getContext("2d");
-                ctx.drawImage(image, sourceX, sourceY, sourceWidth, sourceHeight, destX, destY, destWidth, destHeight);
-                var image2 = new Image();
-                image2 = Canvas2Image.convertToJPEG(canvas1);
-                image2Data = image2.src;
-                doc.addImage(image2Data, 'JPEG', 12, 10);
-                croppingYPosition += destHeight;     
-            } 
-            
-            doc.save(filename); //save file
-        });
-    });
-});
-
 // keep track of the number of services in the quote
 
 var vm_num = 0; //number of VM's ordered
@@ -81,8 +35,43 @@ var sys_monitor_price_val = 142.00;
 
 function addProduct(id)
 {
-    var table = document.getElementById('quote-table');
+    switch (id) {
+        case 'ST_VM':
+        case 'HS_VM':
+            var table = document.getElementById('vm-table');
+            var totals = document.getElementById('vm-table-totals');
+            break;
+        case 'CL_STR':
+        case 'PR_STR':
+        case 'PR_CON':
+            var table = document.getElementById('str-table');
+            var totals = document.getElementById('str-table-totals');
+            break;
+        case 'DESK':
+        case 'SYSTEMS':
+        case 'STORAGE':
+            var table = document.getElementById('consult-table');
+            var totals = document.getElementById('consult-table-totals');
+            break;
+        case 'SITE':
+        case 'SUPPORT':
+            var table = document.getElementById('sp-table');
+            var totals = document.getElementById('sp-table-totals');
+            break;
+        case 'SYS_MAN':
+            var table = document.getElementById('pa-table');
+            var totals = document.getElementById('pa-table-totals');
+            break;
+        case 'RAW':
+            var table = document.getElementById('backup-table');
+            var totals = document.getElementById('backup-table-totals');
+            break;
+    }
     rowCount = table.rows.length;
+    if (rowCount - 1 === 0) {
+        table.removeAttribute("hidden");
+        totals.removeAttribute("hidden");
+    }
     ++vm_num; //increase number of vm's
     
     /* ALL OF THIS IS FOR VM'S!!! */
@@ -115,11 +104,12 @@ function addProduct(id)
         remove.className = "remove-button";
         remove.setAttribute("value", "-");
         remove.setAttribute("rownumber", "row" + vm_num);
-        remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), 8)");
+        remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), 8, 'ST_VM')");
 
         var cell = row1.insertCell(1);
         var os = document.createElement("select"); 
-
+        os.setAttribute("name", "os" + vm_num);
+        os.setAttribute("value", "Windows");
         /* add all operating systems options */
         option = new Option("Windows", "Windows", false, false);
         option.id = "Windows" + vm_num;
@@ -146,17 +136,22 @@ function addProduct(id)
         os.setAttribute("manager", "manager" + vm_num);
         os.setAttribute("vm-type", id);
         os.setAttribute("onchange", "processOS(this.getAttribute('vm-type'), document.getElementById(this.id).value, this.getAttribute('sys'), this.getAttribute('manager'), this.getAttribute('optionval'))");
+        os.setAttribute("readonly", "readonly");
+        os.defaultSelected = "Other" + vm_num;
 
         var cell = row1.insertCell(2);
         var price = document.createElement("input");
+        price.setAttribute("name", "serviceprice" + vm_num);
         price.setAttribute("type", "text");
         cell.appendChild(price);
         cell.setAttribute("colspan", "1");
         price.id = "service-price" + vm_num;
-        price.className = "sub vm-sub vm-sub" + vm_num;
+        price.className = "vm-sub vm-sub" + vm_num;
         price.value = "$" + slice_price;
-        document.getElementById("service-price" + vm_num).readOnly = true;
-
+        price.setAttribute("size", 20);
+        price.setAttribute("readonly", "readonly");
+        price.defaultValue = price.value;
+        
         var row2 = table.insertRow(++rowCount);
         var cell = row2.insertCell(0);
         var cpu = document.createTextNode("Additional CPUs");                       
@@ -175,11 +170,13 @@ function addProduct(id)
         cell.appendChild(cpu_qty);
         cell.setAttribute("colspan", "1");
         cpu_qty.id = cpu_qty_in;
+        cpu_qty.setAttribute("name", cpu_qty_in);
         cpu_qty.className += " cpu_qty userinput";
         cpu_qty.setAttribute("dest", "" + cpu_sub_out);
         cpu_qty.setAttribute("num", vm_num);
         cpu_qty.setAttribute("cpu-price", cpu_price_val);
-        cpu_qty.setAttribute("onchange", "getEstimate('cpu', this.id, this.getAttribute('cpu-price'), this.getAttribute('dest'), this.getAttribute('num'))");
+        cpu_qty.setAttribute("size", 5);
+        cpu_qty.setAttribute("onchange", "getEstimate('cpu', this.id, this.getAttribute('cpu-price'), this.getAttribute('dest'), this.getAttribute('num'), 'ST_VM')");
 
         var cell = row2.insertCell(3);
         var cpu_sub = document.createElement("input");
@@ -187,8 +184,10 @@ function addProduct(id)
         cell.appendChild(cpu_sub);
         cell.setAttribute("colspan", "1");
         cpu_sub.id = cpu_sub_out;
-        document.getElementById(cpu_sub_out).readOnly = true;
-        cpu_sub.className = "sub vm-sub vm-sub" + vm_num;
+        cpu_sub.setAttribute("name", cpu_sub.id);
+        cpu_sub.setAttribute("size", 20);
+        document.getElementById(cpu_sub_out).setAttribute("readonly", "readonly");
+        cpu_sub.className = "vm-sub vm-sub" + vm_num;
 
         var row3 = table.insertRow(++rowCount);
         var cell = row3.insertCell(0);
@@ -208,11 +207,13 @@ function addProduct(id)
         cell.appendChild(mem_qty);
         cell.setAttribute("colspan", "1");
         mem_qty.id = mem_qty_in;
+        mem_qty.setAttribute("name", mem_qty_in);
         mem_qty.className += " userinput";
         mem_qty.setAttribute("dest", mem_sub_out);
         mem_qty.setAttribute("num", vm_num);
         mem_qty.setAttribute("mem-price", mem_price_val);
-        mem_qty.setAttribute("onchange", "getEstimate('mem', this.id, this.getAttribute('mem-price'), this.getAttribute('dest'), this.getAttribute('num'))");
+        mem_qty.setAttribute("size", 5);
+        mem_qty.setAttribute("onchange", "getEstimate('mem', this.id, this.getAttribute('mem-price'), this.getAttribute('dest'), this.getAttribute('num'), 'ST_VM')");
 
         var cell = row3.insertCell(3);
         var mem_sub = document.createElement("input");
@@ -220,8 +221,10 @@ function addProduct(id)
         cell.appendChild(mem_sub);
         cell.setAttribute("colspan", "1");
         mem_sub.id = mem_sub_out;
-        document.getElementById(mem_sub_out).readOnly = true;
-        mem_sub.className = "sub vm-sub vm-sub" + vm_num;
+        mem_sub.setAttribute("name", mem_sub.id);
+        mem_sub.setAttribute("size", 20);
+        document.getElementById(mem_sub_out).setAttribute("readonly", "readonly");
+        mem_sub.className = "vm-sub vm-sub" + vm_num;
 
 
         var row4 = table.insertRow(++rowCount);
@@ -245,11 +248,13 @@ function addProduct(id)
             cell.appendChild(str_qty);
             cell.setAttribute("colspan", "1");
             str_qty.id = str_qty_in;
+            str_qty.setAttribute("name", str_qty_in);
             str_qty.className += " userinput";
             str_qty.setAttribute("dest", str_sub_out);
             str_qty.setAttribute("num", vm_num);
             str_qty.setAttribute("str-price", str_price_val);
-            str_qty.setAttribute("onchange", "getEstimate('silver', this.id, this.getAttribute('str-price'), this.getAttribute('dest'), this.getAttribute('num'))");
+            str_qty.setAttribute("size", 5);
+            str_qty.setAttribute("onchange", "getEstimate('silver', this.id, this.getAttribute('str-price'), this.getAttribute('dest'), this.getAttribute('num'), 'ST_VM')");
 
             var cell = row4.insertCell(3);
             var str_sub = document.createElement("input");
@@ -257,8 +262,10 @@ function addProduct(id)
             cell.appendChild(str_sub);
             cell.setAttribute("colspan", "1");
             str_sub.id = str_sub_out;
-            document.getElementById(str_sub_out).readOnly = true;
-            str_sub.className = "sub vm-sub vm-sub" + vm_num;
+            str_sub.setAttribute("name", str_sub.id);
+            str_sub.setAttribute("size", 20);
+            document.getElementById(str_sub_out).setAttribute("readonly", "readonly");
+            str_sub.className = "vm-sub vm-sub" + vm_num;
         } else if (id == 'HS_VM') {
             var cell = row4.insertCell(0);
             var alert = document.createTextNode("Silver storage is unavailable for High Security VMs.");
@@ -287,11 +294,13 @@ function addProduct(id)
         cell.appendChild(san_qty);
         cell.setAttribute("colspan", "1");
         san_qty.id = san_qty_in;
+        san_qty.setAttribute("name", san_qty_in);
         san_qty.className += " userinput";
         san_qty.setAttribute("dest", san_sub_out);
         san_qty.setAttribute("num", vm_num);
         san_qty.setAttribute("san-price", san_price_val);
-        san_qty.setAttribute("onchange", "getEstimate('gold', this.id, this.getAttribute('san-price'), this.getAttribute('dest'), this.getAttribute('num'))");
+        san_qty.setAttribute("size", 5);
+        san_qty.setAttribute("onchange", "getEstimate('gold', this.id, this.getAttribute('san-price'), this.getAttribute('dest'), this.getAttribute('num'), 'ST_VM')");
 
         var cell = row5.insertCell(3);
         var san_sub = document.createElement("input");
@@ -299,12 +308,14 @@ function addProduct(id)
         cell.appendChild(san_sub);
         cell.setAttribute("colspan", "1");
         san_sub.id = san_sub_out;
-        document.getElementById(san_sub_out).readOnly = true;
-        san_sub.className = "sub vm-sub vm-sub" + vm_num;
+        san_sub.setAttribute("name", san_sub.id);
+        san_sub.setAttribute("size", 20);
+        document.getElementById(san_sub_out).setAttribute("readonly", "readonly");
+        san_sub.className = "vm-sub vm-sub" + vm_num;
 
         var row6 = table.insertRow(++rowCount);
         cell = row6.insertCell(0);
-        var sysmanagement = document.createTextNode("System Management:");
+        var sysmanagement = document.createTextNode("System Management");
         cell.appendChild(sysmanagement);
         cell.setAttribute("colspan", "1");
 
@@ -314,21 +325,23 @@ function addProduct(id)
         cell.appendChild(sysmanagement_text);
         cell.setAttribute("colspan", "3");
 
-        sysmanagement_text.id = "sys" + vm_num;     
+        sysmanagement_text.id = "sys" + vm_num;
+        sysmanagement_text.setAttribute("name", sysmanagement_text.id);
         sysmanagement_text.className = "info";
-        document.getElementById(sysmanagement_text.id).readOnly = true;
+        sysmanagement_text.setAttribute("size", 30);
+        document.getElementById(sysmanagement_text.id).setAttribute("readonly", "readonly");
 
         /* Default values for System Management */
         if(id == 'ST_VM') {
-            document.getElementById(sysmanagement_text.id).value = "Included";  
+            document.getElementById(sysmanagement_text.id).defaultValue = "Included";  
         } else {
-            document.getElementById(sysmanagement_text.id).value = "User-managed OR Added Premium (Contact SDSC for details)";
+            document.getElementById(sysmanagement_text.id).defaultValue = "User-managed OR Added Premium (Contact SDSC for details)";
         }
 
         var row7 = table.insertRow(++rowCount);
 
         cell = row7.insertCell(0);
-        var manager = document.createTextNode("Manager:");
+        var manager = document.createTextNode("Manager");
         cell.appendChild(manager);
         cell.setAttribute("colspan", "1");
 
@@ -338,14 +351,16 @@ function addProduct(id)
         cell.appendChild(themanager);
         cell.setAttribute("colspan", "3");
         themanager.id = "manager" + vm_num;
+        themanager.setAttribute("name", themanager.id);
+        themanager.setAttribute("size", 30);
         sysmanagement_text.className = "info";
-        document.getElementById(themanager.id).readOnly = true;
-        document.getElementById(themanager.id).value = "Brian Balderston";
+        document.getElementById(themanager.id).setAttribute("readonly", "readonly");
+        document.getElementById(themanager.id).defaultValue = "Brian Balderston";
 
         var row8 = table.insertRow(++rowCount);
 
         var cell = row8.insertCell(0);
-        var subtext = document.createTextNode("Subtotal:");
+        var subtext = document.createTextNode("Subtotal");
         cell.appendChild(subtext);
         cell.setAttribute("colspan", "3");
         cell.className += " pad-bottom";
@@ -353,13 +368,16 @@ function addProduct(id)
         var cell = row8.insertCell(1);
         var vmsubtotal = document.createElement("input");
         vmsubtotal.setAttribute("type", "text");
+        vmsubtotal.setAttribute("size", 20);
         cell.appendChild(vmsubtotal);
         cell.setAttribute("colspan", "1");
         vmsubtotal.id = "vm-sub" + vm_num + "-total";
-        vmsubtotal.className = "sub";
-        document.getElementById(vmsubtotal.id).readOnly = true;
-        document.getElementById(vmsubtotal.id).value = "$" + slice_price;
+        vmsubtotal.setAttribute("name", vmsubtotal.id);
+        //vmsubtotal.className = "sub";
+        document.getElementById(vmsubtotal.id).setAttribute("readonly", "readonly");
+        document.getElementById(vmsubtotal.id).defaultValue = "$" + slice_price;
         sub('vm-sub');
+        sub('sub');
             
     } /* END CODE FOR VM'S!!!! */
                 
@@ -383,14 +401,14 @@ function addProduct(id)
         remove.className = "remove-button";
         remove.setAttribute("value", "-");
         remove.setAttribute("rownumber", "row" + vm_num);
-        remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), 2)");
+        remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), 2, 'CL_STR')");
         
         var cell = row1.insertCell(1);
         var cl_str_price = document.createElement("input");
         cl_str_price.id = "cl-str-price" + vm_num;
         cl_str_price.className += " varprice";
         cl_str_price.setAttribute("type", "text");
-        cl_str_price.readOnly = true;
+        cl_str_price.setAttribute("readonly", "readonly");
         cl_str_price.value = "$" + cl_str_price_val + "/TB";
         cell.appendChild(cl_str_price);
         cell.setAttribute("colspan", "1");
@@ -407,7 +425,9 @@ function addProduct(id)
         cl_str_qty.setAttribute("dest", "" + cl_str_sub_out);
         cl_str_qty.setAttribute("num", vm_num);
         cl_str_qty.setAttribute("cl-str-price", cl_str_price_val);
-        cl_str_qty.setAttribute("onchange", "getEstimate('cl-str', this.id, this.getAttribute('cl-str-price'), this.getAttribute('dest'), this.getAttribute('num'))");
+        cl_str_qty.setAttribute("name", cl_str_qty.id);
+        cl_str_qty.setAttribute("size", 5);
+        cl_str_qty.setAttribute("onchange", "getEstimate('cl-str', this.id, this.getAttribute('cl-str-price'), this.getAttribute('dest'), this.getAttribute('num'), 'CL_STR')");
 
         var cell = row1.insertCell(3);
         var cl_str_sub = document.createElement("input");
@@ -415,8 +435,10 @@ function addProduct(id)
         cell.appendChild(cl_str_sub);
         cell.setAttribute("colspan", "1");
         cl_str_sub.id = cl_str_sub_out;
-        document.getElementById(cl_str_sub_out).readOnly = true;
-        cl_str_sub.className = "sub vm-sub vm-sub" + vm_num;
+        document.getElementById(cl_str_sub_out).setAttribute("readonly", "readonly");
+        cl_str_sub.className = "str-sub vm-sub" + vm_num;
+        cl_str_sub.setAttribute("name", cl_str_sub.id);
+        cl_str_sub.setAttribute("size", 20);
         
         var row2 = table.insertRow(++rowCount);
         row2.id = "row" + vm_num;
@@ -432,11 +454,13 @@ function addProduct(id)
         dualoptions.setAttribute("num", vm_num);
         dualoptions.setAttribute("original", cl_str_price_val);
         dualoptions.setAttribute("double", cl_str_price_val_double);
+        dualoptions.setAttribute("name", dualoptions.id);
         dualoptions.setAttribute("onchange", "changePrice(this.getAttribute('num'), this.getAttribute('original'), this.getAttribute('double'))");
         var options = new Option("No", "No", false, false);
         options.id = "No" + vm_num;
         options.setAttribute("num", vm_num);
         dualoptions.appendChild(options);
+        dualoptions.setAttribute("value", "No");
         
         options = new Option("Yes", "Yes", false, false);
         options.id = "Yes" + vm_num;
@@ -473,7 +497,7 @@ function addProduct(id)
         remove.className = "remove-button";
         remove.setAttribute("value", "-");
         remove.setAttribute("rownumber", "row" + vm_num);
-        remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), 1)");
+        remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), 1, 'CL_STR')");
         
         var cell = row1.insertCell(1);
         var cl_str_price = document.createTextNode("$" + cl_str_price_val + "/TB");
@@ -491,8 +515,10 @@ function addProduct(id)
         cl_str_qty.className += " cl_str_qty userinput";
         cl_str_qty.setAttribute("dest", "" + cl_str_sub_out);
         cl_str_qty.setAttribute("num", vm_num);
+        cl_str_qty.setAttribute("name", cl_str_qty.id);
+        cl_str_qty.setAttribute("size", 5);
         cl_str_qty.setAttribute("cl-str-price", cl_str_price_val);
-        cl_str_qty.setAttribute("onchange", "getEstimate('cl-str', this.id, this.getAttribute('cl-str-price'), this.getAttribute('dest'), this.getAttribute('num'))");
+        cl_str_qty.setAttribute("onchange", "getEstimate('cl-str', this.id, this.getAttribute('cl-str-price'), this.getAttribute('dest'), this.getAttribute('num'), 'CL_STR')");
 
         var cell = row1.insertCell(3);
         var cl_str_sub = document.createElement("input");
@@ -500,9 +526,12 @@ function addProduct(id)
         cell.appendChild(cl_str_sub);
         cell.setAttribute("colspan", "1");
         cl_str_sub.id = cl_str_sub_out;
-        document.getElementById(cl_str_sub_out).readOnly = true;
-        cl_str_sub.className = "sub vm-sub vm-sub" + vm_num;
-        sub('vm-sub');
+        cl_str_sub.setAttribute("name", cl_str_sub.id);
+        cl_str_sub.setAttribute("size", 20);
+        document.getElementById(cl_str_sub_out).setAttribute("readonly", "readonly");
+        cl_str_sub.className = "str-sub vm-sub" + vm_num;
+        sub('str-sub');
+        sub('sub');
     } /* END PROJECT STORAGE AND PROJECT CONDO CODE */
     
     /* BEGIN CONSULTING SERVICES */
@@ -535,7 +564,7 @@ function addProduct(id)
         remove.className = "remove-button";
         remove.setAttribute("value", "-");
         remove.setAttribute("rownumber", "row" + vm_num);
-        remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), 1)");
+        remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), 1, 'DESK')");
         
         var cell = row1.insertCell(1);
         var consult_price = document.createTextNode("$" + consult_price_val + "/hr");
@@ -554,7 +583,9 @@ function addProduct(id)
         consult_qty.setAttribute("dest", "" + consult_sub_out);
         consult_qty.setAttribute("num", vm_num);
         consult_qty.setAttribute("consult-price", consult_price_val);
-        consult_qty.setAttribute("onchange", "getEstimate('consult', this.id, this.getAttribute('consult-price'), this.getAttribute('dest'), this.getAttribute('num'))");
+        consult_qty.setAttribute("name", consult_qty.id);
+        consult_qty.setAttribute("size", 5);
+        consult_qty.setAttribute("onchange", "getEstimate('consult', this.id, this.getAttribute('consult-price'), this.getAttribute('dest'), this.getAttribute('num'), 'DESK')");
 
         var cell = row1.insertCell(3);
         var consult_sub = document.createElement("input");
@@ -562,9 +593,12 @@ function addProduct(id)
         cell.appendChild(consult_sub);
         cell.setAttribute("colspan", "1");
         consult_sub.id = consult_sub_out;
-        document.getElementById(consult_sub_out).readOnly = true;
-        consult_sub.className = "sub vm-sub vm-sub" + vm_num;
-        sub('vm-sub');
+        document.getElementById(consult_sub_out).setAttribute("readonly", "readonly");
+        consult_sub.className = "consult-sub vm-sub" + vm_num;
+        consult_sub.setAttribute("name", consult_sub.id);
+        consult_sub.setAttribute("size", 20);
+        sub('consult-sub');
+        sub('sub');
     } /* END CONSULTING SERVICES */
     
     /* BEGIN SHAREPOINT SERVICES */
@@ -603,7 +637,7 @@ function addProduct(id)
         remove.setAttribute("value", "-");
         remove.setAttribute("rownumber", "row" + vm_num);
         remove.setAttribute("numRows", numRows);
-        remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), this.getAttribute('numRows'))");
+        remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), this.getAttribute('numRows'), 'SUPPORT')");
         
         var cell = row1.insertCell(1);
         var sp_price = document.createTextNode("$" + sp_price_val + unit);
@@ -622,11 +656,12 @@ function addProduct(id)
         sp_qty.setAttribute("dest", "" + sp_sub_out);
         sp_qty.setAttribute("num", vm_num);
         sp_qty.setAttribute("sp-price", sp_price_val);
-        
+        sp_qty.setAttribute("name", sp_qty.id);
+        sp_qty.setAttribute("size", 5);
         if (id == 'SUPPORT') {
-            sp_qty.setAttribute("onchange", "getEstimate('sp-consult', this.id, this.getAttribute('sp-price'), this.getAttribute('dest'),  this.getAttribute('num'))");
+            sp_qty.setAttribute("onchange", "getEstimate('sp-consult', this.id, this.getAttribute('sp-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'SITE')");
         } else {
-            sp_qty.setAttribute("onchange", "getEstimate('sp', this.id, this.getAttribute('sp-price'), this.getAttribute('dest'),  this.getAttribute('num'))");
+            sp_qty.setAttribute("onchange", "getEstimate('sp', this.id, this.getAttribute('sp-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'SITE')");
         }
 
         var cell = row1.insertCell(3);
@@ -635,9 +670,10 @@ function addProduct(id)
         cell.appendChild(sp_sub);
         cell.setAttribute("colspan", "1");
         sp_sub.id = sp_sub_out;
-        document.getElementById(sp_sub_out).readOnly = true;
-        sp_sub.className = "sub vm-sub vm-sub" + vm_num;
-        
+        document.getElementById(sp_sub_out).setAttribute("readonly", "readonly");
+        sp_sub.className = "sp-sub vm-sub" + vm_num;
+        sp_sub.setAttribute("name", sp_sub.id);
+        sp_sub.setAttribute("size", 20);
         // Add extra rows for SharePoint Site
         if (id == 'SITE') {
             additional_price_val = 10.00;
@@ -666,7 +702,9 @@ function addProduct(id)
             additional_qty.setAttribute("dest", "" + additional_sub_out);
             additional_qty.setAttribute("num", vm_num);
             additional_qty.setAttribute("additional-price", additional_price_val);
-            additional_qty.setAttribute("onchange", "getEstimate('additional-sp', this.id, this.getAttribute('additional-price'), this.getAttribute('dest'),  this.getAttribute('num'))");
+            additional_qty.setAttribute("name", additional_qty.id);
+            additional_qty.setAttribute("size", 5);
+            additional_qty.setAttribute("onchange", "getEstimate('additional-sp', this.id, this.getAttribute('additional-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'SITE')");
 
             var cell = row2.insertCell(3);
             var additional_sub = document.createElement("input");
@@ -674,8 +712,10 @@ function addProduct(id)
             cell.appendChild(additional_sub);
             cell.setAttribute("colspan", "1");
             additional_sub.id = additional_sub_out;
-            document.getElementById(additional_sub_out).readOnly = true;
-            additional_sub.className = "sub vm-sub vm-sub" + vm_num;
+            document.getElementById(additional_sub_out).setAttribute("readonly", "readonly");
+            additional_sub.className = "sp-sub vm-sub" + vm_num;
+            additional_sub.setAttribute("name", additional_sub.id);
+            additional_sub.setAttribute("size", 20);
             
             var row3 = table.insertRow(++rowCount);
 
@@ -691,11 +731,14 @@ function addProduct(id)
             cell.appendChild(spsubtotal);
             cell.setAttribute("colspan", "1");
             spsubtotal.id = "vm-sub" + vm_num + "-total";
-            spsubtotal.className = "sub";
-            document.getElementById(spsubtotal.id).readOnly = true;
+            //spsubtotal.className = "sub";
+            spsubtotal.setAttribute("name", spsubtotal.id);
+            spsubtotal.setAttribute("size", 20);
+            document.getElementById(spsubtotal.id).setAttribute("readonly", "readonly");
         }
         
         sub('vm-sub');
+        sub('sub');
     } /* END SHAREPOINT SERVICES */
     
     /* BEGIN SYSTEM MANAGEMENT */
@@ -715,7 +758,7 @@ function addProduct(id)
         remove.className = "remove-button";
         remove.setAttribute("value", "-");
         remove.setAttribute("rownumber", "row" + vm_num);
-        remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), 9)");
+        remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), 9, 'SYS_MAN')");
         
         var cell = row1.insertCell(1);
         var psa = document.createElement("select"); 
@@ -737,6 +780,7 @@ function addProduct(id)
         //psa.setAttribute("manager", "manager" + vm_num);
         //psa.setAttribute("vm-type", id);
         psa.setAttribute("onchange", "processPrice(document.getElementById(this.id).value, this.getAttribute('optionval'))");
+        psa.setAttribute("value", "Standard - $69.00");
 
         var cell = row1.insertCell(2);
         var sys_man_qty = document.createElement("input");
@@ -750,7 +794,9 @@ function addProduct(id)
         sys_man_qty.setAttribute("dest", "" + sys_man_sub_out);
         sys_man_qty.setAttribute("num", vm_num);
         sys_man_qty.setAttribute("sys-man-price", sys_man_price_val);
-        sys_man_qty.setAttribute("onchange", "getEstimate('sys-man', this.id, this.getAttribute('sys-man-price'), this.getAttribute('dest'),  this.getAttribute('num'))");
+        sys_man_qty.setAttribute("name", sys_man_qty.id);
+        sys_man_qty.setAttribute("size", 5);
+        sys_man_qty.setAttribute("onchange", "getEstimate('sys-man', this.id, this.getAttribute('sys-man-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'SYS_MAN')");
 
         var cell = row1.insertCell(3);
         var sys_man_sub = document.createElement("input");
@@ -758,8 +804,10 @@ function addProduct(id)
         cell.appendChild(sys_man_sub);
         cell.setAttribute("colspan", "1");
         sys_man_sub.id = sys_man_sub_out;
-        document.getElementById(sys_man_sub_out).readOnly = true;
-        sys_man_sub.className = "sub vm-sub vm-sub" + vm_num;
+        sys_man_sub.setAttribute("name", sys_man_sub.id);
+        sys_man_sub.setAttribute("size", 20);
+        document.getElementById(sys_man_sub_out).setAttribute("readonly", "readonly");
+        sys_man_sub.className = "pa-sub vm-sub" + vm_num;
         
         var row2 = table.insertRow(++rowCount);
         var cell = row2.insertCell(0);
@@ -770,7 +818,14 @@ function addProduct(id)
         var cell = row2.insertCell(1);
         var systemnameinput = document.createElement("input");
         systemnameinput.setAttribute("type", "text");
+        systemnameinput.setAttribute("name", "systemnameinput");
+        systemnameinput.setAttribute("size", 20);
+        systemnameinput.id = "systemnameinput" + vm_num;
         systemnameinput.className += " system-name";
+        systemnameinput.defaultValue = "Enter System Name";
+        systemnameinput.setAttribute("value", "Enter System Name");
+        
+        systemnameinput.setAttribute("onchange", "changeValue('' + this.id, this.value)");
         cell.appendChild(systemnameinput);
         cell.setAttribute("colspan", "3");
         
@@ -797,7 +852,9 @@ function addProduct(id)
         nonrec_qty.setAttribute("dest", "" + nonrec_sub_out);
         nonrec_qty.setAttribute("num", vm_num);
         nonrec_qty.setAttribute("nonrec-price", nonrec_price_val);
-        nonrec_qty.setAttribute("onchange", "getEstimate('nonrec', this.id, this.getAttribute('nonrec-price'), this.getAttribute('dest'),  this.getAttribute('num'))");
+        nonrec_qty.setAttribute("name", nonrec_qty.id);
+        nonrec_qty.setAttribute("size", 5);
+        nonrec_qty.setAttribute("onchange", "getEstimate('nonrec', this.id, this.getAttribute('nonrec-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'SYS_MAN')");
 
         var cell = row3.insertCell(3);
         var nonrec_sub = document.createElement("input");
@@ -805,8 +862,10 @@ function addProduct(id)
         cell.appendChild(nonrec_sub);
         cell.setAttribute("colspan", "1");
         nonrec_sub.id = nonrec_sub_out;
-        document.getElementById(nonrec_sub_out).readOnly = true;
-        nonrec_sub.className = "sub vm-sub vm-sub" + vm_num;
+        nonrec_sub.setAttribute("name", nonrec_sub.id);
+        nonrec_sub.setAttribute("size", 20);
+        document.getElementById(nonrec_sub_out).setAttribute("readonly", "readonly");
+        nonrec_sub.className = "pa-sub vm-sub" + vm_num;
         
         var row4 = table.insertRow(++rowCount);
         var cell = row4.insertCell(0);
@@ -831,7 +890,9 @@ function addProduct(id)
         no_os_qty.setAttribute("dest", "" + no_os_sub_out);
         no_os_qty.setAttribute("num", vm_num);
         no_os_qty.setAttribute("no_os-price", no_os_price_val);
-        no_os_qty.setAttribute("onchange", "getEstimate('no_os', this.id, this.getAttribute('no_os-price'), this.getAttribute('dest'),  this.getAttribute('num'))");
+        no_os_qty.setAttribute("name", no_os_qty.id);
+        no_os_qty.setAttribute("size", 5);
+        no_os_qty.setAttribute("onchange", "getEstimate('no_os', this.id, this.getAttribute('no_os-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'SYS_MAN')");
 
         var cell = row4.insertCell(3);
         var no_os_sub = document.createElement("input");
@@ -839,8 +900,10 @@ function addProduct(id)
         cell.appendChild(no_os_sub);
         cell.setAttribute("colspan", "1");
         no_os_sub.id = no_os_sub_out;
-        document.getElementById(no_os_sub_out).readOnly = true;
-        no_os_sub.className = "sub vm-sub vm-sub" + vm_num;
+        document.getElementById(no_os_sub_out).setAttribute("readonly", "readonly");
+        no_os_sub.className = "pa-sub vm-sub" + vm_num;
+        no_os_sub.setAttribute("name", no_os_sub.id);
+        no_os_sub.setAttribute("size", 20);
         
         var row5 = table.insertRow(++rowCount);
         var cell = row5.insertCell(0);
@@ -865,7 +928,9 @@ function addProduct(id)
         storage_array_qty.setAttribute("dest", "" + storage_array_sub_out);
         storage_array_qty.setAttribute("num", vm_num);
         storage_array_qty.setAttribute("storage_array-price", storage_array_price_val);
-        storage_array_qty.setAttribute("onchange", "getEstimate('storage_array', this.id, this.getAttribute('storage_array-price'), this.getAttribute('dest'),  this.getAttribute('num'))");
+        storage_array_qty.setAttribute("name", storage_array_qty.id);
+        storage_array_qty.setAttribute("size", 5);
+        storage_array_qty.setAttribute("onchange", "getEstimate('storage_array', this.id, this.getAttribute('storage_array-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'SYS_MAN')");
 
         var cell = row5.insertCell(3);
         var storage_array_sub = document.createElement("input");
@@ -873,8 +938,10 @@ function addProduct(id)
         cell.appendChild(storage_array_sub);
         cell.setAttribute("colspan", "1");
         storage_array_sub.id = storage_array_sub_out;
-        document.getElementById(storage_array_sub_out).readOnly = true;
-        storage_array_sub.className = "sub vm-sub vm-sub" + vm_num;
+        document.getElementById(storage_array_sub_out).setAttribute("readonly", "readonly");
+        storage_array_sub.className = "pa-sub vm-sub" + vm_num;
+        storage_array_sub.setAttribute("name", storage_array_sub.id);
+        storage_array_sub.setAttribute("size", 20);
         
         var row6 = table.insertRow(++rowCount);
         var cell = row6.insertCell(0);
@@ -898,8 +965,10 @@ function addProduct(id)
         non_os_vendor_qty.className += " non_os_vendor_qty userinput";
         non_os_vendor_qty.setAttribute("dest", "" + non_os_vendor_sub_out);
         non_os_vendor_qty.setAttribute("num", vm_num);
+        non_os_vendor_qty.setAttribute("size", 5);
+        non_os_vendor_qty.setAttribute("name", non_os_vendor_qty.id);
         non_os_vendor_qty.setAttribute("non_os_vendor-price", non_os_vendor_price_val);
-        non_os_vendor_qty.setAttribute("onchange", "getEstimate('non_os_vendor', this.id, this.getAttribute('non_os_vendor-price'), this.getAttribute('dest'),  this.getAttribute('num'))");
+        non_os_vendor_qty.setAttribute("onchange", "getEstimate('non_os_vendor', this.id, this.getAttribute('non_os_vendor-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'SYS_MAN')");
 
         var cell = row6.insertCell(3);
         var non_os_vendor_sub = document.createElement("input");
@@ -907,8 +976,10 @@ function addProduct(id)
         cell.appendChild(non_os_vendor_sub);
         cell.setAttribute("colspan", "1");
         non_os_vendor_sub.id = non_os_vendor_sub_out;
-        document.getElementById(non_os_vendor_sub_out).readOnly = true;
-        non_os_vendor_sub.className = "sub vm-sub vm-sub" + vm_num;
+        document.getElementById(non_os_vendor_sub_out).setAttribute("readonly", "readonly");
+        non_os_vendor_sub.className = "pa-sub vm-sub" + vm_num;
+        non_os_vendor_sub.setAttribute("name", non_os_vendor_sub.id);
+        non_os_vendor_sub.setAttribute("size", 20);
         
         var row7 = table.insertRow(++rowCount);
         var cell = row7.insertCell(0);
@@ -933,7 +1004,9 @@ function addProduct(id)
         local_admin_access_qty.setAttribute("dest", "" + local_admin_access_sub_out);
         local_admin_access_qty.setAttribute("num", vm_num);
         local_admin_access_qty.setAttribute("local_admin_access-price", local_admin_access_price_val);
-        local_admin_access_qty.setAttribute("onchange", "getEstimate('local_admin_access', this.id, this.getAttribute('local_admin_access-price'), this.getAttribute('dest'),  this.getAttribute('num'))");
+        local_admin_access_qty.setAttribute("name", local_admin_access_qty.id);
+        local_admin_access_qty.setAttribute("size", 5);
+        local_admin_access_qty.setAttribute("onchange", "getEstimate('local_admin_access', this.id, this.getAttribute('local_admin_access-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'SYS_MAN')");
 
         var cell = row7.insertCell(3);
         var local_admin_access_sub = document.createElement("input");
@@ -941,8 +1014,10 @@ function addProduct(id)
         cell.appendChild(local_admin_access_sub);
         cell.setAttribute("colspan", "1");
         local_admin_access_sub.id = local_admin_access_sub_out;
-        document.getElementById(local_admin_access_sub_out).readOnly = true;
-        local_admin_access_sub.className = "sub vm-sub vm-sub" + vm_num;
+        document.getElementById(local_admin_access_sub_out).setAttribute("readonly", "readonly");
+        local_admin_access_sub.className = "pa-sub vm-sub" + vm_num;
+        local_admin_access_sub.setAttribute("name", local_admin_access_sub.id);
+        local_admin_access_sub.setAttribute("size", 20);
         
         var row8 = table.insertRow(++rowCount);
         var cell = row8.insertCell(0);
@@ -967,7 +1042,9 @@ function addProduct(id)
         sys_monitor_qty.setAttribute("dest", "" + sys_monitor_sub_out);
         sys_monitor_qty.setAttribute("num", vm_num);
         sys_monitor_qty.setAttribute("sys_monitor-price", sys_monitor_price_val);
-        sys_monitor_qty.setAttribute("onchange", "getEstimate('sys_monitor', this.id, this.getAttribute('sys_monitor-price'), this.getAttribute('dest'),  this.getAttribute('num'))");
+        sys_monitor_qty.setAttribute("name", sys_monitor_qty.id);
+        sys_monitor_qty.setAttribute("size", 5);
+        sys_monitor_qty.setAttribute("onchange", "getEstimate('sys_monitor', this.id, this.getAttribute('sys_monitor-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'SYS_MAN')");
 
         var cell = row8.insertCell(3);
         var sys_monitor_sub = document.createElement("input");
@@ -975,9 +1052,10 @@ function addProduct(id)
         cell.appendChild(sys_monitor_sub);
         cell.setAttribute("colspan", "1");
         sys_monitor_sub.id = sys_monitor_sub_out;
-        document.getElementById(sys_monitor_sub_out).readOnly = true;
-        sys_monitor_sub.className = "sub vm-sub vm-sub" + vm_num;
-        
+        document.getElementById(sys_monitor_sub_out).setAttribute("readonly", "readonly");
+        sys_monitor_sub.className = "pa-sub vm-sub" + vm_num;
+        sys_monitor_sub.setAttribute("name", sys_monitor_sub.id);
+        sys_monitor_sub.setAttribute("size", 20);
         var row9 = table.insertRow(++rowCount);
 
         var cell = row9.insertCell(0);
@@ -992,10 +1070,12 @@ function addProduct(id)
         cell.appendChild(vmsubtotal);
         cell.setAttribute("colspan", "1");
         vmsubtotal.id = "vm-sub" + vm_num + "-total";
-        vmsubtotal.className = "sub";
-        document.getElementById(vmsubtotal.id).readOnly = true;
-        sub('vm-sub');
-        
+        //vmsubtotal.className = "sub";
+        vmsubtotal.setAttribute("name", vmsubtotal.id);
+        vmsubtotal.setAttribute("size", 20);
+        document.getElementById(vmsubtotal.id).setAttribute("readonly", "readonly");
+        sub('pa-sub');
+        sub('sub');
     } /* END SYSTEM MANAGEMENT */
     
     /* BEGIN COMMVAULT BACKUP */
@@ -1019,7 +1099,7 @@ function addProduct(id)
         remove.className = "remove-button";
         remove.setAttribute("value", "-");
         remove.setAttribute("rownumber", "row" + vm_num);
-        remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), 10)");
+        remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), 10, 'RAW')");
 
         var cell = row1.insertCell(1);
         var package = document.createElement("select"); 
@@ -1044,7 +1124,9 @@ function addProduct(id)
         package.setAttribute("sys", "sys" + vm_num);
         package.setAttribute("manager", "manager" + vm_num);
         package.setAttribute("vm-type", id);
+        package.setAttribute("name", package.id);
         package.setAttribute("onchange", "processPackage(document.getElementById(this.id).value, this.getAttribute('optionval'))");
+        package.setAttribute("value", "Standard 3-mo. Retention");
         
         var row2 = table.insertRow(++rowCount);
         var cell = row2.insertCell(0);
@@ -1068,7 +1150,9 @@ function addProduct(id)
         raw_qty.setAttribute("dest", "" + raw_sub_out);
         raw_qty.setAttribute("num", vm_num);
         raw_qty.setAttribute("raw-price", raw_price_val);
-        raw_qty.setAttribute("onchange", "getEstimate('raw', this.id, this.getAttribute('raw-price'), this.getAttribute('dest'),  this.getAttribute('num'))");
+        raw_qty.setAttribute("name", raw_qty.id);
+        raw_qty.setAttribute("size", 5);
+        raw_qty.setAttribute("onchange", "getEstimate('raw', this.id, this.getAttribute('raw-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'RAW')");
 
         var cell = row2.insertCell(3);
         var raw_sub = document.createElement("input");
@@ -1076,9 +1160,10 @@ function addProduct(id)
         cell.appendChild(raw_sub);
         cell.setAttribute("colspan", "1");
         raw_sub.id = raw_sub_out;
-        document.getElementById(raw_sub_out).readOnly = true;
-        raw_sub.className = "sub vm-sub vm-sub" + vm_num;
-        
+        document.getElementById(raw_sub_out).setAttribute("readonly", "readonly");
+        raw_sub.className = "backup-sub vm-sub" + vm_num;
+        raw_sub.setAttribute("name", raw_sub.id);
+        raw_sub.setAttribute("size", 20);
         var row3 = table.insertRow(++rowCount);
         var cell = row3.insertCell(0);
         var full = document.createTextNode("Full Backups Saved");                       
@@ -1101,7 +1186,9 @@ function addProduct(id)
         full_qty.setAttribute("dest", "" + full_sub_out);
         full_qty.setAttribute("num", vm_num);
         full_qty.setAttribute("full-price", full_price_val);
-        full_qty.setAttribute("onchange", "getEstimate('full', this.id, this.getAttribute('full-price'), this.getAttribute('dest'),  this.getAttribute('num'))");
+        full_qty.setAttribute("name", full_qty.id);
+        full_qty.setAttribute("size", 5);
+        full_qty.setAttribute("onchange", "getEstimate('full', this.id, this.getAttribute('full-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'RAW')");
 
         var cell = row3.insertCell(3);
         var full_sub = document.createElement("input");
@@ -1109,8 +1196,10 @@ function addProduct(id)
         cell.appendChild(full_sub);
         cell.setAttribute("colspan", "1");
         full_sub.id = full_sub_out;
-        document.getElementById(full_sub_out).readOnly = true;
-        full_sub.className = "sub vm-sub vm-sub" + vm_num;
+        document.getElementById(full_sub_out).setAttribute("readonly", "readonly");
+        full_sub.className = "backup-sub vm-sub" + vm_num;
+        full_sub.setAttribute("name", full_sub.id);
+        full_sub.setAttribute("size", 20);
         
         var row4 = table.insertRow(++rowCount);
         var cell = row4.insertCell(0);
@@ -1128,6 +1217,9 @@ function addProduct(id)
         cell.setAttribute("colspan", "2");
         monthlybackup_qty.id = monthlybackup_qty_in;
         monthlybackup_qty.className += " monthlybackup_qty userinput";
+        monthlybackup_qty.setAttribute("name", monthlybackup_qty.id);
+        monthlybackup_qty.setAttribute("size", 5);
+        monthlybackup_qty.setAttribute("onchange", "changeValue(this.id, this.value)");
         
         var row5 = table.insertRow(++rowCount);
         var cell = row5.insertCell(0);
@@ -1145,7 +1237,10 @@ function addProduct(id)
         cell.setAttribute("colspan", "2");
         durmonthlybackup_qty.id = durmonthlybackup_qty_in;
         durmonthlybackup_qty.className += " durmonthlybackup_qty userinput";
-
+        durmonthlybackup_qty.setAttribute("name", durmonthlybackup_qty.id);
+        durmonthlybackup_qty.setAttribute("size", 5);
+        durmonthlybackup_qty.setAttribute("onchange", "changeValue(this.id, this.value)");
+        
         var row6 = table.insertRow(++rowCount);
         var cell = row6.insertCell(0);
         var diff = document.createTextNode("Differentials/Incremental Backups Saved");                       
@@ -1168,7 +1263,9 @@ function addProduct(id)
         diff_qty.setAttribute("dest", "" + diff_sub_out);
         diff_qty.setAttribute("num", vm_num);
         diff_qty.setAttribute("diff-price", diff_price_val);
-        diff_qty.setAttribute("onchange", "getEstimate('diff', this.id, this.getAttribute('diff-price'), this.getAttribute('dest'),  this.getAttribute('num'))");
+        diff_qty.setAttribute("name", diff_qty.id);
+        diff_qty.setAttribute("size", 5);
+        diff_qty.setAttribute("onchange", "getEstimate('diff', this.id, this.getAttribute('diff-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'RAW')");
 
         var cell = row6.insertCell(3);
         var diff_sub = document.createElement("input");
@@ -1176,8 +1273,10 @@ function addProduct(id)
         cell.appendChild(diff_sub);
         cell.setAttribute("colspan", "1");
         diff_sub.id = diff_sub_out;
-        document.getElementById(diff_sub_out).readOnly = true;
-        diff_sub.className = "sub vm-sub vm-sub" + vm_num;
+        document.getElementById(diff_sub_out).setAttribute("readonly", "readonly");
+        diff_sub.className = "backup-sub vm-sub" + vm_num;
+        diff_sub.setAttribute("name", diff_sub.id);
+        diff_sub.setAttribute("size", 20);
         
         var row7 = table.insertRow(++rowCount);
         var cell = row7.insertCell(0);
@@ -1189,12 +1288,16 @@ function addProduct(id)
         var cell = row7.insertCell(1);
         var diffwk_qty = document.createElement("input");
         diffwk_qty.setAttribute("type", "text");
+        diffwk_qty.setAttribute("name", diffwk_qty.id);
         diffwk_qty_in = "diffwk-qty" + vm_num;
         diffwk_sub_out = "diffwk-sub" + vm_num;
         cell.appendChild(diffwk_qty);
         cell.setAttribute("colspan", "2");
         diffwk_qty.id = diffwk_qty_in;
         diffwk_qty.className += " diffwk_qty userinput";
+        diffwk_qty.setAttribute("name", diffwk_qty.id);
+        diffwk_qty.setAttribute("size", 5);
+        diffwk_qty.setAttribute("onchange", "changeValue(this.id, this.value)");
         
         var row8 = table.insertRow(++rowCount);
         var cell = row8.insertCell(0);
@@ -1212,6 +1315,9 @@ function addProduct(id)
         cell.setAttribute("colspan", "2");
         incwk_qty.id = incwk_qty_in;
         incwk_qty.className += " incwk_qty userinput";
+        incwk_qty.setAttribute("name", incwk_qty.id);
+        incwk_qty.setAttribute("size", 5);
+        incwk_qty.setAttribute("onchange", "changeValue(this.id, this.value)");
         
         var row9 = table.insertRow(++rowCount);
         var cell = row9.insertCell(0);
@@ -1229,11 +1335,14 @@ function addProduct(id)
         cell.setAttribute("colspan", "2");
         durdiffinc_qty.id = durdiffinc_qty_in;
         durdiffinc_qty.className += " durdiffinc_qty userinput";
+        durdiffinc_qty.setAttribute("name", durdiffinc_qty.id);
+        durdiffinc_qty.setAttribute("size", 5);
+        durdiffinc_qty.setAttribute("onchange", "changeValue(this.id, this.value)");
         
         var row10 = table.insertRow(++rowCount);
 
         var cell = row10.insertCell(0);
-        var subtext = document.createTextNode("Subtotal:");
+        var subtext = document.createTextNode("Subtotal");
         cell.appendChild(subtext);
         cell.setAttribute("colspan", "3");
         cell.className += " pad-bottom";
@@ -1244,25 +1353,28 @@ function addProduct(id)
         cell.appendChild(vmsubtotal);
         cell.setAttribute("colspan", "1");
         vmsubtotal.id = "vm-sub" + vm_num + "-total";
-        vmsubtotal.className = "sub";
-        document.getElementById(vmsubtotal.id).readOnly = true;
-        sub('vm-sub');
+        //vmsubtotal.className = "sub";
+        vmsubtotal.setAttribute("name", vmsubtotal.id);
+        vmsubtotal.setAttribute("size", 20);
         
+        document.getElementById(vmsubtotal.id).setAttribute("readonly", "readonly");
+        sub('backup-sub');
+        sub('sub');
         /* DEFAULT VALUES OF STANDARD 3 MONTH RETENTION */
-        document.getElementById('monthlybackup-qty' + vm_num).value = 1;
-        document.getElementById('monthlybackup-qty' + vm_num).readOnly = true;
+        document.getElementById('monthlybackup-qty' + vm_num).defaultValue = 1;
+        document.getElementById('monthlybackup-qty' + vm_num).setAttribute("readonly", "readonly");
     
-        document.getElementById('durmonthlybackup-qty' + vm_num).value = 3;
-        document.getElementById('durmonthlybackup-qty' + vm_num).readOnly = true;
+        document.getElementById('durmonthlybackup-qty' + vm_num).defaultValue = 3;
+        document.getElementById('durmonthlybackup-qty' + vm_num).setAttribute("readonly", "readonly");
 
-        document.getElementById('diffwk-qty' + vm_num).value = 1;
-        document.getElementById('diffwk-qty' + vm_num).readOnly = true;
+        document.getElementById('diffwk-qty' + vm_num).defaultValue = 1;
+        document.getElementById('diffwk-qty' + vm_num).setAttribute("readonly", "readonly");
 
-        document.getElementById('incwk-qty' + vm_num).value = 5;
-        document.getElementById('incwk-qty' + vm_num).readOnly = true;
+        document.getElementById('incwk-qty' + vm_num).defaultValue = 5;
+        document.getElementById('incwk-qty' + vm_num).setAttribute("readonly", "readonly");
 
-        document.getElementById('durdiffinc-qty' + vm_num).value = 6;
-        document.getElementById('durdiffinc-qty' + vm_num).readOnly = true;
+        document.getElementById('durdiffinc-qty' + vm_num).defaultValue = 3;
+        document.getElementById('durdiffinc-qty' + vm_num).setAttribute("readonly", "readonly");
         
     } /* END COMMVAULT BACKUP */
 } /* END ADDPRODUCT FUNCTION */
@@ -1272,9 +1384,9 @@ function addProduct(id)
  *             id - the id of the field
  *             price - price of the product
  *             dest - the id of the dest to output the result
- *             theclass - the class to which this field belongs for subtotaling
+ *             category - which category this belongs to... 
  */
-function getEstimate(type, id, price, dest, num)
+function getEstimate(type, id, price, dest, num, category)
 {
     var item = document.getElementById(id);
     var subtotal = document.getElementById(dest);
@@ -1284,25 +1396,54 @@ function getEstimate(type, id, price, dest, num)
     } else if (validate(type, id, dest)) {
         if (type == 'sys-man' && document.getElementById('psa' + num).value == 'Variable') {
             document.getElementById(dest).value = 0;
-            document.getElementById('vm-sub' + num + '-total').value = 0;
-            sub('vm-sub');
+            document.getElementById('vm-sub' + num + '-total').defaultValue = 0;
+            sub('pa-sub');
             
             document.getElementById(dest).value = 'Variable';
-            document.getElementById('vm-sub' + num + '-total').value = 'Variable';
+            document.getElementById('vm-sub' + num + '-total').defaultValue = 'Variable';
         } else {
-            document.getElementById(dest).value = "$" + (parseFloat(document.getElementById(id).value) * price).toFixed(2);
+            document.getElementById(dest).defaultValue = "$" + (parseFloat(document.getElementById(id).value) * price).toFixed(2);
         }
         if (type != 'cl-str' && type != 'consult' && type != 'sp-consult') {
             sub('vm-sub' + num);
         }
-        sub('vm-sub');
         
-        if (type == 'sys-man' && document.getElementById('psa' + num).value == 'Variable') {
-            document.getElementById('vm-sub' + num + '-total').value = 'Variable';
+        if (type == 'sys-man' && document.getElementById('psa' + num).defaultValue == 'Variable') {
+            document.getElementById('vm-sub' + num + '-total').defaultValue = 'Variable';
         }
-        
+        console.log("Get estimate: " + category);
+        switch (category) {
+        case 'ST_VM':
+        case 'HS_VM':
+            var theclass = 'vm-sub';
+            break;
+        case 'CL_STR':
+        case 'PR_STR':
+        case 'PR_CON':
+            var theclass = 'str-sub';
+            break;
+        case 'DESK':
+        case 'SYSTEMS':
+        case 'STORAGE':
+            var theclass = 'consult-sub';
+            break;
+        case 'SITE':
+        case 'SUPPORT':
+            var theclass = 'sp-sub';
+            break;
+        case 'SYS_MAN':
+            var theclass = 'pa-sub';
+            break;
+        case 'RAW':
+            var theclass = 'backup-sub';
+            break;
+        }
+        sub(theclass);
+        sub('sub');
         //sub('vm-sub');
     }
+    document.getElementById(dest).defaultValue = document.getElementById(dest).value;
+    document.getElementById(id).defaultValue = document.getElementById(id).value;
 }
 
 /* Function Name: sub
@@ -1313,6 +1454,7 @@ function getEstimate(type, id, price, dest, num)
 function sub(theclass)
 {
     var subarray = document.getElementsByClassName(theclass);
+    console.log("Sub: " + theclass);
     var valtext;
     var val;
     var sum = 0;
@@ -1326,7 +1468,7 @@ function sub(theclass)
             }
         }  
     }
-    document.getElementById(theclass + "-total").value = "$" + sum.toFixed(2);
+    document.getElementById(theclass + "-total").defaultValue = "$" + sum.toFixed(2);
 }
             
 /* Function Name: validate
@@ -1380,16 +1522,61 @@ function validate(type, id, dest)
  * Parameters: rowNum - the index of the row to delete
  * Result: Deletes a product and its associated rows. Recalculates subtotals
  */
-function removeProduct(rowNum, deleteNum)
+function removeProduct(rowNum, deleteNum, category)
 {
-    var thetable = document.getElementById("quote-table");
+    console.log("Remove product: " + category);
+    switch (category) {
+        case 'ST_VM':
+        case 'HS_VM':
+            var table = document.getElementById('vm-table');
+            var totals = "vm-table-totals";
+            var theclass = "vm-sub";
+            break;
+        case 'CL_STR':
+        case 'PR_STR':
+        case 'PR_CON':
+            var table = document.getElementById('str-table');
+            var totals = "str-table-totals";
+            var theclass = "str-sub";
+            break;
+        case 'DESK':
+        case 'SYSTEMS':
+        case 'STORAGE':
+            var table = document.getElementById('consult-table');
+            var totals = "consult-table-totals";
+            var theclass = "consult-sub";
+            break;
+        case 'SITE':
+        case 'SUPPORT':
+            var table = document.getElementById('sp-table');
+            var totals = "sp-table-totals";
+            var theclass = "sp-sub";
+            break;
+        case 'SYS_MAN':
+            var table = document.getElementById('pa-table');
+            var totals = "pa-table-totals";
+            var theclass = "pa-sub";
+            break;
+        case 'RAW':
+            var table = document.getElementById('backup-table');
+            var totals = "backup-table-totals";
+            var theclass = "backup-sub";
+            break;
+    }
     var row = document.getElementById(rowNum);
     var index = row.rowIndex;
     for(i = 0, j = index; i < deleteNum; i++) {
-        thetable.deleteRow(j);
+        table.deleteRow(j);
     }
 
-    sub('vm-sub');
+    sub(theclass);
+    sub('sub');
+    
+    if(table.rows.length - 1 === 0) {
+        table.setAttribute("hidden", "hidden");
+        document.getElementById(totals).setAttribute("hidden", "hidden");
+    }
+    
 }
             
 /* Function Name: processOS
@@ -1403,7 +1590,6 @@ function removeProduct(rowNum, deleteNum)
  */
 function processOS(id, o, system, manager, num) {
     var name; 
-                
     if(o == 'Red Hat 6 64-bit') {
         name = 'RedHat';
     } else {
@@ -1412,20 +1598,21 @@ function processOS(id, o, system, manager, num) {
                 
     /* determines the type of system management */
     if((o == 'Windows' || o == 'Red Hat 6 64-bit') && id != 'HS_VM') {
-        document.getElementById(system).value = "Included";
+        document.getElementById(system).defaultValue = "Included";
     } else {
-        document.getElementById(system).value = "User-managed OR Added Premium (Contact SDSC for details)";
+        document.getElementById(system).defaultValue = "User-managed OR Added Premium (Contact SDSC for details)";
     }
                 
     /* determines the manager */
     if(o != 'Red Hat 6 64-bit' || id == 'HS_VM') {
-        document.getElementById(manager).value = "Brian Balderston";
+        document.getElementById(manager).defaultValue = "Brian Balderston";
     } else {
-        document.getElementById(manager).value = "Andrew Ferbert";
+        document.getElementById(manager).defaultValue = "Andrew Ferbert";
     }
 
-    document.getElementById("os" + num).value = o;
-    document.getElementById("" + name + num).setAttribute("selected", "selected");
+    document.getElementById("os" + num).defaultValue = o;
+    document.getElementById("os" + num).defaultSelected = o;
+    document.getElementById("os" + num).setAttribute("value", o);
 }
 
 function changePrice(num, originalval, doubleval)
@@ -1436,13 +1623,16 @@ function changePrice(num, originalval, doubleval)
         document.getElementById('cl-str-price' + num).value = '$' + doubleval + '/TB';
         document.getElementById('Yes' + num).setAttribute("selected", "selected");
         document.getElementById("cl-str-qty" + num).setAttribute("cl-str-price", doubleval);
-        getEstimate('cl-str', 'cl-str-qty' + num, doubleval, 'cl-str-sub' + num, num);
+        getEstimate('cl-str', 'cl-str-qty' + num, doubleval, 'cl-str-sub' + num, num, 'CL_STR');
     } else if (val == 'No') {
         document.getElementById('cl-str-price' + num).value = '$' + originalval + '/TB';
         document.getElementById('No' + num).setAttribute("selected", "selected");
         document.getElementById("cl-str-qty" + num).setAttribute("cl-str-price", originalval);
-        getEstimate('cl-str', 'cl-str-qty' + num, originalval, 'cl-str-sub' + num, num);
+        getEstimate('cl-str', 'cl-str-qty' + num, originalval, 'cl-str-sub' + num, num, 'CL_STR');
     }
+    
+    document.getElementById('dualoptions' + num).setAttribute("value", val);
+    
 }
 
 /* Function Name: processPackage()
@@ -1468,22 +1658,26 @@ function processPackage(o, num)
         optionid = "sixmonth" + num;
     }
     
-    document.getElementById('monthlybackup-qty' + num).value = 1;
-    document.getElementById('monthlybackup-qty' + num).readOnly = isReadOnly;
+    document.getElementById('monthlybackup-qty' + num).defaultValue = 1;
+    document.getElementById('durmonthlybackup-qty' + num).defaultValue = duration;
+    document.getElementById('diffwk-qty' + num).defaultValue = 1;
+    document.getElementById('incwk-qty' + num).defaultValue = 5;
+    document.getElementById('durdiffinc-qty' + num).defaultValue = duration;
     
-    document.getElementById('durmonthlybackup-qty' + num).value = duration;
-    document.getElementById('durmonthlybackup-qty' + num).readOnly = isReadOnly;
-    
-    document.getElementById('diffwk-qty' + num).value = 1;
-    document.getElementById('diffwk-qty' + num).readOnly = isReadOnly;
-    
-    document.getElementById('incwk-qty' + num).value = 5;
-    document.getElementById('incwk-qty' + num).readOnly = isReadOnly;
-    
-    document.getElementById('durdiffinc-qty' + num).value = duration;
-    document.getElementById('durdiffinc-qty' + num).readOnly = isReadOnly;
-    
-    document.getElementById(optionid).setAttribute("selected", "selected");
+    if (isReadOnly) {
+        document.getElementById('monthlybackup-qty' + num).setAttribute("readonly", "readonly");
+        document.getElementById('durmonthlybackup-qty' + num).setAttribute("readonly", "readonly");
+        document.getElementById('diffwk-qty' + num).setAttribute("readonly", "readonly");
+        document.getElementById('incwk-qty' + num).setAttribute("readonly", "readonly");
+        document.getElementById('durdiffinc-qty' + num).setAttribute("readonly", "readonly");
+    } else {
+        document.getElementById('monthlybackup-qty' + num).removeAttribute("readonly");
+        document.getElementById('durmonthlybackup-qty' + num).removeAttribute("readonly");
+        document.getElementById('diffwk-qty' + num).removeAttribute("readonly");
+        document.getElementById('incwk-qty' + num).removeAttribute("readonly");
+        document.getElementById('durdiffinc-qty' + num).removeAttribute("readonly");
+    }
+    document.getElementById("package" + num).setAttribute("value", o);
 }
 
 /* Function Name: processPrice()
@@ -1497,13 +1691,13 @@ function processPrice(o, num)
 {
     // user has chosen standard option
     if (o == 'Variable') {
-        document.getElementById('sys-man-sub' + num).value = 'Variable';
-        document.getElementById('vm-sub' + num + '-total').value = 'Variable';
+        document.getElementById('sys-man-sub' + num).defaultValue = 'Variable';
+        document.getElementById('vm-sub' + num + '-total').defaultValue = 'Variable';
         document.getElementById('Variable' + num).setAttribute("selected", "selected");
     } else if (o == 'Standard - $' + sys_man_price_val + '/month') {
-        getEstimate('sys-man', 'sys-man-qty' + num, sys_man_price_val, 'sys-man-sub' + num, num);
-        document.getElementById('Standard' + num).setAttribute("selected", "selected");
+        getEstimate('sys-man', 'sys-man-qty' + num, sys_man_price_val, 'sys-man-sub' + num, num, 'SYS_MAN');
     }
+    document.getElementById("psa" + num).setAttribute("value", o);
 }
 
 /* Function Name: changeName()
@@ -1513,4 +1707,13 @@ function processPrice(o, num)
  */
 function changeName(num)
 {
+}
+
+/* Function Name: changeValue()
+ * Parameters: id - the id of element
+ * Description: Changes the value so the PDF can print it
+ */
+function changeValue(id, value)
+{
+    document.getElementById(id).defaultValue = value;
 }
