@@ -19,7 +19,7 @@ body
     height: 20px;
     margin-bottom: 5px;
     padding: 5px;
-    background-color: #FFABAB;
+    background-color: #D6635A;
     display: inline-block;
     vertical-align: top;
     margin-right: 25px;
@@ -75,7 +75,8 @@ input[type="text"].system-name
 
 input[type="text"], .cpu_qty
 {
-    width: 50px;
+    width: 75%;
+    margin: 0 auto;
 }
 
 .sub
@@ -92,7 +93,7 @@ input[readonly].varprice
 
 input[readonly]
 {
-    width: 400px;
+    width: 100%;
     border: 0px;
 }
 
@@ -110,31 +111,26 @@ strong
     font-size: 12px;
 }
 
-#vm-sub-total
+.subtotal-text
 {
     vertical-align: top;
     font-weight: bold;
     font-size: 18px;
 }
 
-#quote-table td
+#vm-table td, #str-table td, #pa-table td, #backup-table td, #consult-table td, #sp-table td
 {
-    padding: 0 16px;
+    /*padding: 0 14px;*/
     font-size: 14px;
 }
 
-#quote-table
+#vm-table, #str-table, #pa-table, #backup-table, #consult-table, #sp-table
 {
     background-color: #fff;
-    width: 900px
+    width: 900px;
 }
 
-td.pad-bottom
-{
-    padding-bottom: 20px !important;
-}
-
-#quote-table tr:first-child > td
+#vm-table tr:first-child > td, #str-table tr:first-child > td, #backup-table tr:first-child > td, #consult-table tr:first-child > td, #sp-table tr:first-child > td, #pa-table tr:first-child > td
 {
     background-color: #ccc; 
     font-weight: bold;
@@ -142,6 +138,12 @@ td.pad-bottom
     padding-bottom: 10px;
     line-height: 20px;
 }
+
+td.pad-bottom
+{
+    padding-bottom: 20px !important;
+}
+
 table td
 {
     background: #fff;
@@ -153,13 +155,12 @@ table td
     font-size: 10px;
 }
 
-table#totals
+/*table#totals
 {
     border: 0px;
-    border-color: #fff;
     width: 900px;
     margin-top: 20px;
-}
+}*/
 
 #quote-content
 {
@@ -170,4 +171,14 @@ table#totals
 {
     margin-top: 30px;
     font-size: 20px;
+}
+
+#totals td:first-child
+{
+    width: 650px;
+}
+
+.userinput input
+{
+    margin: 0 auto;
 }

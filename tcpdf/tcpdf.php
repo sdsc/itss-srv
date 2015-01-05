@@ -19221,8 +19221,12 @@ Putting 1 is equivalent to putting 0 and calling Ln() just after. Default value:
 					case 'text': {
 						if (isset($value)) {
 							$opt['v'] = $value;
-						}
-						$this->TextField($name, $w, $h, $prop, $opt, '', '', false);
+                            $this->Write($h, $value, '', false, '', false, 0, false, false, 0, 0, '');
+						} else {
+                            $this->Write($h, '', '', false, '', false, 0, false, false, 0, 0, '');
+                        }
+						//$this->TextField($name, $w, $h, $prop, $opt, '', '', false);
+                        
 						break;
 					}
 					case 'password': {

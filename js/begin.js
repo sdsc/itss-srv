@@ -84,6 +84,10 @@ $(document).ready(function() {
             child2.parentNode.removeChild(child2);
         }
         
+        var child = document.getElementById('totals');
+        if (child.getAttribute("hidden") == "hidden") {
+            child.parentNode.removeChild(child);
+        }
         document.getElementById('formcode').value = $("#quote-content").html();
     }); 
     
@@ -117,5 +121,6 @@ $(document).ready(function() {
     document.getElementById('consult-table-totals').setAttribute("hidden", "hidden");
     document.getElementById('sp-table').setAttribute("hidden", "hidden");
     document.getElementById('sp-table-totals').setAttribute("hidden", "hidden");
+    document.getElementById('totals').setAttribute("hidden", "hidden");
     
 });

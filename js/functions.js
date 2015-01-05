@@ -33,6 +33,8 @@ var non_os_vendor_price_val = 23.00;
 var local_admin_access_price_val = 34.00;
 var sys_monitor_price_val = 142.00;
 
+var numProducts = 0; // number of products on table currently
+
 function addProduct(id)
 {
     switch (id) {
@@ -73,6 +75,10 @@ function addProduct(id)
         totals.removeAttribute("hidden");
     }
     ++vm_num; //increase number of vm's
+    
+    if (numProducts++ === 0) {
+        document.getElementById('totals').removeAttribute("hidden");
+    }
     
     /* ALL OF THIS IS FOR VM'S!!! */
     if (id == 'ST_VM' || id == 'HS_VM') {
@@ -150,7 +156,7 @@ function addProduct(id)
         price.value = "$" + slice_price;
         price.setAttribute("size", 20);
         price.setAttribute("readonly", "readonly");
-        price.defaultValue = price.value;
+        price.setAttribute("value", price.value);
         
         var row2 = table.insertRow(++rowCount);
         var cell = row2.insertCell(0);
@@ -333,9 +339,9 @@ function addProduct(id)
 
         /* Default values for System Management */
         if(id == 'ST_VM') {
-            document.getElementById(sysmanagement_text.id).defaultValue = "Included";  
+            document.getElementById(sysmanagement_text.id).setAttribute("value", "Included");  
         } else {
-            document.getElementById(sysmanagement_text.id).defaultValue = "User-managed OR Added Premium (Contact SDSC for details)";
+            document.getElementById(sysmanagement_text.id).setAttribute("value", "User-managed OR Added Premium (Contact SDSC for details)");
         }
 
         var row7 = table.insertRow(++rowCount);
@@ -355,7 +361,7 @@ function addProduct(id)
         themanager.setAttribute("size", 30);
         sysmanagement_text.className = "info";
         document.getElementById(themanager.id).setAttribute("readonly", "readonly");
-        document.getElementById(themanager.id).defaultValue = "Brian Balderston";
+        document.getElementById(themanager.id).setAttribute("value", "Brian Balderston");
 
         var row8 = table.insertRow(++rowCount);
 
@@ -375,7 +381,7 @@ function addProduct(id)
         vmsubtotal.setAttribute("name", vmsubtotal.id);
         //vmsubtotal.className = "sub";
         document.getElementById(vmsubtotal.id).setAttribute("readonly", "readonly");
-        document.getElementById(vmsubtotal.id).defaultValue = "$" + slice_price;
+        document.getElementById(vmsubtotal.id).setAttribute("value", "$" + slice_price);
         sub('vm-sub');
         sub('sub');
             
@@ -1361,19 +1367,19 @@ function addProduct(id)
         sub('backup-sub');
         sub('sub');
         /* DEFAULT VALUES OF STANDARD 3 MONTH RETENTION */
-        document.getElementById('monthlybackup-qty' + vm_num).defaultValue = 1;
+        document.getElementById('monthlybackup-qty' + vm_num).setAttribute("value", "1");
         document.getElementById('monthlybackup-qty' + vm_num).setAttribute("readonly", "readonly");
     
-        document.getElementById('durmonthlybackup-qty' + vm_num).defaultValue = 3;
+        document.getElementById('durmonthlybackup-qty' + vm_num).setAttribute("value", "3");
         document.getElementById('durmonthlybackup-qty' + vm_num).setAttribute("readonly", "readonly");
 
-        document.getElementById('diffwk-qty' + vm_num).defaultValue = 1;
+        document.getElementById('diffwk-qty' + vm_num).setAttribute("value", "1");
         document.getElementById('diffwk-qty' + vm_num).setAttribute("readonly", "readonly");
 
-        document.getElementById('incwk-qty' + vm_num).defaultValue = 5;
+        document.getElementById('incwk-qty' + vm_num).setAttribute("value", "5");
         document.getElementById('incwk-qty' + vm_num).setAttribute("readonly", "readonly");
 
-        document.getElementById('durdiffinc-qty' + vm_num).defaultValue = 3;
+        document.getElementById('durdiffinc-qty' + vm_num).setAttribute("value", "3");
         document.getElementById('durdiffinc-qty' + vm_num).setAttribute("readonly", "readonly");
         
     } /* END COMMVAULT BACKUP */
@@ -1390,28 +1396,28 @@ function getEstimate(type, id, price, dest, num, category)
 {
     var item = document.getElementById(id);
     var subtotal = document.getElementById(dest);
-            
+    
     if (item.value === null || item.value === "" || isNaN(item.value)) {
-        subtotal.value = "";
+        subtotal.setAttribute("value", "");
     } else if (validate(type, id, dest)) {
         if (type == 'sys-man' && document.getElementById('psa' + num).value == 'Variable') {
             document.getElementById(dest).value = 0;
-            document.getElementById('vm-sub' + num + '-total').defaultValue = 0;
+            document.getElementById('vm-sub' + num + '-total').setAttribute("value", "0");
             sub('pa-sub');
             
             document.getElementById(dest).value = 'Variable';
-            document.getElementById('vm-sub' + num + '-total').defaultValue = 'Variable';
+            document.getElementById('vm-sub' + num + '-total').setAttribute("value", "Variable");
         } else {
-            document.getElementById(dest).defaultValue = "$" + (parseFloat(document.getElementById(id).value) * price).toFixed(2);
+            document.getElementById(dest).setAttribute("value", "$" + (parseFloat(document.getElementById(id).value) * price).toFixed(2));
+            
         }
         if (type != 'cl-str' && type != 'consult' && type != 'sp-consult') {
             sub('vm-sub' + num);
         }
         
-        if (type == 'sys-man' && document.getElementById('psa' + num).defaultValue == 'Variable') {
-            document.getElementById('vm-sub' + num + '-total').defaultValue = 'Variable';
+        if (type == 'sys-man' && document.getElementById('psa' + num).value == 'Variable') {
+            document.getElementById('vm-sub' + num + '-total').setAttribute("value", 'Variable');
         }
-        console.log("Get estimate: " + category);
         switch (category) {
         case 'ST_VM':
         case 'HS_VM':
@@ -1442,8 +1448,8 @@ function getEstimate(type, id, price, dest, num, category)
         sub('sub');
         //sub('vm-sub');
     }
-    document.getElementById(dest).defaultValue = document.getElementById(dest).value;
-    document.getElementById(id).defaultValue = document.getElementById(id).value;
+    document.getElementById(dest).setAttribute("value", document.getElementById(dest).value);
+    document.getElementById(id).setAttribute("value", document.getElementById(id).value);
 }
 
 /* Function Name: sub
@@ -1468,7 +1474,7 @@ function sub(theclass)
             }
         }  
     }
-    document.getElementById(theclass + "-total").defaultValue = "$" + sum.toFixed(2);
+    document.getElementById(theclass + "-total").setAttribute("value", "$" + sum.toFixed(2));
 }
             
 /* Function Name: validate
@@ -1524,7 +1530,6 @@ function validate(type, id, dest)
  */
 function removeProduct(rowNum, deleteNum, category)
 {
-    console.log("Remove product: " + category);
     switch (category) {
         case 'ST_VM':
         case 'HS_VM':
@@ -1568,13 +1573,17 @@ function removeProduct(rowNum, deleteNum, category)
     for(i = 0, j = index; i < deleteNum; i++) {
         table.deleteRow(j);
     }
-
+    
     sub(theclass);
     sub('sub');
     
     if(table.rows.length - 1 === 0) {
         table.setAttribute("hidden", "hidden");
         document.getElementById(totals).setAttribute("hidden", "hidden");
+    }
+    
+    if (--numProducts === 0) {
+        document.getElementById('totals').setAttribute("hidden", "hidden");
     }
     
 }
@@ -1598,16 +1607,16 @@ function processOS(id, o, system, manager, num) {
                 
     /* determines the type of system management */
     if((o == 'Windows' || o == 'Red Hat 6 64-bit') && id != 'HS_VM') {
-        document.getElementById(system).defaultValue = "Included";
+        document.getElementById(system).setAttribute("value", "Included");
     } else {
-        document.getElementById(system).defaultValue = "User-managed OR Added Premium (Contact SDSC for details)";
+        document.getElementById(system).setAttribute("value", "User-managed OR Added Premium (Contact SDSC for details)");
     }
                 
     /* determines the manager */
     if(o != 'Red Hat 6 64-bit' || id == 'HS_VM') {
-        document.getElementById(manager).defaultValue = "Brian Balderston";
+        document.getElementById(manager).setAttribute("value", "Brian Balderston");
     } else {
-        document.getElementById(manager).defaultValue = "Andrew Ferbert";
+        document.getElementById(manager).setAttribute("value", "Andrew Ferbert");
     }
 
     document.getElementById("os" + num).defaultValue = o;
@@ -1658,11 +1667,11 @@ function processPackage(o, num)
         optionid = "sixmonth" + num;
     }
     
-    document.getElementById('monthlybackup-qty' + num).defaultValue = 1;
-    document.getElementById('durmonthlybackup-qty' + num).defaultValue = duration;
-    document.getElementById('diffwk-qty' + num).defaultValue = 1;
-    document.getElementById('incwk-qty' + num).defaultValue = 5;
-    document.getElementById('durdiffinc-qty' + num).defaultValue = duration;
+    document.getElementById('monthlybackup-qty' + num).setAttribute("value", "1");
+    document.getElementById('durmonthlybackup-qty' + num).setAttribute("value", duration);
+    document.getElementById('diffwk-qty' + num).setAttribute("value", "1");
+    document.getElementById('incwk-qty' + num).setAttribute("value", "5");
+    document.getElementById('durdiffinc-qty' + num).setAttribute("value", duration);
     
     if (isReadOnly) {
         document.getElementById('monthlybackup-qty' + num).setAttribute("readonly", "readonly");
@@ -1691,8 +1700,8 @@ function processPrice(o, num)
 {
     // user has chosen standard option
     if (o == 'Variable') {
-        document.getElementById('sys-man-sub' + num).defaultValue = 'Variable';
-        document.getElementById('vm-sub' + num + '-total').defaultValue = 'Variable';
+        document.getElementById('sys-man-sub' + num).setAttribute("value", 'Variable');
+        document.getElementById('vm-sub' + num + '-total').setAttribute("value", 'Variable');
         document.getElementById('Variable' + num).setAttribute("selected", "selected");
     } else if (o == 'Standard - $' + sys_man_price_val + '/month') {
         getEstimate('sys-man', 'sys-man-qty' + num, sys_man_price_val, 'sys-man-sub' + num, num, 'SYS_MAN');
@@ -1715,5 +1724,5 @@ function changeName(num)
  */
 function changeValue(id, value)
 {
-    document.getElementById(id).defaultValue = value;
+    document.getElementById(id).setAttribute("value", value);
 }
