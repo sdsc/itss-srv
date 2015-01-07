@@ -8,11 +8,11 @@ body
     font-family: Arial;
 }
 
-.content
+/*.content
 {
     margin: 0 auto;
     width: 950px;
-}
+}*/
 .vm-services
 {
     width: 400px;
@@ -75,7 +75,7 @@ input[type="text"].system-name
 
 input[type="text"], .cpu_qty
 {
-    width: 75%;
+    width: 55%;
     margin: 0 auto;
 }
 
@@ -165,6 +165,14 @@ table td
 #quote-content
 {
     background: #fff;
+    display: inline-block;
+}
+
+#product-col
+{
+    display: inline-block;
+    width: 480px;
+    vertical-align: top;
 }
 
 #table-title
@@ -181,4 +189,10 @@ table td
 .userinput input
 {
     margin: 0 auto;
+}
+
+.ui-tooltip
+{
+    font-size: 12px;
+    font-family: Arial;
 }

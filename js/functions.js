@@ -116,6 +116,7 @@ function addProduct(id)
         var os = document.createElement("select"); 
         os.setAttribute("name", "os" + vm_num);
         os.setAttribute("value", "Windows");
+        os.setAttribute("title", "Choose an operating system for your VM");
         /* add all operating systems options */
         option = new Option("Windows", "Windows", false, false);
         option.id = "Windows" + vm_num;
@@ -168,6 +169,7 @@ function addProduct(id)
         var cpu_price = document.createTextNode("$" + cpu_price_val + "/CPU");
         cell.appendChild(cpu_price);
         cell.setAttribute("colspan", "1");
+        
         var cell = row2.insertCell(2);
         var cpu_qty = document.createElement("input");
         cpu_qty.setAttribute("type", "text");
@@ -177,13 +179,14 @@ function addProduct(id)
         cell.setAttribute("colspan", "1");
         cpu_qty.id = cpu_qty_in;
         cpu_qty.setAttribute("name", cpu_qty_in);
+        cpu_qty.setAttribute("title", "Enter a whole number 0 to 11");
         cpu_qty.className += " cpu_qty userinput";
         cpu_qty.setAttribute("dest", "" + cpu_sub_out);
         cpu_qty.setAttribute("num", vm_num);
         cpu_qty.setAttribute("cpu-price", cpu_price_val);
         cpu_qty.setAttribute("size", 5);
         cpu_qty.setAttribute("onchange", "getEstimate('cpu', this.id, this.getAttribute('cpu-price'), this.getAttribute('dest'), this.getAttribute('num'), 'ST_VM')");
-
+        
         var cell = row2.insertCell(3);
         var cpu_sub = document.createElement("input");
         cpu_sub.setAttribute("type", "text");
@@ -214,6 +217,7 @@ function addProduct(id)
         cell.setAttribute("colspan", "1");
         mem_qty.id = mem_qty_in;
         mem_qty.setAttribute("name", mem_qty_in);
+        mem_qty.setAttribute("title", "Enter a whole number 0 to 190");
         mem_qty.className += " userinput";
         mem_qty.setAttribute("dest", mem_sub_out);
         mem_qty.setAttribute("num", vm_num);
@@ -261,7 +265,24 @@ function addProduct(id)
             str_qty.setAttribute("str-price", str_price_val);
             str_qty.setAttribute("size", 5);
             str_qty.setAttribute("onchange", "getEstimate('silver', this.id, this.getAttribute('str-price'), this.getAttribute('dest'), this.getAttribute('num'), 'ST_VM')");
+            var str_units = document.createElement("select");
+            str_units.setAttribute("name", "str-units" + vm_num);
+            str_units.setAttribute("value", "TB");
+            str_units.setAttribute("title", "Choose the units");
+            str_units.setAttribute("num", vm_num);
+            str_units.id = "str-units" + vm_num;
+            
+            /* add all unit options */
+            option = new Option("TB", "TB", false, false);
+            option.id = "TB" + vm_num;
+            str_units.appendChild(option);
 
+            option = new Option("GB", "GB", false, false);
+            option.id = "GB" + vm_num;
+            str_units.appendChild(option);
+            str_units.setAttribute("onchange", "changeUnits(this.id, this.value, this.getAttribute('num'), 'str')");
+            cell.appendChild(str_units);
+            
             var cell = row4.insertCell(3);
             var str_sub = document.createElement("input");
             str_sub.setAttribute("type", "text");
@@ -272,7 +293,9 @@ function addProduct(id)
             str_sub.setAttribute("size", 20);
             document.getElementById(str_sub_out).setAttribute("readonly", "readonly");
             str_sub.className = "vm-sub vm-sub" + vm_num;
-        } else if (id == 'HS_VM') {
+        } 
+        
+        else if (id == 'HS_VM') {
             var cell = row4.insertCell(0);
             var alert = document.createTextNode("Silver storage is unavailable for High Security VMs.");
             cell.appendChild(alert);
@@ -307,6 +330,24 @@ function addProduct(id)
         san_qty.setAttribute("san-price", san_price_val);
         san_qty.setAttribute("size", 5);
         san_qty.setAttribute("onchange", "getEstimate('gold', this.id, this.getAttribute('san-price'), this.getAttribute('dest'), this.getAttribute('num'), 'ST_VM')");
+        
+        var san_units = document.createElement("select");
+        san_units.setAttribute("name", "san-units" + vm_num);
+        san_units.setAttribute("value", "TB");
+        san_units.setAttribute("title", "Choose the units");
+        san_units.setAttribute("num", vm_num);
+        san_units.id = "san-units" + vm_num;
+        
+        /* add all unit options */
+        option = new Option("TB", "TB", false, false);
+        option.id = "TB" + vm_num;
+        san_units.appendChild(option);
+
+        option = new Option("GB", "GB", false, false);
+        option.id = "GB" + vm_num;
+        san_units.appendChild(option);
+        san_units.setAttribute("onchange", "changeUnits(this.id, this.value, this.getAttribute('num'), 'san')");
+        cell.appendChild(san_units);
 
         var cell = row5.insertCell(3);
         var san_sub = document.createElement("input");
@@ -434,6 +475,24 @@ function addProduct(id)
         cl_str_qty.setAttribute("name", cl_str_qty.id);
         cl_str_qty.setAttribute("size", 5);
         cl_str_qty.setAttribute("onchange", "getEstimate('cl-str', this.id, this.getAttribute('cl-str-price'), this.getAttribute('dest'), this.getAttribute('num'), 'CL_STR')");
+        
+        var cl_units = document.createElement("select");
+        cl_units.setAttribute("name", "cl-units" + vm_num);
+        cl_units.setAttribute("value", "TB");
+        cl_units.setAttribute("title", "Choose the units");
+        cl_units.setAttribute("num", vm_num);
+        cl_units.id = "cl-units" + vm_num;
+        
+        /* add all unit options */
+        option = new Option("TB", "TB", false, false);
+        option.id = "TB" + vm_num;
+        cl_units.appendChild(option);
+
+        option = new Option("GB", "GB", false, false);
+        option.id = "GB" + vm_num;
+        cl_units.appendChild(option);
+        cl_units.setAttribute("onchange", "changeUnits(this.id, this.value, this.getAttribute('num'), 'cl')");
+        cell.appendChild(cl_units);
 
         var cell = row1.insertCell(3);
         var cl_str_sub = document.createElement("input");
@@ -483,9 +542,11 @@ function addProduct(id)
         
         if(id == 'PR_STR') {
             var cl_str_price_val = 45.74;
+            var cl_str_price_string = "$" + cl_str_price_val + "/TB";
             var prod_name = "Project Storage";
         } else {
             var cl_str_price_val = 782.11;
+            var cl_str_price_string = "$" + cl_str_price_val + "/pair";
             var prod_name = "Project Condo";
         }
         row1 = table.insertRow(rowCount);
@@ -506,7 +567,7 @@ function addProduct(id)
         remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), 1, 'CL_STR')");
         
         var cell = row1.insertCell(1);
-        var cl_str_price = document.createTextNode("$" + cl_str_price_val + "/TB");
+        var cl_str_price = document.createTextNode(cl_str_price_string);
         cell.appendChild(cl_str_price);
         cell.setAttribute("colspan", "1");
         
@@ -525,6 +586,26 @@ function addProduct(id)
         cl_str_qty.setAttribute("size", 5);
         cl_str_qty.setAttribute("cl-str-price", cl_str_price_val);
         cl_str_qty.setAttribute("onchange", "getEstimate('cl-str', this.id, this.getAttribute('cl-str-price'), this.getAttribute('dest'), this.getAttribute('num'), 'CL_STR')");
+        
+        if (id == 'PR_STR') {
+            var pr_units = document.createElement("select");
+            pr_units.setAttribute("name", "pr-units" + vm_num);
+            pr_units.setAttribute("value", "TB");
+            pr_units.setAttribute("title", "Choose the units");
+            pr_units.setAttribute("num", vm_num);
+            pr_units.id = "pr-units" + vm_num;
+            
+            /* add all unit options */
+            option = new Option("TB", "TB", false, false);
+            option.id = "TB" + vm_num;
+            pr_units.appendChild(option);
+
+            option = new Option("GB", "GB", false, false);
+            option.id = "GB" + vm_num;
+            pr_units.appendChild(option);
+            pr_units.setAttribute("onchange", "changeUnits(this.id, this.value, this.getAttribute('num'), 'pr')");
+            cell.appendChild(pr_units);
+        }
 
         var cell = row1.insertCell(3);
         var cl_str_sub = document.createElement("input");
@@ -1409,7 +1490,6 @@ function getEstimate(type, id, price, dest, num, category)
             document.getElementById('vm-sub' + num + '-total').setAttribute("value", "Variable");
         } else {
             document.getElementById(dest).setAttribute("value", "$" + (parseFloat(document.getElementById(id).value) * price).toFixed(2));
-            
         }
         if (type != 'cl-str' && type != 'consult' && type != 'sp-consult') {
             sub('vm-sub' + num);
@@ -1460,7 +1540,6 @@ function getEstimate(type, id, price, dest, num, category)
 function sub(theclass)
 {
     var subarray = document.getElementsByClassName(theclass);
-    console.log("Sub: " + theclass);
     var valtext;
     var val;
     var sum = 0;
@@ -1489,9 +1568,10 @@ function validate(type, id, dest)
     var d = document.getElementById(dest);
                 
     d.style.color = "#000"; //default color if validation passes
+    
     if (type == "cpu") {
         if (v < 0 || v > 11) {
-            d.value = "Please enter a number from 0 to 11";
+            d.setAttribute("value", "Please enter a number from 0 to 11");
             d.style.color = "#ff0000";
             return false;
         }
@@ -1499,7 +1579,7 @@ function validate(type, id, dest)
                 
     if (type == "mem") {
         if (v < 0 || v > 190 ) {
-            d.value = "Please enter a number from 0 to 190";
+            d.setAttribute("value", "Please enter a number from 0 to 190");
             d.style.color = "#ff0000";
             return false; 
         }
@@ -1507,7 +1587,7 @@ function validate(type, id, dest)
                 
     if (type == "silver") {
         if (v < 0 || v > 30000) {
-            d.value = "Please enter a number from 0 to 30000";
+            d.setAttribute("value", "Please enter a number from 0 to 30000");
             d.style.color = "#ff0000";
             return false;
         }
@@ -1515,7 +1595,7 @@ function validate(type, id, dest)
                 
     if (type == "gold") {
         if (v < 0 || v > 4900) {
-            d.value = "Please enter a number from 0 to 4900";
+            d.setAttribute("value", "Please enter a number from 0 to 4900");
             d.style.color ="#ff0000";
             return false;
         }
@@ -1627,17 +1707,17 @@ function processOS(id, o, system, manager, num) {
 function changePrice(num, originalval, doubleval)
 {
     var val = document.getElementById('dualoptions' + num).value;
-    
+    var currentprice = document.getElementById('cl-str-qty' + num).getAttribute('cl-str-price');
     if (val == 'Yes') {
         document.getElementById('cl-str-price' + num).value = '$' + doubleval + '/TB';
         document.getElementById('Yes' + num).setAttribute("selected", "selected");
-        document.getElementById("cl-str-qty" + num).setAttribute("cl-str-price", doubleval);
-        getEstimate('cl-str', 'cl-str-qty' + num, doubleval, 'cl-str-sub' + num, num, 'CL_STR');
+        document.getElementById("cl-str-qty" + num).setAttribute("cl-str-price", currentprice * 2);
+        getEstimate('cl-str', 'cl-str-qty' + num, document.getElementById('cl-str-qty' + num).getAttribute('cl-str-price'), 'cl-str-sub' + num, num, 'CL_STR');
     } else if (val == 'No') {
         document.getElementById('cl-str-price' + num).value = '$' + originalval + '/TB';
         document.getElementById('No' + num).setAttribute("selected", "selected");
-        document.getElementById("cl-str-qty" + num).setAttribute("cl-str-price", originalval);
-        getEstimate('cl-str', 'cl-str-qty' + num, originalval, 'cl-str-sub' + num, num, 'CL_STR');
+        document.getElementById("cl-str-qty" + num).setAttribute("cl-str-price", currentprice / 2);
+        getEstimate('cl-str', 'cl-str-qty' + num, document.getElementById('cl-str-qty' + num).getAttribute('cl-str-price'), 'cl-str-sub' + num, num, 'CL_STR');
     }
     
     document.getElementById('dualoptions' + num).setAttribute("value", val);
@@ -1725,4 +1805,75 @@ function changeName(num)
 function changeValue(id, value)
 {
     document.getElementById(id).setAttribute("value", value);
+}
+
+function changeUnits(id, value, num, category)
+{
+    var currentprice;
+    document.getElementById(id).setAttribute("value", value);
+    
+    switch (category) {
+        case 'str': 
+            if (value == 'TB') {
+                currentprice = document.getElementById("str-qty" + num).getAttribute("str-price");
+                console.log("current price: " + currentprice);
+                currentprice *= 1000;
+                console.log("new price: " + currentprice);
+                document.getElementById("str-qty" + num).setAttribute("str-price", currentprice);
+                console.log("updated price: " + document.getElementById("str-qty" + num).getAttribute("str-price"));
+            } else {
+                currentprice = document.getElementById("str-qty" + num).getAttribute("str-price");
+                console.log("current price: " + currentprice);
+                currentprice /= 1000;
+                console.log("new price: " + currentprice);
+                document.getElementById("str-qty" + num).setAttribute("str-price", currentprice);
+                console.log("updated price: " + document.getElementById("str-qty" + num).getAttribute("str-price"));
+            }
+            
+            var element = document.getElementById("str-qty" + num);
+            getEstimate('silver', element.id, element.getAttribute('str-price'), element.getAttribute('dest'), element.getAttribute('num'), 'ST_VM');
+            break;
+        
+        case 'san': 
+            if (value == 'TB') {
+                currentprice = document.getElementById("san-qty" + num).getAttribute("san-price");
+                currentprice *= 1000;
+                document.getElementById("san-qty" + num).setAttribute("san-price", currentprice);
+            } else {
+                currentprice = document.getElementById("san-qty" + num).getAttribute("san-price");
+                currentprice /= 1000;
+                document.getElementById("san-qty" + num).setAttribute("san-price", currentprice);
+            }
+            var element = document.getElementById("san-qty" + num);
+            getEstimate('gold', element.id, element.getAttribute('san-price'), element.getAttribute('dest'), element.getAttribute('num'), 'ST_VM');
+            break;
+        
+        case 'cl': 
+            if (value == 'TB') {
+                currentprice = document.getElementById("cl-str-qty" + num).getAttribute("cl-str-price");
+                currentprice *= 1000;
+                document.getElementById("cl-str-qty" + num).setAttribute("cl-str-price", currentprice);
+            } else {
+                currentprice = document.getElementById("cl-str-qty" + num).getAttribute("cl-str-price");
+                currentprice /= 1000;
+                document.getElementById("cl-str-qty" + num).setAttribute("cl-str-price", currentprice);
+            }
+            var element = document.getElementById('cl-str-qty' + num);
+            getEstimate('cl-str', element.id, element.getAttribute('cl-str-price'), element.getAttribute('dest'), element.getAttribute('num'), 'CL_STR');
+            break;
+        
+        case 'pr': 
+            if (value == 'TB') {
+                currentprice = document.getElementById("cl-str-qty" + num).getAttribute("cl-str-price");
+                currentprice *= 1000;
+                document.getElementById("cl-str-qty" + num).setAttribute("cl-str-price", currentprice);
+            } else {
+                currentprice = document.getElementById("cl-str-qty" + num).getAttribute("cl-str-price");
+                currentprice /= 1000;
+                document.getElementById("cl-str-qty" + num).setAttribute("cl-str-price", currentprice);
+            }
+            var element = document.getElementById('cl-str-qty' + num);
+            getEstimate('cl-str', element.id, element.getAttribute('cl-str-price'), element.getAttribute('dest'), element.getAttribute('num'), 'CL_STR');
+            break;
+    }
 }

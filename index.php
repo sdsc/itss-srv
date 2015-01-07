@@ -26,8 +26,10 @@
 <html>
     <head>
         <title>SDSC Services Estimation Tool</title>
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
         <link rel="stylesheet" type="text/css" href="css/global.css">
         <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+        <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
         <script src="js/begin.js"></script>
         <!--<script src="js/jspdf.min.js" type="text/javascript"></script>
         <script type="text/javascript" src="js/tableExport.js"></script>
@@ -43,32 +45,46 @@
         <script type="text/javascript" src="js/Blob.js"></script>
         <script type="text/javascript" src="js/canvas-toBlob.js"></script>-->
         <script src="js/functions.js"></script>
+        <script>
+            $(function() {
+                $( document ).tooltip({ track: true });
+            });
+        </script>
+        <style>
+            label {
+                display: inline-block;
+                width: 5em;
+            }
+        </style>
     </head>
     
     
     <!-- BEGIN THE HTML HERE -->
     <body>
        <div class="content">
-           <?php
-            while($row = $services->fetch(PDO::FETCH_ASSOC))
-            {
-        ?>
-                <button class="add-button" onclick="addProduct('<?php echo $row['type']; ?>');">+
-</button>
-                <div class="vm-services">
-                    <span class="service-name"> 
-                       <?php echo $row['name']; ?>
-                    </span>
-                    <span class="service-price">
-                        $<?php echo $row['monthly']; ?>
-                    </span>
-                </div>
-            <?php
-            }
+           <div id = "product-col">
+               <?php
+                while($row = $services->fetch(PDO::FETCH_ASSOC))
+                {
             ?>
+                    <button class="add-button" onclick="addProduct('<?php echo $row['type']; ?>');">+
+    </button>
+                    <div class="vm-services">
+                        <span class="service-name" title="<?php echo $row['desc']; ?>"> 
+                           <?php echo $row['name']; ?>
+                        </span>
+                        <span class="service-price">
+                            $<?php echo $row['monthly']; ?>
+                        </span>
+                    </div>
+                <?php
+                }
+                ?>
+           </div>
+           
             <div id = "quote-content">
                 <!--<strong id="table-title">Your SDSC Cost Estimate </strong>-->
-                <form name="quote" action="./tcpdf/examples/generatepdf.php" method="post">
+                <form name="quote" action="./tcpdf/pdf/generatepdf.php" method="post">
                     <table id="vm-table" colspan="4" cellspacing="0" border="1" style="font-size: 11px">
                         <tr style="font-size: 11px; background-color: #ccc; font-weight: bold;">
                             <td colspan="1" width="170">
@@ -85,9 +101,9 @@
                             </td>
                         </tr>
                     </table>
-                    <table id="vm-table-totals" colspan="4" width="790">
+                    <table class="total-table" id="vm-table-totals" colspan="4" width="790">
                         <tr>
-                            <td colspan="3" width="383">
+                            <td colspan="3" width="383" height="40" valign="bottom">
                                 <strong>VM Total: </strong>
                             </td>
                             <td colspan="1" width="135">
@@ -112,7 +128,7 @@
                             </td>
                         </tr>
                     </table>
-                    <table id="str-table-totals" colspan="4" width="790">
+                    <table class="total-table" id="str-table-totals" colspan="4" width="790">
                         <tr>
                             <td colspan="3" width="383">
                                 <strong>Storage Total: </strong>
@@ -139,7 +155,7 @@
                             </td>
                         </tr>
                     </table>
-                    <table id="pa-table-totals" colspan="4" width="790">
+                    <table class="total-table" id="pa-table-totals" colspan="4" width="790">
                         <tr>
                             <td colspan="3" width="383">
                                 <strong>Physical Administration Total: </strong>
@@ -166,7 +182,7 @@
                             </td>
                         </tr>
                     </table>
-                    <table id="backup-table-totals" colspan="4" width="790">
+                    <table class="total-table" id="backup-table-totals" colspan="4" width="790">
                         <tr>
                             <td colspan="3" width="383">
                                 <strong>Backup Total: </strong>
@@ -193,7 +209,7 @@
                             </td>
                         </tr>
                     </table>
-                    <table id="consult-table-totals" colspan="4" width="790">
+                    <table class="total-table" id="consult-table-totals" colspan="4" width="790">
                         <tr>
                             <td colspan="3" width="383">
                                 <strong>Consulting Total: </strong>
@@ -220,7 +236,7 @@
                             </td>
                         </tr>
                     </table>
-                    <table id="sp-table-totals" colspan="4" width="790">
+                    <table class="total-table" id="sp-table-totals" colspan="4" width="790">
                         <tr>
                             <td colspan="3" width="383">
                                 <strong>Sharepoint Total: </strong>
@@ -231,7 +247,7 @@
                         </tr>
                     </table>
                     
-                    <table id="totals" colspan="4" width="790">
+                    <table class="total-table" id="totals" colspan="4" width="790">
                         <tr>
                             <td colspan="3" width="383">
                                 <strong>Grand Total: </strong>
