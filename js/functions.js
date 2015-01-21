@@ -103,16 +103,19 @@ function addProduct(id)
         var remove_text = document.createTextNode("-");
         remove.appendChild(remove_text);
         cell.appendChild(remove);
-        var name = document.createTextNode(slice_text);                      
-        cell.appendChild(name);
         cell.setAttribute("colspan", "1");
-        cell.className = "service-title";
         remove.className = "remove-button";
         remove.setAttribute("value", "-");
         remove.setAttribute("rownumber", "row" + vm_num);
         remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), 8, 'ST_VM')");
-
+        
         var cell = row1.insertCell(1);
+        var name = document.createTextNode(slice_text);                      
+        cell.appendChild(name);
+        cell.setAttribute("colspan", "1");
+        cell.className = "service-title";
+        
+        var cell = row1.insertCell(2);
         var os = document.createElement("select"); 
         os.setAttribute("name", "os" + vm_num);
         os.setAttribute("value", "Windows");
@@ -146,7 +149,7 @@ function addProduct(id)
         os.setAttribute("readonly", "readonly");
         os.defaultSelected = "Other" + vm_num;
 
-        var cell = row1.insertCell(2);
+        var cell = row1.insertCell(3);
         var price = document.createElement("input");
         price.setAttribute("name", "serviceprice" + vm_num);
         price.setAttribute("type", "text");
@@ -161,16 +164,18 @@ function addProduct(id)
         
         var row2 = table.insertRow(++rowCount);
         var cell = row2.insertCell(0);
+        cell.setAttribute("colspan", "1");
+        var cell = row2.insertCell(1);
         var cpu = document.createTextNode("Additional CPUs");                       
         cell.appendChild(cpu);
         cell.setAttribute("colspan", "1");
         
-        var cell = row2.insertCell(1);
+        var cell = row2.insertCell(2);
         var cpu_price = document.createTextNode("$" + cpu_price_val + "/CPU");
         cell.appendChild(cpu_price);
         cell.setAttribute("colspan", "1");
         
-        var cell = row2.insertCell(2);
+        var cell = row2.insertCell(3);
         var cpu_qty = document.createElement("input");
         cpu_qty.setAttribute("type", "text");
         cpu_qty_in = "cpu-qty" + vm_num;
@@ -186,8 +191,9 @@ function addProduct(id)
         cpu_qty.setAttribute("cpu-price", cpu_price_val);
         cpu_qty.setAttribute("size", 5);
         cpu_qty.setAttribute("onchange", "getEstimate('cpu', this.id, this.getAttribute('cpu-price'), this.getAttribute('dest'), this.getAttribute('num'), 'ST_VM')");
+        cell.appendChild(document.createTextNode("\u00a0\u00a0CPU(s)"));
         
-        var cell = row2.insertCell(3);
+        var cell = row2.insertCell(4);
         var cpu_sub = document.createElement("input");
         cpu_sub.setAttribute("type", "text");
         cell.appendChild(cpu_sub);
@@ -200,15 +206,17 @@ function addProduct(id)
 
         var row3 = table.insertRow(++rowCount);
         var cell = row3.insertCell(0);
+        cell.setAttribute("colspan", "1");
+        var cell = row3.insertCell(1);
         var mem = document.createTextNode("Additional RAM");                       
         cell.appendChild(mem);
         cell.setAttribute("colspan", "1");
-        var cell = row3.insertCell(1);
+        var cell = row3.insertCell(2);
         var mem_price = document.createTextNode("$" + mem_price_val + "/GB");
         cell.appendChild(mem_price);
         cell.setAttribute("colspan", "1");
 
-        var cell = row3.insertCell(2);
+        var cell = row3.insertCell(3);
         var mem_qty = document.createElement("input");
         mem_qty.setAttribute("type", "text");
         mem_qty_in = "mem-qty" + vm_num;
@@ -224,8 +232,9 @@ function addProduct(id)
         mem_qty.setAttribute("mem-price", mem_price_val);
         mem_qty.setAttribute("size", 5);
         mem_qty.setAttribute("onchange", "getEstimate('mem', this.id, this.getAttribute('mem-price'), this.getAttribute('dest'), this.getAttribute('num'), 'ST_VM')");
-
-        var cell = row3.insertCell(3);
+        cell.appendChild(document.createTextNode("\u00a0\u00a0GB"));
+        
+        var cell = row3.insertCell(4);
         var mem_sub = document.createElement("input");
         mem_sub.setAttribute("type", "text");
         cell.appendChild(mem_sub);
@@ -238,19 +247,20 @@ function addProduct(id)
 
 
         var row4 = table.insertRow(++rowCount);
-
+        var cell = row4.insertCell(0);
+        cell.setAttribute("colspan", "1");
         if (id == 'ST_VM') {
-            var cell = row4.insertCell(0);
+            var cell = row4.insertCell(1);
             var str = document.createTextNode("Additional 'Silver' Storage");                        
             cell.appendChild(str);
             cell.setAttribute("colspan", "1");
 
-            var cell = row4.insertCell(1);
+            var cell = row4.insertCell(2);
             var str_price = document.createTextNode("$49.42/TB");
             cell.appendChild(str_price);
             cell.setAttribute("colspan", "1");
 
-            var cell = row4.insertCell(2);
+            var cell = row4.insertCell(3);
             var str_qty = document.createElement("input");
             str_qty.setAttribute("type", "text");
             str_qty_in = "str-qty" + vm_num;
@@ -259,6 +269,7 @@ function addProduct(id)
             cell.setAttribute("colspan", "1");
             str_qty.id = str_qty_in;
             str_qty.setAttribute("name", str_qty_in);
+            str_qty.setAttribute("title", "Max value 30TB (30000GB)");
             str_qty.className += " userinput";
             str_qty.setAttribute("dest", str_sub_out);
             str_qty.setAttribute("num", vm_num);
@@ -283,7 +294,7 @@ function addProduct(id)
             str_units.setAttribute("onchange", "changeUnits(this.id, this.value, this.getAttribute('num'), 'str')");
             cell.appendChild(str_units);
             
-            var cell = row4.insertCell(3);
+            var cell = row4.insertCell(4);
             var str_sub = document.createElement("input");
             str_sub.setAttribute("type", "text");
             cell.appendChild(str_sub);
@@ -296,7 +307,7 @@ function addProduct(id)
         } 
         
         else if (id == 'HS_VM') {
-            var cell = row4.insertCell(0);
+            var cell = row4.insertCell(1);
             var alert = document.createTextNode("Silver storage is unavailable for High Security VMs.");
             cell.appendChild(alert);
             cell.setAttribute("colspan", "4");
@@ -304,18 +315,20 @@ function addProduct(id)
         }
 
         var row5 = table.insertRow(++rowCount);
-
         var cell = row5.insertCell(0);
+        cell.setAttribute("colspan", "1");
+        
+        var cell = row5.insertCell(1);
         var san = document.createTextNode("Additional 'Gold' Storage");                        
         cell.appendChild(san);
         cell.setAttribute("colspan", "1");
 
-        var cell = row5.insertCell(1);
+        var cell = row5.insertCell(2);
         var san_price = document.createTextNode("$125.00/TB");
         cell.appendChild(san_price);
         cell.setAttribute("colspan", "1");
 
-        var cell = row5.insertCell(2);
+        var cell = row5.insertCell(3);
         var san_qty = document.createElement("input");
         san_qty.setAttribute("type", "text");
         san_qty_in = "san-qty" + vm_num;
@@ -324,6 +337,7 @@ function addProduct(id)
         cell.setAttribute("colspan", "1");
         san_qty.id = san_qty_in;
         san_qty.setAttribute("name", san_qty_in);
+        san_qty.setAttribute("title", "Max value 4.9TB (4900GB)");
         san_qty.className += " userinput";
         san_qty.setAttribute("dest", san_sub_out);
         san_qty.setAttribute("num", vm_num);
@@ -349,7 +363,7 @@ function addProduct(id)
         san_units.setAttribute("onchange", "changeUnits(this.id, this.value, this.getAttribute('num'), 'san')");
         cell.appendChild(san_units);
 
-        var cell = row5.insertCell(3);
+        var cell = row5.insertCell(4);
         var san_sub = document.createElement("input");
         san_sub.setAttribute("type", "text");
         cell.appendChild(san_sub);
@@ -361,12 +375,15 @@ function addProduct(id)
         san_sub.className = "vm-sub vm-sub" + vm_num;
 
         var row6 = table.insertRow(++rowCount);
-        cell = row6.insertCell(0);
+        var cell = row6.insertCell(0);
+        cell.setAttribute("colspan", "1");
+        
+        cell = row6.insertCell(1);
         var sysmanagement = document.createTextNode("System Management");
         cell.appendChild(sysmanagement);
         cell.setAttribute("colspan", "1");
 
-        cell = row6.insertCell(1);
+        cell = row6.insertCell(2);
         var sysmanagement_text = document.createElement("input");
         sysmanagement_text.setAttribute("type", "text");
         cell.appendChild(sysmanagement_text);
@@ -386,13 +403,15 @@ function addProduct(id)
         }
 
         var row7 = table.insertRow(++rowCount);
-
-        cell = row7.insertCell(0);
+        var cell = row7.insertCell(0);
+        cell.setAttribute("colspan", "1");
+        
+        cell = row7.insertCell(1);
         var manager = document.createTextNode("Manager");
         cell.appendChild(manager);
         cell.setAttribute("colspan", "1");
 
-        cell = row7.insertCell(1);
+        cell = row7.insertCell(2);
         var themanager = document.createElement("input");
         themanager.setAttribute("type", "text");
         cell.appendChild(themanager);
@@ -405,14 +424,18 @@ function addProduct(id)
         document.getElementById(themanager.id).setAttribute("value", "Brian Balderston");
 
         var row8 = table.insertRow(++rowCount);
-
         var cell = row8.insertCell(0);
+        cell.setAttribute("colspan", "1");
+        
+        var cell = row8.insertCell(1);
+        cell.setAttribute("style", "font-style: italic;");
         var subtext = document.createTextNode("Subtotal");
         cell.appendChild(subtext);
         cell.setAttribute("colspan", "3");
         cell.className += " pad-bottom";
+        cell.setAttribute("style", "border-bottom: 1px solid black;");
 
-        var cell = row8.insertCell(1);
+        var cell = row8.insertCell(2);
         var vmsubtotal = document.createElement("input");
         vmsubtotal.setAttribute("type", "text");
         vmsubtotal.setAttribute("size", 20);
@@ -423,6 +446,7 @@ function addProduct(id)
         //vmsubtotal.className = "sub";
         document.getElementById(vmsubtotal.id).setAttribute("readonly", "readonly");
         document.getElementById(vmsubtotal.id).setAttribute("value", "$" + slice_price);
+        cell.setAttribute("style", "border-bottom: 1px solid black;");
         sub('vm-sub');
         sub('sub');
             
@@ -441,16 +465,18 @@ function addProduct(id)
         var remove_text = document.createTextNode("-");
         remove.appendChild(remove_text);
         cell.appendChild(remove);
-        var name = document.createTextNode("Cloud Storage");                      
-        cell.appendChild(name);
-        cell.setAttribute("colspan", "1");
-        cell.className = "service-title";
         remove.className = "remove-button";
         remove.setAttribute("value", "-");
         remove.setAttribute("rownumber", "row" + vm_num);
         remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), 2, 'CL_STR')");
         
         var cell = row1.insertCell(1);
+        var name = document.createTextNode("Cloud Storage");                      
+        cell.appendChild(name);
+        cell.setAttribute("colspan", "1");
+        cell.className = "service-title";
+        
+        var cell = row1.insertCell(2);
         var cl_str_price = document.createElement("input");
         cl_str_price.id = "cl-str-price" + vm_num;
         cl_str_price.className += " varprice";
@@ -460,7 +486,7 @@ function addProduct(id)
         cell.appendChild(cl_str_price);
         cell.setAttribute("colspan", "1");
         
-        var cell = row1.insertCell(2);
+        var cell = row1.insertCell(3);
         var cl_str_qty = document.createElement("input");
         cl_str_qty.setAttribute("type", "text");
         cl_str_qty_in = "cl-str-qty" + vm_num;
@@ -473,6 +499,7 @@ function addProduct(id)
         cl_str_qty.setAttribute("num", vm_num);
         cl_str_qty.setAttribute("cl-str-price", cl_str_price_val);
         cl_str_qty.setAttribute("name", cl_str_qty.id);
+        cl_str_qty.setAttribute("title", "Min value 0.100TB (100GB)");
         cl_str_qty.setAttribute("size", 5);
         cl_str_qty.setAttribute("onchange", "getEstimate('cl-str', this.id, this.getAttribute('cl-str-price'), this.getAttribute('dest'), this.getAttribute('num'), 'CL_STR')");
         
@@ -494,7 +521,7 @@ function addProduct(id)
         cl_units.setAttribute("onchange", "changeUnits(this.id, this.value, this.getAttribute('num'), 'cl')");
         cell.appendChild(cl_units);
 
-        var cell = row1.insertCell(3);
+        var cell = row1.insertCell(4);
         var cl_str_sub = document.createElement("input");
         cl_str_sub.setAttribute("type", "text");
         cell.appendChild(cl_str_sub);
@@ -508,18 +535,23 @@ function addProduct(id)
         var row2 = table.insertRow(++rowCount);
         row2.id = "row" + vm_num;
         var cell = row2.insertCell(0);
+        cell.setAttribute("colspan", "1");
+        
+        var cell = row2.insertCell(1);
         var dual_text = document.createTextNode("Dual Redundancy?");
         cell.appendChild(dual_text);
         cell.setAttribute("colspan", "1");
         cell.className += " pad-bottom";
+        cell.setAttribute("style", "border-bottom: 1px solid black;");
         
-        var cell = row2.insertCell(1);
+        var cell = row2.insertCell(2);
         var dualoptions = document.createElement("select");
         dualoptions.id = "dualoptions" + vm_num;
         dualoptions.setAttribute("num", vm_num);
         dualoptions.setAttribute("original", cl_str_price_val);
         dualoptions.setAttribute("double", cl_str_price_val_double);
         dualoptions.setAttribute("name", dualoptions.id);
+        dualoptions.setAttribute("title", "Dual site redundancy doubles the cost");
         dualoptions.setAttribute("onchange", "changePrice(this.getAttribute('num'), this.getAttribute('original'), this.getAttribute('double'))");
         var options = new Option("No", "No", false, false);
         options.id = "No" + vm_num;
@@ -533,7 +565,9 @@ function addProduct(id)
         dualoptions.appendChild(options);
         cell.appendChild(dualoptions);
         
-        cell.setAttribute("colspan", "2");
+        cell.setAttribute("colspan", "3");
+        cell.setAttribute("style", "border-bottom: 1px solid black;");
+        
         sub('vm-sub');
     } /* END CLOUD STORAGE CODE */
     
@@ -552,26 +586,31 @@ function addProduct(id)
         row1 = table.insertRow(rowCount);
         row1.id = "row" + vm_num;
         var cell = row1.insertCell(0);
+        cell.setAttribute("style", "border-bottom: 1px solid black;");
         var remove = document.createElement("button");
         var remove_text = document.createTextNode("-");
         remove.appendChild(remove_text);
         cell.appendChild(remove);
-        var name = document.createTextNode(prod_name);                      
-        cell.appendChild(name);
-        cell.setAttribute("colspan", "1");
-        cell.className = "service-title";
-        cell.className += " pad-bottom";
         remove.className = "remove-button";
         remove.setAttribute("value", "-");
         remove.setAttribute("rownumber", "row" + vm_num);
         remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), 1, 'CL_STR')");
         
         var cell = row1.insertCell(1);
+        var name = document.createTextNode(prod_name);                      
+        cell.appendChild(name);
+        cell.setAttribute("colspan", "1");
+        cell.className = "service-title";
+        cell.className += " pad-bottom";
+        
+        var cell = row1.insertCell(2);
+        cell.setAttribute("style", "border-bottom: 1px solid black;");
         var cl_str_price = document.createTextNode(cl_str_price_string);
         cell.appendChild(cl_str_price);
         cell.setAttribute("colspan", "1");
         
-        var cell = row1.insertCell(2);
+        var cell = row1.insertCell(3);
+        cell.setAttribute("style", "border-bottom: 1px solid black;");
         var cl_str_qty = document.createElement("input");
         cl_str_qty.setAttribute("type", "text");
         cl_str_qty_in = "cl-str-qty" + vm_num;
@@ -583,9 +622,12 @@ function addProduct(id)
         cl_str_qty.setAttribute("dest", "" + cl_str_sub_out);
         cl_str_qty.setAttribute("num", vm_num);
         cl_str_qty.setAttribute("name", cl_str_qty.id);
+        if (prod_name == 'Project Storage') {
+            cl_str_qty.setAttribute("title", "Minimum 1TB (1000GB). Enter in multiples of 0.05TB (500GB)");
+        }
         cl_str_qty.setAttribute("size", 5);
         cl_str_qty.setAttribute("cl-str-price", cl_str_price_val);
-        cl_str_qty.setAttribute("onchange", "getEstimate('cl-str', this.id, this.getAttribute('cl-str-price'), this.getAttribute('dest'), this.getAttribute('num'), 'CL_STR')");
+        cl_str_qty.setAttribute("onchange", "getEstimate('pr-str', this.id, this.getAttribute('cl-str-price'), this.getAttribute('dest'), this.getAttribute('num'), 'CL_STR')");
         
         if (id == 'PR_STR') {
             var pr_units = document.createElement("select");
@@ -605,9 +647,12 @@ function addProduct(id)
             pr_units.appendChild(option);
             pr_units.setAttribute("onchange", "changeUnits(this.id, this.value, this.getAttribute('num'), 'pr')");
             cell.appendChild(pr_units);
+        } else {
+            cell.appendChild(document.createTextNode("\u00a0\u00a0pair(s)"));
         }
 
-        var cell = row1.insertCell(3);
+        var cell = row1.insertCell(4);
+        cell.setAttribute("style", "border-bottom: 1px solid black;");
         var cl_str_sub = document.createElement("input");
         cl_str_sub.setAttribute("type", "text");
         cell.appendChild(cl_str_sub);
@@ -639,26 +684,31 @@ function addProduct(id)
         row1 = table.insertRow(rowCount);
         row1.id = "row" + vm_num;
         var cell = row1.insertCell(0);
+        cell.setAttribute("style", "border-bottom: 1px solid black;");
         var remove = document.createElement("button");
         var remove_text = document.createTextNode("-");
         remove.appendChild(remove_text);
         cell.appendChild(remove);
-        var name = document.createTextNode(prod_name);                      
-        cell.appendChild(name);
-        cell.setAttribute("colspan", "1");
-        cell.className = "service-title";
-        cell.className += " pad-bottom";
         remove.className = "remove-button";
         remove.setAttribute("value", "-");
         remove.setAttribute("rownumber", "row" + vm_num);
         remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), 1, 'DESK')");
         
         var cell = row1.insertCell(1);
+        var name = document.createTextNode(prod_name);  
+        cell.appendChild(name);
+        cell.setAttribute("colspan", "1");
+        cell.className = "service-title";
+        cell.className += " pad-bottom";
+        
+        var cell = row1.insertCell(2);
+        cell.setAttribute("style", "border-bottom: 1px solid black;");
         var consult_price = document.createTextNode("$" + consult_price_val + "/hr");
         cell.appendChild(consult_price);
         cell.setAttribute("colspan", "1");
         
-        var cell = row1.insertCell(2);
+        var cell = row1.insertCell(3);
+        cell.setAttribute("style", "border-bottom: 1px solid black;");
         var consult_qty = document.createElement("input");
         consult_qty.setAttribute("type", "text");
         consult_qty_in = "consult-qty" + vm_num;
@@ -671,17 +721,19 @@ function addProduct(id)
         consult_qty.setAttribute("num", vm_num);
         consult_qty.setAttribute("consult-price", consult_price_val);
         consult_qty.setAttribute("name", consult_qty.id);
+        consult_qty.setAttribute("title", "Number of hours in multiples of tenths (One-time consulting fee)");
         consult_qty.setAttribute("size", 5);
         consult_qty.setAttribute("onchange", "getEstimate('consult', this.id, this.getAttribute('consult-price'), this.getAttribute('dest'), this.getAttribute('num'), 'DESK')");
-
-        var cell = row1.insertCell(3);
+        cell.appendChild(document.createTextNode("\u00a0\u00a0hr(s)"));
+        var cell = row1.insertCell(4);
+        cell.setAttribute("style", "border-bottom: 1px solid black;");
         var consult_sub = document.createElement("input");
         consult_sub.setAttribute("type", "text");
         cell.appendChild(consult_sub);
         cell.setAttribute("colspan", "1");
         consult_sub.id = consult_sub_out;
         document.getElementById(consult_sub_out).setAttribute("readonly", "readonly");
-        consult_sub.className = "consult-sub vm-sub" + vm_num;
+        consult_sub.className = "consult-sub onetime vm-sub" + vm_num;
         consult_sub.setAttribute("name", consult_sub.id);
         consult_sub.setAttribute("size", 20);
         sub('consult-sub');
@@ -710,16 +762,6 @@ function addProduct(id)
         var remove_text = document.createTextNode("-");
         remove.appendChild(remove_text);
         cell.appendChild(remove);
-        var name = document.createTextNode(prod_name);                      
-        cell.appendChild(name);
-        cell.setAttribute("colspan", "1");
-        cell.className = "service-title";
-        
-        // support only has one row. Add padding after this row
-        if (id == 'SUPPORT') {
-            cell.className += " pad-bottom";
-        }
-        
         remove.className = "remove-button";
         remove.setAttribute("value", "-");
         remove.setAttribute("rownumber", "row" + vm_num);
@@ -727,11 +769,27 @@ function addProduct(id)
         remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), this.getAttribute('numRows'), 'SUPPORT')");
         
         var cell = row1.insertCell(1);
+        var name = document.createTextNode(prod_name);
+        cell.appendChild(name);
+        cell.setAttribute("colspan", "1");
+        cell.className = "service-title";
+        
+        // support only has one row. Add padding after this row
+        if (id == 'SUPPORT') {
+            cell.className += " pad-bottom";
+            cell.setAttribute("style", "border-bottom: 1px solid black;");
+        }
+        
+        var cell = row1.insertCell(2);
         var sp_price = document.createTextNode("$" + sp_price_val + unit);
         cell.appendChild(sp_price);
         cell.setAttribute("colspan", "1");
+        if (id == 'SUPPORT') {
+            cell.setAttribute("style", "border-bottom: 1px solid black;");
+        }
         
-        var cell = row1.insertCell(2);
+        var cell = row1.insertCell(3);
+        
         var sp_qty = document.createElement("input");
         sp_qty.setAttribute("type", "text");
         sp_qty_in = "sp-qty" + vm_num;
@@ -744,14 +802,25 @@ function addProduct(id)
         sp_qty.setAttribute("num", vm_num);
         sp_qty.setAttribute("sp-price", sp_price_val);
         sp_qty.setAttribute("name", sp_qty.id);
+        
+        if (id == 'SITE') {
+            sp_qty.setAttribute("title", "Whole numbers only");
+        } else {
+            sp_qty.setAttribute("title", "Number of hours in multiples of tenths");
+            cell.appendChild(document.createTextNode('\u00a0\u00a0hr(s)'));
+            cell.setAttribute("style", "border-bottom: 1px solid black;");
+        }
+        
         sp_qty.setAttribute("size", 5);
         if (id == 'SUPPORT') {
             sp_qty.setAttribute("onchange", "getEstimate('sp-consult', this.id, this.getAttribute('sp-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'SITE')");
         } else {
             sp_qty.setAttribute("onchange", "getEstimate('sp', this.id, this.getAttribute('sp-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'SITE')");
         }
-
-        var cell = row1.insertCell(3);
+        var cell = row1.insertCell(4);
+        if (id == 'SUPPORT') {
+            cell.setAttribute("style", "border-bottom: 1px solid black;");
+        }
         var sp_sub = document.createElement("input");
         sp_sub.setAttribute("type", "text");
         cell.appendChild(sp_sub);
@@ -759,6 +828,11 @@ function addProduct(id)
         sp_sub.id = sp_sub_out;
         document.getElementById(sp_sub_out).setAttribute("readonly", "readonly");
         sp_sub.className = "sp-sub vm-sub" + vm_num;
+        if (id == 'SUPPORT') {
+            sp_sub.className += " onetime";
+        } else {
+            sp_sub.className += " sub";
+        }
         sp_sub.setAttribute("name", sp_sub.id);
         sp_sub.setAttribute("size", 20);
         // Add extra rows for SharePoint Site
@@ -766,18 +840,22 @@ function addProduct(id)
             additional_price_val = 10.00;
             
             var row2 = table.insertRow(++rowCount);
+            
             var cell = row2.insertCell(0);
+            cell.setAttribute("colspan", "1");
+            
+            var cell = row2.insertCell(1);
             var additional_text = document.createTextNode("Additional 25 GB of DA site storage w/backup");
             additional_text.className += " sp-additional";
             cell.appendChild(additional_text);
             cell.setAttribute("colspan", "1");
 
-            var cell = row2.insertCell(1);
+            var cell = row2.insertCell(2);
             var additional_price = document.createTextNode("$" + additional_price_val + "/month");
             cell.appendChild(additional_price);
             cell.setAttribute("colspan", "1");
 
-            var cell = row2.insertCell(2);
+            var cell = row2.insertCell(3);
             var additional_qty = document.createElement("input");
             additional_qty.setAttribute("type", "text");
             additional_qty_in = "additional-qty" + vm_num;
@@ -792,27 +870,35 @@ function addProduct(id)
             additional_qty.setAttribute("name", additional_qty.id);
             additional_qty.setAttribute("size", 5);
             additional_qty.setAttribute("onchange", "getEstimate('additional-sp', this.id, this.getAttribute('additional-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'SITE')");
+            
+            additional_qty.setAttribute("title", "Whole numbers only");
+            cell.appendChild(document.createTextNode("\u00a0\u00a0chunk(s)"));
 
-            var cell = row2.insertCell(3);
+            var cell = row2.insertCell(4);
             var additional_sub = document.createElement("input");
             additional_sub.setAttribute("type", "text");
             cell.appendChild(additional_sub);
             cell.setAttribute("colspan", "1");
             additional_sub.id = additional_sub_out;
             document.getElementById(additional_sub_out).setAttribute("readonly", "readonly");
-            additional_sub.className = "sp-sub vm-sub" + vm_num;
+            additional_sub.className = "sp-sub sub vm-sub" + vm_num;
             additional_sub.setAttribute("name", additional_sub.id);
             additional_sub.setAttribute("size", 20);
             
             var row3 = table.insertRow(++rowCount);
-
+            
             var cell = row3.insertCell(0);
+            cell.setAttribute("colspan", "1");
+            
+            var cell = row3.insertCell(1);
+            cell.setAttribute("style", "border-bottom: 1px solid black;");
             var subtext = document.createTextNode("Subtotal:");
             cell.appendChild(subtext);
             cell.setAttribute("colspan", "3");
             cell.className += " pad-bottom";
 
-            var cell = row3.insertCell(1);
+            var cell = row3.insertCell(2);
+            cell.setAttribute("style", "border-bottom: 1px solid black;");
             var spsubtotal = document.createElement("input");
             spsubtotal.setAttribute("type", "text");
             cell.appendChild(spsubtotal);
@@ -838,16 +924,18 @@ function addProduct(id)
         var remove_text = document.createTextNode("-");
         remove.appendChild(remove_text);
         cell.appendChild(remove);
+        remove.className = "remove-button";
+        remove.setAttribute("value", "-");
+        remove.setAttribute("rownumber", "row" + vm_num);
+        remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), 10, 'SYS_MAN')");
+        
+        var cell = row1.insertCell(1);
         var name = document.createTextNode("System Management");                      
         cell.appendChild(name);
         cell.setAttribute("colspan", "1");
         cell.className = "service-title";
-        remove.className = "remove-button";
-        remove.setAttribute("value", "-");
-        remove.setAttribute("rownumber", "row" + vm_num);
-        remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), 9, 'SYS_MAN')");
         
-        var cell = row1.insertCell(1);
+        var cell = row1.insertCell(2);
         var psa = document.createElement("select"); 
         
         /* add system management option: standard or variable? */
@@ -858,6 +946,7 @@ function addProduct(id)
         option = new Option("Variable", "Variable", false, false);
         option.id = "Variable" + vm_num;
         psa.appendChild(option);
+        psa.setAttribute("title", "Choose the Standard option, or customize your own settings. Customization results in different prices.");
 
         cell.appendChild(psa);
         cell.setAttribute("colspan", "1");
@@ -869,7 +958,7 @@ function addProduct(id)
         psa.setAttribute("onchange", "processPrice(document.getElementById(this.id).value, this.getAttribute('optionval'))");
         psa.setAttribute("value", "Standard - $69.00");
 
-        var cell = row1.insertCell(2);
+        var cell = row1.insertCell(3);
         var sys_man_qty = document.createElement("input");
         sys_man_qty.setAttribute("type", "text");
         sys_man_qty_in = "sys-man-qty" + vm_num;
@@ -885,7 +974,7 @@ function addProduct(id)
         sys_man_qty.setAttribute("size", 5);
         sys_man_qty.setAttribute("onchange", "getEstimate('sys-man', this.id, this.getAttribute('sys-man-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'SYS_MAN')");
 
-        var cell = row1.insertCell(3);
+        var cell = row1.insertCell(4);
         var sys_man_sub = document.createElement("input");
         sys_man_sub.setAttribute("type", "text");
         cell.appendChild(sys_man_sub);
@@ -897,12 +986,16 @@ function addProduct(id)
         sys_man_sub.className = "pa-sub vm-sub" + vm_num;
         
         var row2 = table.insertRow(++rowCount);
+        
         var cell = row2.insertCell(0);
+        cell.setAttribute("colspan", "1");
+        
+        var cell = row2.insertCell(1);
         var systemname = document.createTextNode("System Name: ");
         cell.appendChild(systemname);
         cell.setAttribute("colspan", "1");
         
-        var cell = row2.insertCell(1);
+        var cell = row2.insertCell(2);
         var systemnameinput = document.createElement("input");
         systemnameinput.setAttribute("type", "text");
         systemnameinput.setAttribute("name", "systemnameinput");
@@ -918,16 +1011,19 @@ function addProduct(id)
         
         var row3 = table.insertRow(++rowCount);
         var cell = row3.insertCell(0);
+        cell.setAttribute("colspan", "1");
+        
+        var cell = row3.insertCell(1);
         var nonrec = document.createTextNode("Surcharge for non-recommended hardware");                       
         cell.appendChild(nonrec);
         cell.setAttribute("colspan", "1");
         
-        var cell = row3.insertCell(1);
+        var cell = row3.insertCell(2);
         var nonrec_price = document.createTextNode("$" + nonrec_price_val + "/month");
         cell.appendChild(nonrec_price);
         cell.setAttribute("colspan", "1");
         
-        var cell = row3.insertCell(2);
+        var cell = row3.insertCell(3);
         var nonrec_qty = document.createElement("input");
         nonrec_qty.setAttribute("type", "text");
         nonrec_qty_in = "nonrec-qty" + vm_num;
@@ -940,10 +1036,11 @@ function addProduct(id)
         nonrec_qty.setAttribute("num", vm_num);
         nonrec_qty.setAttribute("nonrec-price", nonrec_price_val);
         nonrec_qty.setAttribute("name", nonrec_qty.id);
+        nonrec_qty.setAttribute("title", "To receive this option, enter 1");
         nonrec_qty.setAttribute("size", 5);
         nonrec_qty.setAttribute("onchange", "getEstimate('nonrec', this.id, this.getAttribute('nonrec-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'SYS_MAN')");
 
-        var cell = row3.insertCell(3);
+        var cell = row3.insertCell(4);
         var nonrec_sub = document.createElement("input");
         nonrec_sub.setAttribute("type", "text");
         cell.appendChild(nonrec_sub);
@@ -955,17 +1052,21 @@ function addProduct(id)
         nonrec_sub.className = "pa-sub vm-sub" + vm_num;
         
         var row4 = table.insertRow(++rowCount);
+        
         var cell = row4.insertCell(0);
-        var no_os = document.createTextNode("Surcharge for non-recommended hardware");                       
-        cell.appendChild(no_os);
         cell.setAttribute("colspan", "1");
         
         var cell = row4.insertCell(1);
+        var no_os = document.createTextNode("Surcharge for hardware without build-in OS support");                       
+        cell.appendChild(no_os);
+        cell.setAttribute("colspan", "1");
+        
+        var cell = row4.insertCell(2);
         var no_os_price = document.createTextNode("$" + no_os_price_val + "/month");
         cell.appendChild(no_os_price);
         cell.setAttribute("colspan", "1");
         
-        var cell = row4.insertCell(2);
+        var cell = row4.insertCell(3);
         var no_os_qty = document.createElement("input");
         no_os_qty.setAttribute("type", "text");
         no_os_qty_in = "no_os-qty" + vm_num;
@@ -978,10 +1079,11 @@ function addProduct(id)
         no_os_qty.setAttribute("num", vm_num);
         no_os_qty.setAttribute("no_os-price", no_os_price_val);
         no_os_qty.setAttribute("name", no_os_qty.id);
+        no_os_qty.setAttribute("title", "To receive this option, enter 1");
         no_os_qty.setAttribute("size", 5);
         no_os_qty.setAttribute("onchange", "getEstimate('no_os', this.id, this.getAttribute('no_os-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'SYS_MAN')");
 
-        var cell = row4.insertCell(3);
+        var cell = row4.insertCell(4);
         var no_os_sub = document.createElement("input");
         no_os_sub.setAttribute("type", "text");
         cell.appendChild(no_os_sub);
@@ -994,16 +1096,19 @@ function addProduct(id)
         
         var row5 = table.insertRow(++rowCount);
         var cell = row5.insertCell(0);
-        var storage_array = document.createTextNode("Surcharge for non-recommended hardware");                       
-        cell.appendChild(storage_array);
         cell.setAttribute("colspan", "1");
         
         var cell = row5.insertCell(1);
+        var storage_array = document.createTextNode("Surcharge per attached storage array");                       
+        cell.appendChild(storage_array);
+        cell.setAttribute("colspan", "1");
+        
+        var cell = row5.insertCell(2);
         var storage_array_price = document.createTextNode("$" + storage_array_price_val + "/month");
         cell.appendChild(storage_array_price);
         cell.setAttribute("colspan", "1");
         
-        var cell = row5.insertCell(2);
+        var cell = row5.insertCell(3);
         var storage_array_qty = document.createElement("input");
         storage_array_qty.setAttribute("type", "text");
         storage_array_qty_in = "storage_array-qty" + vm_num;
@@ -1016,10 +1121,11 @@ function addProduct(id)
         storage_array_qty.setAttribute("num", vm_num);
         storage_array_qty.setAttribute("storage_array-price", storage_array_price_val);
         storage_array_qty.setAttribute("name", storage_array_qty.id);
+        storage_array_qty.setAttribute("title", "To receive this option, enter 1");
         storage_array_qty.setAttribute("size", 5);
         storage_array_qty.setAttribute("onchange", "getEstimate('storage_array', this.id, this.getAttribute('storage_array-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'SYS_MAN')");
 
-        var cell = row5.insertCell(3);
+        var cell = row5.insertCell(4);
         var storage_array_sub = document.createElement("input");
         storage_array_sub.setAttribute("type", "text");
         cell.appendChild(storage_array_sub);
@@ -1032,16 +1138,19 @@ function addProduct(id)
         
         var row6 = table.insertRow(++rowCount);
         var cell = row6.insertCell(0);
-        var non_os_vendor = document.createTextNode("Surcharge for non-recommended hardware");                       
-        cell.appendChild(non_os_vendor);
         cell.setAttribute("colspan", "1");
         
         var cell = row6.insertCell(1);
+        var non_os_vendor = document.createTextNode("Surcharge for non-OS vendor software");                       
+        cell.appendChild(non_os_vendor);
+        cell.setAttribute("colspan", "1");
+        
+        var cell = row6.insertCell(2);
         var non_os_vendor_price = document.createTextNode("$" + non_os_vendor_price_val + "/month");
         cell.appendChild(non_os_vendor_price);
         cell.setAttribute("colspan", "1");
         
-        var cell = row6.insertCell(2);
+        var cell = row6.insertCell(3);
         var non_os_vendor_qty = document.createElement("input");
         non_os_vendor_qty.setAttribute("type", "text");
         non_os_vendor_qty_in = "non_os_vendor-qty" + vm_num;
@@ -1054,10 +1163,11 @@ function addProduct(id)
         non_os_vendor_qty.setAttribute("num", vm_num);
         non_os_vendor_qty.setAttribute("size", 5);
         non_os_vendor_qty.setAttribute("name", non_os_vendor_qty.id);
+        non_os_vendor_qty.setAttribute("title", "To receive this option, enter 1");
         non_os_vendor_qty.setAttribute("non_os_vendor-price", non_os_vendor_price_val);
         non_os_vendor_qty.setAttribute("onchange", "getEstimate('non_os_vendor', this.id, this.getAttribute('non_os_vendor-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'SYS_MAN')");
 
-        var cell = row6.insertCell(3);
+        var cell = row6.insertCell(4);
         var non_os_vendor_sub = document.createElement("input");
         non_os_vendor_sub.setAttribute("type", "text");
         cell.appendChild(non_os_vendor_sub);
@@ -1070,16 +1180,19 @@ function addProduct(id)
         
         var row7 = table.insertRow(++rowCount);
         var cell = row7.insertCell(0);
-        var local_admin_access = document.createTextNode("Surcharge for non-recommended hardware");                       
-        cell.appendChild(local_admin_access);
         cell.setAttribute("colspan", "1");
         
         var cell = row7.insertCell(1);
+        var local_admin_access = document.createTextNode("Surcharge for local administration access");                       
+        cell.appendChild(local_admin_access);
+        cell.setAttribute("colspan", "1");
+        
+        var cell = row7.insertCell(2);
         var local_admin_access_price = document.createTextNode("$" + local_admin_access_price_val + "/month");
         cell.appendChild(local_admin_access_price);
         cell.setAttribute("colspan", "1");
         
-        var cell = row7.insertCell(2);
+        var cell = row7.insertCell(3);
         var local_admin_access_qty = document.createElement("input");
         local_admin_access_qty.setAttribute("type", "text");
         local_admin_access_qty_in = "local_admin_access-qty" + vm_num;
@@ -1092,10 +1205,11 @@ function addProduct(id)
         local_admin_access_qty.setAttribute("num", vm_num);
         local_admin_access_qty.setAttribute("local_admin_access-price", local_admin_access_price_val);
         local_admin_access_qty.setAttribute("name", local_admin_access_qty.id);
+        local_admin_access_qty.setAttribute("title", "To receive this option, enter 1");
         local_admin_access_qty.setAttribute("size", 5);
         local_admin_access_qty.setAttribute("onchange", "getEstimate('local_admin_access', this.id, this.getAttribute('local_admin_access-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'SYS_MAN')");
 
-        var cell = row7.insertCell(3);
+        var cell = row7.insertCell(4);
         var local_admin_access_sub = document.createElement("input");
         local_admin_access_sub.setAttribute("type", "text");
         cell.appendChild(local_admin_access_sub);
@@ -1108,16 +1222,19 @@ function addProduct(id)
         
         var row8 = table.insertRow(++rowCount);
         var cell = row8.insertCell(0);
-        var sys_monitor = document.createTextNode("Surcharge for non-recommended hardware");                       
-        cell.appendChild(sys_monitor);
         cell.setAttribute("colspan", "1");
         
         var cell = row8.insertCell(1);
+        var sys_monitor = document.createTextNode("Surcharge for 24/7 system monitoring and support");                       
+        cell.appendChild(sys_monitor);
+        cell.setAttribute("colspan", "1");
+        
+        var cell = row8.insertCell(2);
         var sys_monitor_price = document.createTextNode("$" + sys_monitor_price_val + "/month");
         cell.appendChild(sys_monitor_price);
         cell.setAttribute("colspan", "1");
         
-        var cell = row8.insertCell(2);
+        var cell = row8.insertCell(3);
         var sys_monitor_qty = document.createElement("input");
         sys_monitor_qty.setAttribute("type", "text");
         sys_monitor_qty_in = "sys_monitor-qty" + vm_num;
@@ -1130,10 +1247,11 @@ function addProduct(id)
         sys_monitor_qty.setAttribute("num", vm_num);
         sys_monitor_qty.setAttribute("sys_monitor-price", sys_monitor_price_val);
         sys_monitor_qty.setAttribute("name", sys_monitor_qty.id);
+        sys_monitor_qty.setAttribute("title", "To receive this option, enter 1");
         sys_monitor_qty.setAttribute("size", 5);
         sys_monitor_qty.setAttribute("onchange", "getEstimate('sys_monitor', this.id, this.getAttribute('sys_monitor-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'SYS_MAN')");
 
-        var cell = row8.insertCell(3);
+        var cell = row8.insertCell(4);
         var sys_monitor_sub = document.createElement("input");
         sys_monitor_sub.setAttribute("type", "text");
         cell.appendChild(sys_monitor_sub);
@@ -1143,15 +1261,35 @@ function addProduct(id)
         sys_monitor_sub.className = "pa-sub vm-sub" + vm_num;
         sys_monitor_sub.setAttribute("name", sys_monitor_sub.id);
         sys_monitor_sub.setAttribute("size", 20);
+        
+        var row8 = table.insertRow(++rowCount);
+        var cell = row8.insertCell(0);
+        cell.setAttribute("colspan", "1");
+        
+        var cell = row8.insertCell(1);
+        var colo = document.createTextNode("Surcharge for colo");                       
+        cell.appendChild(colo);
+        cell.setAttribute("colspan", "1");
+        
+        var cell = row8.insertCell(2);
+        var colo_price = document.createTextNode("See Colocation Rates");
+        cell.appendChild(colo_price);
+        cell.setAttribute("colspan", "3");
+        
         var row9 = table.insertRow(++rowCount);
 
         var cell = row9.insertCell(0);
+        cell.setAttribute("colspan", "1");
+        
+        var cell = row9.insertCell(1);
+        cell.setAttribute("style", "border-bottom: 1px solid black;");
         var subtext = document.createTextNode("Subtotal:");
         cell.appendChild(subtext);
         cell.setAttribute("colspan", "3");
         cell.className += " pad-bottom";
 
-        var cell = row9.insertCell(1);
+        var cell = row9.insertCell(2);
+        cell.setAttribute("style", "border-bottom: 1px solid black;");
         var vmsubtotal = document.createElement("input");
         vmsubtotal.setAttribute("type", "text");
         cell.appendChild(vmsubtotal);
@@ -1179,16 +1317,18 @@ function addProduct(id)
         var remove_text = document.createTextNode("-");
         remove.appendChild(remove_text);
         cell.appendChild(remove);
-        var name = document.createTextNode("CommVault Backup");                      
-        cell.appendChild(name);
-        cell.setAttribute("colspan", "1");
-        cell.className = "service-title";
         remove.className = "remove-button";
         remove.setAttribute("value", "-");
         remove.setAttribute("rownumber", "row" + vm_num);
         remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), 10, 'RAW')");
 
         var cell = row1.insertCell(1);
+        var name = document.createTextNode("CommVault Backup");                      
+        cell.appendChild(name);
+        cell.setAttribute("colspan", "1");
+        cell.className = "service-title";
+        
+        var cell = row1.insertCell(2);
         var package = document.createElement("select"); 
 
         /* add all operating systems options */
@@ -1212,20 +1352,24 @@ function addProduct(id)
         package.setAttribute("manager", "manager" + vm_num);
         package.setAttribute("vm-type", id);
         package.setAttribute("name", package.id);
+        package.setAttribute("title", "Standard options offer full monthly backups, weekly differentials, and daily incrementals. Choose custom for custom settings");
         package.setAttribute("onchange", "processPackage(document.getElementById(this.id).value, this.getAttribute('optionval'))");
         package.setAttribute("value", "Standard 3-mo. Retention");
         
         var row2 = table.insertRow(++rowCount);
         var cell = row2.insertCell(0);
+        cell.setAttribute("colspan", "1");
+        
+        var cell = row2.insertCell(1);
         var raw = document.createTextNode("Raw Backup Data");                       
         cell.appendChild(raw);
         cell.setAttribute("colspan", "1");
         
-        var cell = row2.insertCell(1);
-        var raw_price = document.createTextNode("$" + raw_price_val + "/TB/mo.");
+        var cell = row2.insertCell(2);
+        var raw_price = document.createTextNode("$" + raw_price_val + "/TB");
         cell.appendChild(raw_price);
         cell.setAttribute("colspan", "1");
-        var cell = row2.insertCell(2);
+        var cell = row2.insertCell(3);
         var raw_qty = document.createElement("input");
         raw_qty.setAttribute("type", "text");
         raw_qty_in = "raw-qty" + vm_num;
@@ -1240,8 +1384,25 @@ function addProduct(id)
         raw_qty.setAttribute("name", raw_qty.id);
         raw_qty.setAttribute("size", 5);
         raw_qty.setAttribute("onchange", "getEstimate('raw', this.id, this.getAttribute('raw-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'RAW')");
+        var raw_units = document.createElement("select");
+        raw_units.setAttribute("name", "raw-units" + vm_num);
+        raw_units.setAttribute("value", "TB");
+        raw_units.setAttribute("title", "Choose the units");
+        raw_units.setAttribute("num", vm_num);
+        raw_units.id = "raw-units" + vm_num;
+            
+        /* add all unit options */
+        option = new Option("TB", "TB", false, false);
+        option.id = "TB" + vm_num;
+        raw_units.appendChild(option);
 
-        var cell = row2.insertCell(3);
+        option = new Option("GB", "GB", false, false);
+        option.id = "GB" + vm_num;
+        raw_units.appendChild(option);
+        raw_units.setAttribute("onchange", "changeUnits(this.id, this.value, this.getAttribute('num'), 'raw')");
+        cell.appendChild(raw_units);
+        
+        var cell = row2.insertCell(4);
         var raw_sub = document.createElement("input");
         raw_sub.setAttribute("type", "text");
         cell.appendChild(raw_sub);
@@ -1251,17 +1412,21 @@ function addProduct(id)
         raw_sub.className = "backup-sub vm-sub" + vm_num;
         raw_sub.setAttribute("name", raw_sub.id);
         raw_sub.setAttribute("size", 20);
+        
         var row3 = table.insertRow(++rowCount);
         var cell = row3.insertCell(0);
+        cell.setAttribute("colspan", "1");
+        
+        var cell = row3.insertCell(1);
         var full = document.createTextNode("Full Backups Saved");                       
         cell.appendChild(full);
         cell.setAttribute("colspan", "1");
         
-        var cell = row3.insertCell(1);
-        var full_price = document.createTextNode("$" + full_price_val + "/TB/mo.");
+        var cell = row3.insertCell(2);
+        var full_price = document.createTextNode("$" + full_price_val + "/TB");
         cell.appendChild(full_price);
         cell.setAttribute("colspan", "1");
-        var cell = row3.insertCell(2);
+        var cell = row3.insertCell(3);
         var full_qty = document.createElement("input");
         full_qty.setAttribute("type", "text");
         full_qty_in = "full-qty" + vm_num;
@@ -1275,9 +1440,11 @@ function addProduct(id)
         full_qty.setAttribute("full-price", full_price_val);
         full_qty.setAttribute("name", full_qty.id);
         full_qty.setAttribute("size", 5);
-        full_qty.setAttribute("onchange", "getEstimate('full', this.id, this.getAttribute('full-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'RAW')");
-
-        var cell = row3.insertCell(3);
+        full_qty.setAttribute("readonly", "readonly");
+        //full_qty.setAttribute("onchange", "getEstimate('full', this.id, this.getAttribute('full-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'RAW')");
+        cell.appendChild(document.createTextNode("\u00a0TB"));
+                         
+        var cell = row3.insertCell(4);
         var full_sub = document.createElement("input");
         full_sub.setAttribute("type", "text");
         cell.appendChild(full_sub);
@@ -1290,12 +1457,15 @@ function addProduct(id)
         
         var row4 = table.insertRow(++rowCount);
         var cell = row4.insertCell(0);
+        cell.setAttribute("colspan", "1");
+        
+        var cell = row4.insertCell(1);
         var monthlybackup = document.createTextNode("-How many full backups per month?");
         monthlybackup.className += " smalltext";
         cell.appendChild(monthlybackup);
         cell.setAttribute("colspan", "2");
         
-        var cell = row4.insertCell(1);
+        var cell = row4.insertCell(2);
         var monthlybackup_qty = document.createElement("input");
         monthlybackup_qty.setAttribute("type", "text");
         monthlybackup_qty_in = "monthlybackup-qty" + vm_num;
@@ -1310,12 +1480,15 @@ function addProduct(id)
         
         var row5 = table.insertRow(++rowCount);
         var cell = row5.insertCell(0);
+        cell.setAttribute("colspan", "1");
+        
+        var cell = row5.insertCell(1);
         var durmonthlybackup = document.createTextNode("-How long are full backups saved (months)?");
         durmonthlybackup.className += " smalltext";
         cell.appendChild(durmonthlybackup);
         cell.setAttribute("colspan", "2");
         
-        var cell = row5.insertCell(1);
+        var cell = row5.insertCell(2);
         var durmonthlybackup_qty = document.createElement("input");
         durmonthlybackup_qty.setAttribute("type", "text");
         durmonthlybackup_qty_in = "durmonthlybackup-qty" + vm_num;
@@ -1330,15 +1503,18 @@ function addProduct(id)
         
         var row6 = table.insertRow(++rowCount);
         var cell = row6.insertCell(0);
+        cell.setAttribute("colspan", "1");
+        
+        var cell = row6.insertCell(1);
         var diff = document.createTextNode("Differentials/Incremental Backups Saved");                       
         cell.appendChild(diff);
         cell.setAttribute("colspan", "1");
         
-        var cell = row6.insertCell(1);
-        var diff_price = document.createTextNode("$" + diff_price_val + "/TB/mo.");
+        var cell = row6.insertCell(2);
+        var diff_price = document.createTextNode("$" + diff_price_val + "/TB");
         cell.appendChild(diff_price);
         cell.setAttribute("colspan", "1");
-        var cell = row6.insertCell(2);
+        var cell = row6.insertCell(3);
         var diff_qty = document.createElement("input");
         diff_qty.setAttribute("type", "text");
         diff_qty_in = "diff-qty" + vm_num;
@@ -1352,9 +1528,12 @@ function addProduct(id)
         diff_qty.setAttribute("diff-price", diff_price_val);
         diff_qty.setAttribute("name", diff_qty.id);
         diff_qty.setAttribute("size", 5);
+        diff_qty.setAttribute("readonly", "readonly");
         diff_qty.setAttribute("onchange", "getEstimate('diff', this.id, this.getAttribute('diff-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'RAW')");
-
-        var cell = row6.insertCell(3);
+        
+        cell.appendChild(document.createTextNode("\u00a0TB"));
+        
+        var cell = row6.insertCell(4);
         var diff_sub = document.createElement("input");
         diff_sub.setAttribute("type", "text");
         cell.appendChild(diff_sub);
@@ -1367,12 +1546,15 @@ function addProduct(id)
         
         var row7 = table.insertRow(++rowCount);
         var cell = row7.insertCell(0);
+        cell.setAttribute("colspan", "1");
+        
+        var cell = row7.insertCell(1);
         var diffwk = document.createTextNode("-How many differentials are taken per week?");    
         diffwk.className += " smalltext";
         cell.appendChild(diffwk);
         cell.setAttribute("colspan", "2");
         
-        var cell = row7.insertCell(1);
+        var cell = row7.insertCell(2);
         var diffwk_qty = document.createElement("input");
         diffwk_qty.setAttribute("type", "text");
         diffwk_qty.setAttribute("name", diffwk_qty.id);
@@ -1388,12 +1570,15 @@ function addProduct(id)
         
         var row8 = table.insertRow(++rowCount);
         var cell = row8.insertCell(0);
+        cell.setAttribute("colspan", "1");
+        
+        var cell = row8.insertCell(1);
         var incwk = document.createTextNode("-How many incrementals are taken per week?");    
         incwk.className += " smalltext";
         cell.appendChild(incwk);
         cell.setAttribute("colspan", "2");
         
-        var cell = row8.insertCell(1);
+        var cell = row8.insertCell(2);
         var incwk_qty = document.createElement("input");
         incwk_qty.setAttribute("type", "text");
         incwk_qty_in = "incwk-qty" + vm_num;
@@ -1408,12 +1593,15 @@ function addProduct(id)
         
         var row9 = table.insertRow(++rowCount);
         var cell = row9.insertCell(0);
+        cell.setAttribute("colspan", "1");
+        
+        var cell = row9.insertCell(1);
         var durdiffinc = document.createTextNode("-How long are diff/inc saved (months)?");    
         durdiffinc.className += " smalltext";
         cell.appendChild(durdiffinc);
         cell.setAttribute("colspan", "2");
         
-        var cell = row9.insertCell(1);
+        var cell = row9.insertCell(2);
         var durdiffinc_qty = document.createElement("input");
         durdiffinc_qty.setAttribute("type", "text");
         durdiffinc_qty_in = "durdiffinc-qty" + vm_num;
@@ -1427,14 +1615,18 @@ function addProduct(id)
         durdiffinc_qty.setAttribute("onchange", "changeValue(this.id, this.value)");
         
         var row10 = table.insertRow(++rowCount);
-
         var cell = row10.insertCell(0);
+        cell.setAttribute("colspan", "1");
+        
+        var cell = row10.insertCell(1);
+        cell.setAttribute("style", "border-bottom: 1px solid black;");
         var subtext = document.createTextNode("Subtotal");
         cell.appendChild(subtext);
         cell.setAttribute("colspan", "3");
         cell.className += " pad-bottom";
 
-        var cell = row10.insertCell(1);
+        var cell = row10.insertCell(2);
+        cell.setAttribute("style", "border-bottom: 1px solid black;");
         var vmsubtotal = document.createElement("input");
         vmsubtotal.setAttribute("type", "text");
         cell.appendChild(vmsubtotal);
@@ -1480,7 +1672,7 @@ function getEstimate(type, id, price, dest, num, category)
     
     if (item.value === null || item.value === "" || isNaN(item.value)) {
         subtotal.setAttribute("value", "");
-    } else if (validate(type, id, dest)) {
+    } else if (validate(type, id, dest, num)) {
         if (type == 'sys-man' && document.getElementById('psa' + num).value == 'Variable') {
             document.getElementById(dest).value = 0;
             document.getElementById('vm-sub' + num + '-total').setAttribute("value", "0");
@@ -1489,9 +1681,12 @@ function getEstimate(type, id, price, dest, num, category)
             document.getElementById(dest).value = 'Variable';
             document.getElementById('vm-sub' + num + '-total').setAttribute("value", "Variable");
         } else {
+            if (type == 'raw') {
+                calculateBackup(num);
+            }
             document.getElementById(dest).setAttribute("value", "$" + (parseFloat(document.getElementById(id).value) * price).toFixed(2));
         }
-        if (type != 'cl-str' && type != 'consult' && type != 'sp-consult') {
+        if (type != 'cl-str' && type != 'consult' && type != 'sp-consult' && type != 'pr-str') {
             sub('vm-sub' + num);
         }
         
@@ -1526,6 +1721,10 @@ function getEstimate(type, id, price, dest, num, category)
         }
         sub(theclass);
         sub('sub');
+        
+        if (type == 'consult' || type == 'sp-consult') {
+            sub("onetime");
+        }
         //sub('vm-sub');
     }
     document.getElementById(dest).setAttribute("value", document.getElementById(dest).value);
@@ -1553,6 +1752,7 @@ function sub(theclass)
             }
         }  
     }
+    
     document.getElementById(theclass + "-total").setAttribute("value", "$" + sum.toFixed(2));
 }
             
@@ -1562,43 +1762,121 @@ function sub(theclass)
  *             dest - where to output error message or result
  * Result: Will print error message or correct result, depending on true/false
  */
-function validate(type, id, dest)
+function validate(type, id, dest, num)
 {            
     var v = document.getElementById(id).value;
     var d = document.getElementById(dest);
                 
     d.style.color = "#000"; //default color if validation passes
     
-    if (type == "cpu") {
-        if (v < 0 || v > 11) {
-            d.setAttribute("value", "Please enter a number from 0 to 11");
-            d.style.color = "#ff0000";
-            return false;
-        }
-    }
-                
-    if (type == "mem") {
-        if (v < 0 || v > 190 ) {
-            d.setAttribute("value", "Please enter a number from 0 to 190");
-            d.style.color = "#ff0000";
-            return false; 
-        }
-    }
-                
-    if (type == "silver") {
-        if (v < 0 || v > 30000) {
-            d.setAttribute("value", "Please enter a number from 0 to 30000");
-            d.style.color = "#ff0000";
-            return false;
-        }
-    }
-                
-    if (type == "gold") {
-        if (v < 0 || v > 4900) {
-            d.setAttribute("value", "Please enter a number from 0 to 4900");
-            d.style.color ="#ff0000";
-            return false;
-        }
+    switch (type) {
+        case "cpu":
+            if (v < 0 || v > 11 || v % 1 != 0) {
+                d.setAttribute("value", "Invalid input");
+                d.style.color = "#ff0000";
+                return false;
+            }
+            break;
+        
+        case "mem":
+            if (v < 0 || v > 190 || v % 1 != 0) {
+                d.setAttribute("value", "Invalid input");
+                d.style.color = "#ff0000";
+                return false; 
+            }
+            break;
+        
+        case "silver":
+            if (document.getElementById('str-units' + num).getAttribute("value") == 'GB') {
+                if (v < 0 || v > 30000) {
+                    d.setAttribute("value", "Invalid input");
+                    d.style.color = "#ff0000";
+                    return false;
+                }
+            } else {
+                if ( v < 0 || v > 30) {
+                    d.setAttribute("value", "Invalid input");
+                    d.style.color = "#ff0000";
+                    return false;
+                }
+            }
+            break;
+        
+        case "gold":
+            if (document.getElementById('san-units' + num).getAttribute("value") == 'GB') {
+                if (v < 0 || v > 4900) {
+                    d.setAttribute("value", "Invalid input");
+                    d.style.color = "#ff0000";
+                    return false;
+                }
+            } else {
+                if ( v < 0 || v > 4.9) {
+                    d.setAttribute("value", "Invalid input");
+                    d.style.color = "#ff0000";
+                    return false;
+                }
+            }
+            break;
+        
+        case "cl-str":
+            if (document.getElementById('cl-units' + num).getAttribute("value") == 'GB') {
+                if (v <= 100) {
+                    d.setAttribute("value", "Invalid input");
+                    d.style.color = "#ff0000";
+                    return false;
+                }
+            } else {
+                if ( v <= 0.1) {
+                    d.setAttribute("value", "Invalid input");
+                    d.style.color = "#ff0000";
+                    return false;
+                }
+            }
+            break; 
+        
+        case 'pr-str':
+            if (document.getElementById('pr-units' + num).getAttribute("value") == 'GB') {
+                if (v < 1000) {
+                    d.setAttribute("value", "Invalid input");
+                    d.style.color = "#ff0000";
+                    return false;
+                }
+            } else {
+                if (v < 1) {
+                    d.setAttribute("value", "Invalid input");
+                    d.style.color = "#ff0000";
+                    return false;
+                }
+            }
+            break;
+        case 'nonrec':
+        case 'no_os':
+        case 'storage_array':
+        case 'non_os_vendor':
+        case 'local_admin_access':
+        case 'sys_monitor':
+            if (v != 0 || v != 1) {
+                d.setAttribute("value", "Invalid input");
+                d.style.color = "#ff0000";
+                return false;
+            }
+            break;
+        case 'sp':
+        case 'additional-sp':
+            if (v % 1 != 0) {
+                d.setAttribute("value", "Invalid input");
+                d.style.color = "#ff0000";
+                return false;
+            }
+        case 'consult':
+        case 'sp-consult':
+            v = v * 10;
+            v = v % 1; 
+            if (v != 0) {
+                d.setAttribute("value", "Invalid input");
+                d.style.color = "#ff0000";
+                return false;
+            }
     }
 
     return true;
@@ -1816,18 +2094,18 @@ function changeUnits(id, value, num, category)
         case 'str': 
             if (value == 'TB') {
                 currentprice = document.getElementById("str-qty" + num).getAttribute("str-price");
-                console.log("current price: " + currentprice);
+
                 currentprice *= 1000;
-                console.log("new price: " + currentprice);
+
                 document.getElementById("str-qty" + num).setAttribute("str-price", currentprice);
-                console.log("updated price: " + document.getElementById("str-qty" + num).getAttribute("str-price"));
+                
             } else {
                 currentprice = document.getElementById("str-qty" + num).getAttribute("str-price");
-                console.log("current price: " + currentprice);
+                
                 currentprice /= 1000;
-                console.log("new price: " + currentprice);
+                
                 document.getElementById("str-qty" + num).setAttribute("str-price", currentprice);
-                console.log("updated price: " + document.getElementById("str-qty" + num).getAttribute("str-price"));
+                
             }
             
             var element = document.getElementById("str-qty" + num);
@@ -1873,7 +2151,48 @@ function changeUnits(id, value, num, category)
                 document.getElementById("cl-str-qty" + num).setAttribute("cl-str-price", currentprice);
             }
             var element = document.getElementById('cl-str-qty' + num);
-            getEstimate('cl-str', element.id, element.getAttribute('cl-str-price'), element.getAttribute('dest'), element.getAttribute('num'), 'CL_STR');
+            getEstimate('pr-str', element.id, element.getAttribute('cl-str-price'), element.getAttribute('dest'), element.getAttribute('num'), 'CL_STR');
+            break;
+        
+        case 'raw':
+            if (value == 'TB') {
+                currentprice = document.getElementById("raw-qty" + num).getAttribute("raw-price");
+                currentprice *= 1000;
+                document.getElementById("raw-qty" + num).setAttribute("raw-price", currentprice);
+            } else {
+                currentprice = document.getElementById("raw-qty" + num).getAttribute("raw-price");
+                currentprice /= 1000;
+                document.getElementById("raw-qty" + num).setAttribute("raw-price", currentprice);
+            }
+            var element = document.getElementById('raw-qty' + num);
+            getEstimate('raw', element.id, element.getAttribute('raw-price'), element.getAttribute('dest'),  element.getAttribute('num'), 'RAW');
             break;
     }
+}
+
+function calculateBackup(num)
+{
+    var input = document.getElementById("raw-qty" + num);
+    var fullbackups = document.getElementById("full-qty" + num);
+    var monthlynum = document.getElementById("monthlybackup-qty" + num);
+    var durmonthly = document.getElementById("durmonthlybackup-qty" + num);
+    var differentials = document.getElementById("diff-qty" + num);
+    var diffwk = document.getElementById("diffwk-qty" + num);
+    var incwk = document.getElementById("incwk-qty" + num);
+    var durdiffinc = document.getElementById("durdiffinc-qty" + num);
+    
+    var backupsvalue = parseFloat(input.value * monthlynum.value * durmonthly.value * 0.8).toFixed(2);
+    var diffvalue = parseFloat(((diffwk.value * input.value * 0.015) + (incwk.value * input.value * 0.0075)) * (4 * durdiffinc.value * 0.8)).toFixed(2);
+    
+    if (document.getElementById("raw-units" + num).getAttribute("value") == "GB") {
+        backupsvalue /= 1000;
+        backupsvalue = backupsvalue.toFixed(2);
+        diffvalue /= 1000;
+        diffvalue = diffvalue.toFixed(2);
+    }
+    fullbackups.setAttribute("value", backupsvalue);
+    differentials.setAttribute("value", diffvalue);
+    
+    getEstimate('full', fullbackups.id, fullbackups.getAttribute('full-price'), fullbackups.getAttribute('dest'),  fullbackups.getAttribute('num'), 'RAW');
+    getEstimate('diff', differentials.id, differentials.getAttribute('diff-price'), differentials.getAttribute('dest'),  differentials.getAttribute('num'), 'RAW');
 }

@@ -1,95 +1,13 @@
 $(document).ready(function() {
     
     /* perform initial subtotaling */
+    
+    var valid = true; 
+    
     sub('sub');
     
     /* Create PDF from the content */
-    $("#pdfbutton").click(function () {
-        /*var filename = prompt("Name the file: ");
-        html2canvas($('#quote-content'), { background: '#ffffff' }).then(function(canvas)
-        {
-            var imageData = canvas.toDataURL("image/jpeg");
-            var image = new Image('p', 'pt', 'letter');
-            image = Canvas2Image.convertToJPEG(canvas);
-            var doc = new jsPDF();
-            doc.addImage(imageData, 'JPEG', 12, 10);
-            var croppingYPosition = 1095;
-            count = (image.height) / 1095;
 
-            /* to split up the document into multiple pages if the canvas is too large */
-            /*for (var i =1; i < count; i++) {
-                doc.addPage();
-                var sourceX = 0;
-                var sourceY = croppingYPosition;
-                var sourceWidth = image.width;
-                var sourceHeight = 1095;
-                var destWidth = sourceWidth;
-                var destHeight = sourceHeight;
-                var destX = 0;
-                var destY = 0;
-                var canvas1 = document.createElement('canvas');
-                canvas1.setAttribute('height', destHeight);
-                canvas1.setAttribute('width', destWidth);                         
-                var ctx = canvas1.getContext("2d");
-                ctx.drawImage(image, sourceX, sourceY, sourceWidth, sourceHeight, destX, destY, destWidth, destHeight);
-                var image2 = new Image();
-                image2 = Canvas2Image.convertToJPEG(canvas1);
-                image2Data = image2.src;
-                doc.addImage(image2Data, 'JPEG', 12, 10);
-                croppingYPosition += destHeight;     
-            } 
-            
-            doc.save(filename); //save file
-        }); */
-        
-        var child = document.getElementById('vm-table');
-        var child2 = document.getElementById('vm-table-totals');
-        if (child.rows.length - 1 === 0) {
-            child.parentNode.removeChild(child);
-            child2.parentNode.removeChild(child2);
-        }
-        
-        var child = document.getElementById('str-table');
-        var child2 = document.getElementById('str-table-totals');
-        if (child.rows.length - 1 === 0) {
-            child.parentNode.removeChild(child);
-            child2.parentNode.removeChild(child2);
-        }
-        
-        var child = document.getElementById('pa-table');
-        var child2 = document.getElementById('pa-table-totals');
-        if (child.rows.length - 1 === 0) {
-            child.parentNode.removeChild(child);
-            child2.parentNode.removeChild(child2);
-        }
-        
-        var child = document.getElementById('backup-table');
-        var child2 = document.getElementById('backup-table-totals');
-        if (child.rows.length - 1 === 0) {
-            child.parentNode.removeChild(child);
-            child2.parentNode.removeChild(child2);
-        }
-        
-        var child = document.getElementById('consult-table');
-        var child2 = document.getElementById('consult-table-totals');
-        if (child.rows.length - 1 === 0) {
-            child.parentNode.removeChild(child);
-            child2.parentNode.removeChild(child2);
-        }
-        
-        var child = document.getElementById('sp-table');
-        var child2 = document.getElementById('sp-table-totals');
-        if (child.rows.length - 1 === 0) {
-            child.parentNode.removeChild(child);
-            child2.parentNode.removeChild(child2);
-        }
-        
-        var child = document.getElementById('totals');
-        if (child.getAttribute("hidden") == "hidden") {
-            child.parentNode.removeChild(child);
-        }
-        document.getElementById('formcode').value = $("#quote-content").html();
-    }); 
     
     $('body').on('keydown', 'input, select', function(e) {
         var self = $(this)
@@ -103,7 +21,7 @@ $(document).ready(function() {
             if (next.length) {
                 next.focus();
             } else {
-                form.submit();
+                //form.submit();
             }
             return false;
         }
@@ -124,3 +42,95 @@ $(document).ready(function() {
     document.getElementById('totals').setAttribute("hidden", "hidden");
     
 });
+
+function validateForm() {
+        var valid = true;
+        $('.vm-sub').each(function(i, e) {
+            if (e.value == "Invalid input") {
+                valid = false;
+            }
+        });
+    if (valid) {
+        
+        //$('.tables tr *:nth-child(1)').attr("width", "1px");
+        //$('.tables td').attr("height", "1px");
+        
+        var child = document.getElementById('vm-table');
+        var child2 = document.getElementById('vm-table-totals');
+        if (child.rows.length - 1 === 0) {
+            child.parentNode.removeChild(child);
+            child2.parentNode.removeChild(child2);
+        }
+        child.setAttribute("colspan", "4");
+        
+        var child = document.getElementById('str-table');
+        var child2 = document.getElementById('str-table-totals');
+        if (child.rows.length - 1 === 0) {
+            child.parentNode.removeChild(child);
+            child2.parentNode.removeChild(child2);
+        }
+        child.setAttribute("colspan", "4");
+        
+        var child = document.getElementById('pa-table');
+        var child2 = document.getElementById('pa-table-totals');
+        if (child.rows.length - 1 === 0) {
+            child.parentNode.removeChild(child);
+            child2.parentNode.removeChild(child2);
+        }
+        child.setAttribute("colspan", "4");
+        
+        var child = document.getElementById('backup-table');
+        var child2 = document.getElementById('backup-table-totals');
+        if (child.rows.length - 1 === 0) {
+            child.parentNode.removeChild(child);
+            child2.parentNode.removeChild(child2);
+        }
+        child.setAttribute("colspan", "4");
+        
+        var child = document.getElementById('consult-table');
+        var child2 = document.getElementById('consult-table-totals');
+        if (child.rows.length - 1 === 0) {
+            child.parentNode.removeChild(child);
+            child2.parentNode.removeChild(child2);
+        }
+        child.setAttribute("colspan", "4");
+        
+        var child = document.getElementById('sp-table');
+        var child2 = document.getElementById('sp-table-totals');
+        if (child.rows.length - 1 === 0) {
+            child.parentNode.removeChild(child);
+            child2.parentNode.removeChild(child2);
+        }
+        child.setAttribute("colspan", "4");
+        
+        var child = document.getElementById('totals');
+        if (child.getAttribute("hidden") == "hidden") {
+            child.parentNode.removeChild(child);
+        }
+        child.setAttribute("colspan", "4");
+        
+        $('.remove-button').each(function(i, e) {
+            e.parentNode.removeChild(e);
+        });
+        
+        $('.userinput').each(function(i, e) {
+            if (e.value == "") {
+                e.setAttribute("value", "0");
+            }
+        });
+        
+        $('.vm-sub').each(function(i, e) {
+            if (e.value == "") {
+                e.setAttribute("value", "$0.00");
+            }
+        });
+        
+        
+        document.getElementById('formcode').value = $("#quote-content").html();
+        document.getElementById("quote").submit();
+    } else {
+    alert("There are some invalid input fields. Please correct them before continuing.");
+        
+    }
+        
+}

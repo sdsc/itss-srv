@@ -19120,7 +19120,9 @@ Putting 1 is equivalent to putting 0 and calling Ln() just after. Default value:
 				break;
 			}
 			case 'br': {
-				$this->addHTMLVertSpace($hbz, $hb, $cell, $firsttag);
+				//$this->addHTMLVertSpace($hbz, $hb, $cell, $firsttag);
+                //$this->addHTMLVertSpace($hbz, $hb, $cell, $firsttag);
+                $this->addHTMLVertSpace($hbz, $hb, $cell, $firsttag);
 				break;
 			}
 			case 'div': {
@@ -19597,6 +19599,8 @@ Putting 1 is equivalent to putting 0 and calling Ln() just after. Default value:
 				$in_table_head = true;
 				$this->inthead = false;
 			case 'table': {
+                // KIMBERLY ADDED VERTICAL SPACE
+                //$this->addHTMLVertSpace('0', '0', false, false);
 				$table_el = $parent;
 				
                 // Kimberly added this!!!
@@ -19884,6 +19888,8 @@ Putting 1 is equivalent to putting 0 and calling Ln() just after. Default value:
 					}
 				}
 				$parent = $table_el;
+                // KIMBERLY ADDED THESE VERTICAL SPACES
+                $this->addHTMLVertSpace('0', '0', false, false);
 				break;
 			}
 			case 'a': {
