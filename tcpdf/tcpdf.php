@@ -19604,9 +19604,9 @@ Putting 1 is equivalent to putting 0 and calling Ln() just after. Default value:
 				$table_el = $parent;
 				
                 // Kimberly added this!!!
-                /*if (isset($table_el['attribute']['hidden'])) {
+                if (isset($table_el['attribute']['hidden'])) {
                     break;
-                } */
+                }
                 
                 // set default border
 				if (isset($table_el['attribute']['border']) AND ($table_el['attribute']['border'] > 0)) {

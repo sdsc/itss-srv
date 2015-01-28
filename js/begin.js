@@ -1,3 +1,5 @@
+var count = 0; 
+var oldCode;
 $(document).ready(function() {
     
     /* perform initial subtotaling */
@@ -55,6 +57,8 @@ function validateForm() {
         //$('.tables tr *:nth-child(1)').attr("width", "1px");
         //$('.tables td').attr("height", "1px");
         
+        oldCode = $('#quote-content').clone();
+        console.log(++count);
         var child = document.getElementById('vm-table');
         var child2 = document.getElementById('vm-table-totals');
         if (child.rows.length - 1 === 0) {
@@ -113,13 +117,16 @@ function validateForm() {
             e.parentNode.removeChild(e);
         });
         
+        var child = document.getElementById('pdfbutton');
+        child.parentNode.removeChild(child);
+
         $('.userinput').each(function(i, e) {
             if (e.value == "") {
                 e.setAttribute("value", "0");
             }
         });
         
-        $('.vm-sub').each(function(i, e) {
+        $('.vm-sub, .str-sub, .pa-sub, .backup-sub, .consult-sub, .sp-sub').each(function(i, e) {
             if (e.value == "") {
                 e.setAttribute("value", "$0.00");
             }
@@ -127,9 +134,13 @@ function validateForm() {
         
         
         document.getElementById('formcode').value = $("#quote-content").html();
+        
         document.getElementById("quote").submit();
+        $("#quote-content").replaceWith(oldCode.clone());
+        $("#quote-content").replaceWith(oldCode);
+        
     } else {
-    alert("There are some invalid input fields. Please correct them before continuing.");
+        alert("There are some invalid input fields. Please correct them before continuing.");
         
     }
         
