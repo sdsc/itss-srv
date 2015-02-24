@@ -1,4 +1,3 @@
-//http://springtricks.blogspot.com/2013/10/how-to-download-charts-to-pdf-formate.html
 // keep track of the number of services in the quote
 
 var vm_num = 0; //number of VM's ordered
@@ -53,6 +52,7 @@ function addProduct(id)
         case 'DESK':
         case 'SYSTEMS':
         case 'STORAGE':
+        case 'RECUR':
             var table = document.getElementById('consult-table');
             var totals = document.getElementById('consult-table-totals');
             break;
@@ -69,7 +69,12 @@ function addProduct(id)
             var table = document.getElementById('backup-table');
             var totals = document.getElementById('backup-table-totals');
             break;
+        case 'CL_COMPUTE':
+            var table = document.getElementById('cl-compute-table');
+            var totals = document.getElementById('cl-compute-table-totals');
+            break;
     }
+    
     rowCount = table.rows.length;
     if (rowCount - 1 === 0) {
         table.removeAttribute("hidden");
@@ -110,9 +115,9 @@ function addProduct(id)
         remove.setAttribute("rownumber", "row" + vm_num);
         remove.setAttribute("title", "Remove Service");
         if (id == 'ST_VM') {
-            remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), 6, 'ST_VM')");
-        } else {
             remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), 7, 'ST_VM')");
+        } else {
+            remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), 8, 'ST_VM')");
         }
         
         var cell = row1.insertCell(1);
@@ -151,9 +156,9 @@ function addProduct(id)
         os.setAttribute("sys", "sys" + vm_num);
         os.setAttribute("manager", "manager" + vm_num);
         os.setAttribute("vm-type", id);
-        //os.setAttribute("onchange", "processOS(this.getAttribute('vm-type'), document.getElementById(this.id).value, this.getAttribute('sys'), this.getAttribute('manager'), this.getAttribute('optionval'))");
+        os.setAttribute("onchange", "processOS(this.getAttribute('vm-type'), document.getElementById(this.id).value, this.getAttribute('sys'), this.getAttribute('manager'), this.getAttribute('optionval'))");
         os.setAttribute("readonly", "readonly");
-        os.defaultSelected = "Other" + vm_num;
+        //os.defaultSelected = "Other" + vm_num;
 
         var cell = row1.insertCell(3);
         var price = document.createElement("input");
@@ -282,6 +287,9 @@ function addProduct(id)
             str_qty.setAttribute("str-price", str_price_val);
             str_qty.setAttribute("size", 5);
             str_qty.setAttribute("onchange", "getEstimate('silver', this.id, this.getAttribute('str-price'), this.getAttribute('dest'), this.getAttribute('num'), 'ST_VM')");
+            var blanknode = document.createTextNode("\u00a0");
+            cell.appendChild(blanknode);
+            
             var str_units = document.createElement("select");
             str_units.setAttribute("name", "str-units" + vm_num);
             str_units.setAttribute("value", "TB");
@@ -291,11 +299,11 @@ function addProduct(id)
             
             /* add all unit options */
             option = new Option("TB", "TB", false, false);
-            option.id = "TB" + vm_num;
+            option.id = "TB2" + vm_num;
             str_units.appendChild(option);
 
             option = new Option("GB", "GB", false, false);
-            option.id = "GB" + vm_num;
+            option.id = "GB2" + vm_num;
             str_units.appendChild(option);
             str_units.setAttribute("onchange", "changeUnits(this.id, this.value, this.getAttribute('num'), 'str')");
             cell.appendChild(str_units);
@@ -350,6 +358,8 @@ function addProduct(id)
         san_qty.setAttribute("san-price", san_price_val);
         san_qty.setAttribute("size", 5);
         san_qty.setAttribute("onchange", "getEstimate('gold', this.id, this.getAttribute('san-price'), this.getAttribute('dest'), this.getAttribute('num'), 'ST_VM')");
+        var blanknode = document.createTextNode("\u00a0");
+        cell.appendChild(blanknode);
         
         var san_units = document.createElement("select");
         san_units.setAttribute("name", "san-units" + vm_num);
@@ -409,7 +419,27 @@ function addProduct(id)
                 document.getElementById(sysmanagement_text.id).setAttribute("value", "User-managed");
             /*}*/
         }
-
+var row7 = table.insertRow(++rowCount);
+            var cell = row7.insertCell(0);
+            cell.setAttribute("colspan", "1");
+            
+            cell = row7.insertCell(1);
+            var description = document.createTextNode("Description");
+            cell.appendChild(description);
+            cell.setAttribute("colspan", "1");
+            
+            cell = row7.insertCell(2);
+            var description_box = document.createElement("textarea");
+            description_box.setAttribute("colspan", "3");
+            description_box.id = "description" + vm_num;
+            description_box.setAttribute("num", vm_num);
+            console.log("this is the id: " + description_box.id);
+            description_box.setAttribute("name", " ");
+            description_box.setAttribute("onchange", "changeDescription(this.getAttribute('num'), this.value)");
+            description_box.setAttribute("rows", "5");
+            description_box.setAttribute("cols", "15");
+            cell.appendChild(description_box);
+            document.getElementById("description" + vm_num).innerHTML = "Enter a brief description here";
         /*var row7 = table.insertRow(++rowCount);
         var cell = row7.insertCell(0);
         cell.setAttribute("colspan", "1");
@@ -478,7 +508,7 @@ function addProduct(id)
         remove.setAttribute("value", "-");
         remove.setAttribute("rownumber", "row" + vm_num);
         remove.setAttribute("title", "Remove Service");
-        remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), 2, 'CL_STR')");
+        remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), 4, 'CL_STR')");
         
         var cell = row1.insertCell(1);
         var name = document.createTextNode("Cloud Storage");                      
@@ -493,7 +523,10 @@ function addProduct(id)
         cl_str_price.setAttribute("type", "text");
         cl_str_price.setAttribute("readonly", "readonly");
         cl_str_price.value = "$" + cl_str_price_val + "/TB";
+        cl_str_price.setAttribute("value", "$" + cl_str_price_val + "/TB");
+        cl_str_price.setAttribute("name", cl_str_price.id);
         cell.appendChild(cl_str_price);
+        document.getElementById("cl-str-price" + vm_num).setAttribute("value", "$" + cl_str_price_val + "/TB");
         cell.setAttribute("colspan", "1");
         
         var cell = row1.insertCell(3);
@@ -512,6 +545,8 @@ function addProduct(id)
         cl_str_qty.setAttribute("title", "Min value 0.100TB (100GB)");
         cl_str_qty.setAttribute("size", 5);
         cl_str_qty.setAttribute("onchange", "getEstimate('cl-str', this.id, this.getAttribute('cl-str-price'), this.getAttribute('dest'), this.getAttribute('num'), 'CL_STR')");
+        var blanknode = document.createTextNode("\u00a0");
+        cell.appendChild(blanknode);
         
         var cl_units = document.createElement("select");
         cl_units.setAttribute("name", "cl-units" + vm_num);
@@ -545,15 +580,11 @@ function addProduct(id)
         var row2 = table.insertRow(++rowCount);
         row2.id = "row" + vm_num;
         var cell = row2.insertCell(0);
-        cell.setAttribute("style", "border-bottom: 1px solid black;");
-        cell.setAttribute("colspan", "1");
         
         var cell = row2.insertCell(1);
-        var dual_text = document.createTextNode("Dual Redundancy?");
+        var dual_text = document.createTextNode("Dual Site Redundancy?");
         cell.appendChild(dual_text);
-        cell.setAttribute("colspan", "1");
-        cell.className += " pad-bottom";
-        cell.setAttribute("style", "border-bottom: 1px solid black;");
+        
         
         var cell = row2.insertCell(2);
         var dualoptions = document.createElement("select");
@@ -576,9 +607,63 @@ function addProduct(id)
         dualoptions.appendChild(options);
         cell.appendChild(dualoptions);
         
-        cell.setAttribute("colspan", "3");
-        cell.setAttribute("style", "border-bottom: 1px solid black;");
+        if (dualoptions.value == 'No') {
+            var row3 = table.insertRow(++rowCount);
+            row3.id = "row" + vm_num;
+            var cell = row3.insertCell(0);
+            
+            var cell = row3.insertCell(1);
+            var site_text = document.createTextNode("Site");
+            cell.appendChild(site_text);
+
+            var cell = row3.insertCell(2);
+            var siteoptions = document.createElement("select");
+            siteoptions.id = "siteoptions" + vm_num;
+            siteoptions.setAttribute("num", vm_num);
+            siteoptions.setAttribute("name", siteoptions.id);
+            siteoptions.setAttribute("title", "Choose a site");
+            var options = new Option("San Diego", "San Diego", false, false);
+            options.id = "SD" + vm_num;
+            options.setAttribute("num", vm_num);
+            siteoptions.appendChild(options);
+            siteoptions.setAttribute("value", "San Diego");
+
+            options = new Option("Oakland", "Oakland", false, false);
+            options.id = "Oakland" + vm_num;
+            siteoptions.setAttribute("num", vm_num);
+            siteoptions.appendChild(options);
+            siteoptions.setAttribute("onchange", "changeSite(this.getAttribute('num'))");
+            cell.appendChild(siteoptions);
+
+        }
+        var row7 = table.insertRow(++rowCount);
+            var cell = row7.insertCell(0);
+            cell.setAttribute("colspan", "1");
+            cell.setAttribute("style", "border-bottom: 1px solid black;");
         
+            cell = row7.insertCell(1);
+            var description = document.createTextNode("Description");
+            cell.appendChild(description);
+            cell.setAttribute("colspan", "1");
+            cell.setAttribute("colspan", "1");
+            cell.className += " pad-bottom";
+            cell.setAttribute("style", "border-bottom: 1px solid black;");
+        
+            cell = row7.insertCell(2);
+            var description_box = document.createElement("textarea");
+            description_box.setAttribute("colspan", "3");
+            description_box.id = "description" + vm_num;
+            description_box.setAttribute("num", vm_num);
+            console.log("this is the id: " + description_box.id);
+            description_box.setAttribute("name", " ");
+            description_box.setAttribute("onchange", "changeDescription(this.getAttribute('num'), this.value)");
+            description_box.setAttribute("rows", "5");
+            description_box.setAttribute("cols", "15");
+            cell.appendChild(description_box);
+            cell.setAttribute("colspan", "3");
+            cell.setAttribute("style", "border-bottom: 1px solid black;");
+            document.getElementById("description" + vm_num).innerHTML = "Enter a brief description here";
+    
         sub('vm-sub');
     } /* END CLOUD STORAGE CODE */
     
@@ -591,13 +676,12 @@ function addProduct(id)
             var prod_name = "Project Storage";
         } else {
             var cl_str_price_val = 782.11;
-            var cl_str_price_string = "$" + cl_str_price_val + "/pair";
+            var cl_str_price_string = "$" + cl_str_price_val + "/unit";
             var prod_name = "Project Condo";
         }
         row1 = table.insertRow(rowCount);
         row1.id = "row" + vm_num;
         var cell = row1.insertCell(0);
-        cell.setAttribute("style", "border-bottom: 1px solid black;");
         var remove = document.createElement("button");
         var remove_text = document.createTextNode("-");
         remove.appendChild(remove_text);
@@ -606,24 +690,19 @@ function addProduct(id)
         remove.setAttribute("value", "-");
         remove.setAttribute("rownumber", "row" + vm_num);
         remove.setAttribute("title", "Remove Service");
-        remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), 1, 'CL_STR')");
+        remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), 2, 'CL_STR')");
         
         var cell = row1.insertCell(1);
-        cell.setAttribute("style", "border-bottom: 1px solid black;");
         var name = document.createTextNode(prod_name);                      
         cell.appendChild(name);
-        cell.setAttribute("colspan", "1");
         cell.className = "service-title";
-        cell.className += " pad-bottom";
         
         var cell = row1.insertCell(2);
-        cell.setAttribute("style", "border-bottom: 1px solid black;");
         var cl_str_price = document.createTextNode(cl_str_price_string);
         cell.appendChild(cl_str_price);
         cell.setAttribute("colspan", "1");
         
         var cell = row1.insertCell(3);
-        cell.setAttribute("style", "border-bottom: 1px solid black;");
         var cl_str_qty = document.createElement("input");
         cl_str_qty.setAttribute("type", "text");
         cl_str_qty_in = "cl-str-qty" + vm_num;
@@ -641,6 +720,8 @@ function addProduct(id)
         cl_str_qty.setAttribute("size", 5);
         cl_str_qty.setAttribute("cl-str-price", cl_str_price_val);
         cl_str_qty.setAttribute("onchange", "getEstimate('pr-str', this.id, this.getAttribute('cl-str-price'), this.getAttribute('dest'), this.getAttribute('num'), 'CL_STR')");
+        var blanknode = document.createTextNode("\u00a0");
+        cell.appendChild(blanknode);
         
         if (id == 'PR_STR') {
             var pr_units = document.createElement("select");
@@ -661,11 +742,10 @@ function addProduct(id)
             pr_units.setAttribute("onchange", "changeUnits(this.id, this.value, this.getAttribute('num'), 'pr')");
             cell.appendChild(pr_units);
         } else {
-            cell.appendChild(document.createTextNode("\u00a0\u00a0pair(s)"));
+            cell.appendChild(document.createTextNode("\u00a0\u00a0unit(s)"));
         }
 
         var cell = row1.insertCell(4);
-        cell.setAttribute("style", "border-bottom: 1px solid black;");
         var cl_str_sub = document.createElement("input");
         cl_str_sub.setAttribute("type", "text");
         cell.appendChild(cl_str_sub);
@@ -677,10 +757,38 @@ function addProduct(id)
         cl_str_sub.className = "str-sub vm-sub" + vm_num;
         sub('str-sub');
         sub('sub');
+        
+        var row7 = table.insertRow(++rowCount);
+            var cell = row7.insertCell(0);
+            cell.setAttribute("colspan", "1");
+            cell.setAttribute("style", "border-bottom: 1px solid black;");
+            cell = row7.insertCell(1);
+            var description = document.createTextNode("Description");
+            cell.appendChild(description);
+            cell.setAttribute("colspan", "1");
+            cell.setAttribute("style", "border-bottom: 1px solid black;");
+        
+            cell = row7.insertCell(2);
+            var description_box = document.createElement("textarea");
+            description_box.setAttribute("colspan", "3");
+            cell.setAttribute("style", "border-bottom: 1px solid black;");
+            cell.className += " pad-bottom";
+            description_box.id = "description" + vm_num;
+            description_box.setAttribute("num", vm_num);
+            console.log("this is the id: " + description_box.id);
+            description_box.setAttribute("name", " ");
+            description_box.setAttribute("onchange", "changeDescription(this.getAttribute('num'), this.value)");
+            description_box.setAttribute("rows", "5");
+            description_box.setAttribute("cols", "15");
+            cell.appendChild(description_box);
+        cell.setAttribute("colspan", "3");
+            cell.setAttribute("style", "border-bottom: 1px solid black;");
+            document.getElementById("description" + vm_num).innerHTML = "Enter a brief description here";
+        
     } /* END PROJECT STORAGE AND PROJECT CONDO CODE */
     
     /* BEGIN CONSULTING SERVICES */
-    else if (id == 'DESK' || id == 'SYSTEMS' || id == 'STORAGE') {
+    else if (id == 'DESK' || id == 'SYSTEMS' || id == 'STORAGE' || id == 'RECUR') {
         var consult_price_val;
         var prod_name;
         if (id == 'DESK') {
@@ -692,12 +800,14 @@ function addProduct(id)
         } else if (id == 'STORAGE') {
             consult_price_val = 80.00;
             prod_name = "Tier I Consulting Services - Storage";
+        } else if (id == 'RECUR') {
+            consult_price_val = 96.00;
+            prod_name = "Recurring Consulting Services";
         }
         
         row1 = table.insertRow(rowCount);
         row1.id = "row" + vm_num;
         var cell = row1.insertCell(0);
-        cell.setAttribute("style", "border-bottom: 1px solid black;");
         var remove = document.createElement("button");
         var remove_text = document.createTextNode("-");
         remove.appendChild(remove_text);
@@ -706,24 +816,21 @@ function addProduct(id)
         remove.setAttribute("value", "-");
         remove.setAttribute("rownumber", "row" + vm_num);
         remove.setAttribute("title", "Remove Service");
-        remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), 1, 'DESK')");
+        remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), 2, 'DESK')");
         
         var cell = row1.insertCell(1);
         var name = document.createTextNode(prod_name);  
         cell.appendChild(name);
-        cell.setAttribute("style", "border-bottom: 1px solid black;");
         cell.setAttribute("colspan", "1");
         cell.className = "service-title";
         cell.className += " pad-bottom";
         
         var cell = row1.insertCell(2);
-        cell.setAttribute("style", "border-bottom: 1px solid black;");
         var consult_price = document.createTextNode("$" + consult_price_val + "/hr");
         cell.appendChild(consult_price);
         cell.setAttribute("colspan", "1");
         
         var cell = row1.insertCell(3);
-        cell.setAttribute("style", "border-bottom: 1px solid black;");
         var consult_qty = document.createElement("input");
         consult_qty.setAttribute("type", "text");
         consult_qty_in = "consult-qty" + vm_num;
@@ -736,23 +843,56 @@ function addProduct(id)
         consult_qty.setAttribute("num", vm_num);
         consult_qty.setAttribute("consult-price", consult_price_val);
         consult_qty.setAttribute("name", consult_qty.id);
-        consult_qty.setAttribute("title", "Number of hours in multiples of tenths (One-time consulting fee)");
+        if (id == 'RECUR') {
+            consult_qty.setAttribute("title", "Number of hours in multiples of tenths (monthly consulting fee)");
+        } else {
+            consult_qty.setAttribute("title", "Number of hours in multiples of tenths (One-time consulting fee)");
+        }
+        
         consult_qty.setAttribute("size", 5);
         consult_qty.setAttribute("onchange", "getEstimate('consult', this.id, this.getAttribute('consult-price'), this.getAttribute('dest'), this.getAttribute('num'), 'DESK')");
         cell.appendChild(document.createTextNode("\u00a0\u00a0hr(s)"));
         var cell = row1.insertCell(4);
-        cell.setAttribute("style", "border-bottom: 1px solid black;");
         var consult_sub = document.createElement("input");
         consult_sub.setAttribute("type", "text");
         cell.appendChild(consult_sub);
         cell.setAttribute("colspan", "1");
         consult_sub.id = consult_sub_out;
         document.getElementById(consult_sub_out).setAttribute("readonly", "readonly");
-        consult_sub.className = "consult-sub onetime vm-sub" + vm_num;
+        if (id == 'RECUR') {
+            consult_sub.className = "consult-sub sub vm-sub" + vm_num;
+        } else {
+            consult_sub.className = "consult-sub onetime vm-sub" + vm_num;
+        }
+        
         consult_sub.setAttribute("name", consult_sub.id);
         consult_sub.setAttribute("size", 20);
         sub('consult-sub');
         sub('sub');
+        
+        var row7 = table.insertRow(++rowCount);
+            var cell = row7.insertCell(0);
+            cell.setAttribute("colspan", "1");
+            cell.setAttribute("style", "border-bottom: 1px solid black;");
+            cell = row7.insertCell(1);
+            var description = document.createTextNode("Description");
+            cell.appendChild(description);
+            cell.setAttribute("colspan", "1");
+            cell.setAttribute("style", "border-bottom: 1px solid black;");
+            cell = row7.insertCell(2);
+            var description_box = document.createElement("textarea");
+            description_box.setAttribute("colspan", "3");
+            description_box.id = "description" + vm_num;
+            description_box.setAttribute("num", vm_num);
+            console.log("this is the id: " + description_box.id);
+            description_box.setAttribute("name", " ");
+            description_box.setAttribute("onchange", "changeDescription(this.getAttribute('num'), this.value)");
+            description_box.setAttribute("rows", "5");
+            description_box.setAttribute("cols", "15");
+            cell.appendChild(description_box);
+        cell.setAttribute("colspan", "3");
+            cell.setAttribute("style", "border-bottom: 1px solid black;");
+            document.getElementById("description" + vm_num).innerHTML = "Enter a brief description here";
     } /* END CONSULTING SERVICES */
     
     /* BEGIN SHAREPOINT SERVICES */
@@ -760,7 +900,7 @@ function addProduct(id)
         var sp_price_val = 333.33;
         var prod_name = "SharePoint Site";
         var unit = "/month";
-        var numRows = 4; 
+        var numRows = 5; 
         
         row1 = table.insertRow(rowCount);
         row1.id = "row" + vm_num;
@@ -908,6 +1048,28 @@ function addProduct(id)
         consultation_sub.setAttribute("name", consultation_sub.id);
         consultation_sub.setAttribute("size", 20);
         
+        var row7 = table.insertRow(++rowCount);
+            var cell = row7.insertCell(0);
+            cell.setAttribute("colspan", "1");
+            
+            cell = row7.insertCell(1);
+            var description = document.createTextNode("Description");
+            cell.appendChild(description);
+            cell.setAttribute("colspan", "1");
+            
+            cell = row7.insertCell(2);
+            var description_box = document.createElement("textarea");
+            description_box.setAttribute("colspan", "3");
+            description_box.id = "description" + vm_num;
+            description_box.setAttribute("num", vm_num);
+            console.log("this is the id: " + description_box.id);
+            description_box.setAttribute("name", " ");
+            description_box.setAttribute("onchange", "changeDescription(this.getAttribute('num'), this.value)");
+            description_box.setAttribute("rows", "5");
+            description_box.setAttribute("cols", "15");
+            cell.appendChild(description_box);
+            document.getElementById("description" + vm_num).innerHTML = "Enter a brief description here";
+        
         var row4 = table.insertRow(++rowCount);
         
         var cell = row4.insertCell(0);
@@ -951,7 +1113,7 @@ function addProduct(id)
         remove.setAttribute("value", "-");
         remove.setAttribute("rownumber", "row" + vm_num);
         remove.setAttribute("title", "Remove Service");
-        remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), 10, 'SYS_MAN')");
+        remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), 11, 'SYS_MAN')");
         
         var cell = row1.insertCell(1);
         var name = document.createTextNode("System Management");                      
@@ -1024,12 +1186,13 @@ function addProduct(id)
         systemnameinput.setAttribute("type", "text");
         systemnameinput.setAttribute("name", "systemnameinput");
         systemnameinput.setAttribute("size", 20);
+        systemnameinput.setAttribute("num", vm_num);
         systemnameinput.id = "systemnameinput" + vm_num;
         systemnameinput.className += " system-name";
         systemnameinput.defaultValue = "Enter System Name";
         systemnameinput.setAttribute("value", "Enter System Name");
         
-        systemnameinput.setAttribute("onchange", "changeValue('' + this.id, this.value)");
+        systemnameinput.setAttribute("onchange", "changeValue('' + this.id, this.value, this.getAttribute('num'))");
         cell.appendChild(systemnameinput);
         cell.setAttribute("colspan", "3");
         
@@ -1300,6 +1463,30 @@ function addProduct(id)
         cell.appendChild(colo_price);
         cell.setAttribute("colspan", "3");
         
+        
+        var row7 = table.insertRow(++rowCount);
+            var cell = row7.insertCell(0);
+            cell.setAttribute("colspan", "1");
+            
+            cell = row7.insertCell(1);
+            var description = document.createTextNode("Description");
+            cell.appendChild(description);
+            cell.setAttribute("colspan", "1");
+            
+            cell = row7.insertCell(2);
+            var description_box = document.createElement("textarea");
+            description_box.setAttribute("colspan", "3");
+            description_box.id = "description" + vm_num;
+            description_box.setAttribute("num", vm_num);
+            console.log("this is the id: " + description_box.id);
+            description_box.setAttribute("name", " ");
+            description_box.setAttribute("onchange", "changeDescription(this.getAttribute('num'), this.value)");
+            description_box.setAttribute("rows", "5");
+            description_box.setAttribute("cols", "15");
+            cell.appendChild(description_box);
+            document.getElementById("description" + vm_num).innerHTML = "Enter a brief description here";
+        
+        
         var row9 = table.insertRow(++rowCount);
 
         var cell = row9.insertCell(0);
@@ -1346,7 +1533,7 @@ function addProduct(id)
         remove.setAttribute("value", "-");
         remove.setAttribute("rownumber", "row" + vm_num);
         remove.setAttribute("title", "Remove Service");
-        remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), 10, 'RAW')");
+        remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), 11, 'RAW')");
 
         var cell = row1.insertCell(1);
         var name = document.createTextNode("CommVault Backup");                      
@@ -1410,6 +1597,10 @@ function addProduct(id)
         raw_qty.setAttribute("name", raw_qty.id);
         raw_qty.setAttribute("size", 5);
         raw_qty.setAttribute("onchange", "getEstimate('raw', this.id, this.getAttribute('raw-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'RAW')");
+        var blanknode = document.createTextNode("\u00a0");
+        cell.appendChild(blanknode);
+        
+        
         var raw_units = document.createElement("select");
         raw_units.setAttribute("name", "raw-units" + vm_num);
         raw_units.setAttribute("value", "TB");
@@ -1468,7 +1659,7 @@ function addProduct(id)
         full_qty.setAttribute("size", 5);
         full_qty.setAttribute("readonly", "readonly");
         //full_qty.setAttribute("onchange", "getEstimate('full', this.id, this.getAttribute('full-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'RAW')");
-        cell.appendChild(document.createTextNode("\u00a0TB"));
+        cell.appendChild(document.createTextNode("\u00a0\u00a0TB"));
                          
         var cell = row3.insertCell(4);
         var full_sub = document.createElement("input");
@@ -1501,8 +1692,9 @@ function addProduct(id)
         monthlybackup_qty.id = monthlybackup_qty_in;
         monthlybackup_qty.className += " monthlybackup_qty userinput";
         monthlybackup_qty.setAttribute("name", monthlybackup_qty.id);
+        monthlybackup_qty.setAttribute("num", vm_num);
         monthlybackup_qty.setAttribute("size", 5);
-        monthlybackup_qty.setAttribute("onchange", "changeValue(this.id, this.value)");
+        monthlybackup_qty.setAttribute("onchange", "changeValue(this.id, this.value, this.getAttribute('num'))");
         
         var row5 = table.insertRow(++rowCount);
         var cell = row5.insertCell(0);
@@ -1525,7 +1717,8 @@ function addProduct(id)
         durmonthlybackup_qty.className += " durmonthlybackup_qty userinput";
         durmonthlybackup_qty.setAttribute("name", durmonthlybackup_qty.id);
         durmonthlybackup_qty.setAttribute("size", 5);
-        durmonthlybackup_qty.setAttribute("onchange", "changeValue(this.id, this.value)");
+        durmonthlybackup_qty.setAttribute("num", vm_num);
+        durmonthlybackup_qty.setAttribute("onchange", "changeValue(this.id, this.value, this.getAttribute('num'))");
         
         var row6 = table.insertRow(++rowCount);
         var cell = row6.insertCell(0);
@@ -1557,7 +1750,7 @@ function addProduct(id)
         diff_qty.setAttribute("readonly", "readonly");
         diff_qty.setAttribute("onchange", "getEstimate('diff', this.id, this.getAttribute('diff-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'RAW')");
         
-        cell.appendChild(document.createTextNode("\u00a0TB"));
+        cell.appendChild(document.createTextNode("\u00a0\u00a0TB"));
         
         var cell = row6.insertCell(4);
         var diff_sub = document.createElement("input");
@@ -1592,7 +1785,8 @@ function addProduct(id)
         diffwk_qty.className += " diffwk_qty userinput";
         diffwk_qty.setAttribute("name", diffwk_qty.id);
         diffwk_qty.setAttribute("size", 5);
-        diffwk_qty.setAttribute("onchange", "changeValue(this.id, this.value)");
+        diffwk_qty.setAttribute("num", vm_num);
+        diffwk_qty.setAttribute("onchange", "changeValue(this.id, this.value, this.getAttribute('num'))");
         
         var row8 = table.insertRow(++rowCount);
         var cell = row8.insertCell(0);
@@ -1615,7 +1809,8 @@ function addProduct(id)
         incwk_qty.className += " incwk_qty userinput";
         incwk_qty.setAttribute("name", incwk_qty.id);
         incwk_qty.setAttribute("size", 5);
-        incwk_qty.setAttribute("onchange", "changeValue(this.id, this.value)");
+        incwk_qty.setAttribute("num", vm_num);
+        incwk_qty.setAttribute("onchange", "changeValue(this.id, this.value, this.getAttribute('num'))");
         
         var row9 = table.insertRow(++rowCount);
         var cell = row9.insertCell(0);
@@ -1638,7 +1833,30 @@ function addProduct(id)
         durdiffinc_qty.className += " durdiffinc_qty userinput";
         durdiffinc_qty.setAttribute("name", durdiffinc_qty.id);
         durdiffinc_qty.setAttribute("size", 5);
-        durdiffinc_qty.setAttribute("onchange", "changeValue(this.id, this.value)");
+        durdiffinc_qty.setAttribute("num", vm_num);
+        durdiffinc_qty.setAttribute("onchange", "changeValue(this.id, this.value, this.getAttribute('num'))");
+        
+        var row7 = table.insertRow(++rowCount);
+            var cell = row7.insertCell(0);
+            cell.setAttribute("colspan", "1");
+            
+            cell = row7.insertCell(1);
+            var description = document.createTextNode("Description");
+            cell.appendChild(description);
+            cell.setAttribute("colspan", "1");
+            
+            cell = row7.insertCell(2);
+            var description_box = document.createElement("textarea");
+            description_box.setAttribute("colspan", "3");
+            description_box.id = "description" + vm_num;
+            description_box.setAttribute("num", vm_num);
+            console.log("this is the id: " + description_box.id);
+            description_box.setAttribute("name", " ");
+            description_box.setAttribute("onchange", "changeDescription(this.getAttribute('num'), this.value)");
+            description_box.setAttribute("rows", "5");
+            description_box.setAttribute("cols", "15");
+            cell.appendChild(description_box);
+            document.getElementById("description" + vm_num).innerHTML = "Enter a brief description here";
         
         var row10 = table.insertRow(++rowCount);
         var cell = row10.insertCell(0);
@@ -1683,6 +1901,101 @@ function addProduct(id)
         document.getElementById('durdiffinc-qty' + vm_num).setAttribute("readonly", "readonly");
         
     } /* END COMMVAULT BACKUP */
+    
+    /* BEGIN CLOUD COMPUTING SERVICES */
+    else if (id == 'CL_COMPUTE') {
+        var cl_compute_price_val = 0.08;
+        var cl_compute_price_string = "$" + cl_compute_price_val + "/unit";
+        var prod_name = "Cloud Compute Units";
+        
+        row1 = table.insertRow(rowCount);
+        row1.id = "row" + vm_num;
+        var cell = row1.insertCell(0);
+        var remove = document.createElement("button");
+        var remove_text = document.createTextNode("-");
+        remove.appendChild(remove_text);
+        cell.appendChild(remove);
+        remove.className = "remove-button";
+        remove.setAttribute("value", "-");
+        remove.setAttribute("rownumber", "row" + vm_num);
+        remove.setAttribute("title", "Remove Service");
+        remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), 2, 'CL_COMPUTE')");
+        
+        var cell = row1.insertCell(1);
+        var name = document.createTextNode(prod_name);                      
+        cell.appendChild(name);
+        cell.setAttribute("colspan", "1");
+        cell.className = "service-title";
+        cell.className += " pad-bottom";
+        
+        var cell = row1.insertCell(2);
+        var cl_compute_price = document.createTextNode(cl_compute_price_string);
+        cell.appendChild(cl_compute_price);
+        cell.setAttribute("colspan", "1");
+        
+        var cell = row1.insertCell(3);
+        var cl_compute_qty = document.createElement("input");
+        cl_compute_qty.setAttribute("type", "text");
+        cl_compute_qty_in = "cl-compute-qty" + vm_num;
+        cl_compute_sub_out = "cl-compute-sub" + vm_num;
+        cell.appendChild(cl_compute_qty);
+        cell.setAttribute("colspan", "1");
+        cl_compute_qty.id = cl_compute_qty_in;
+        cl_compute_qty.className += " cl_compute_qty userinput";
+        cl_compute_qty.setAttribute("dest", "" + cl_compute_sub_out);
+        cl_compute_qty.setAttribute("num", vm_num);
+        cl_compute_qty.setAttribute("name", cl_compute_qty.id);
+        if (prod_name == 'Project Storage') {
+            cl_compute_qty.setAttribute("title", "Whole numbers only");
+        }
+        cl_compute_qty.setAttribute("size", 5);
+        cl_compute_qty.setAttribute("cl-compute-price", cl_compute_price_val);
+        cl_compute_qty.setAttribute("onchange", "getEstimate('cl-compute', this.id, this.getAttribute('cl-compute-price'), this.getAttribute('dest'), this.getAttribute('num'), 'CL_COMPUTE')");
+        var blanknode = document.createTextNode("\u00a0");
+        cell.appendChild(blanknode);
+        
+        cell.appendChild(document.createTextNode("\u00a0\u00a0unit(s)"));
+
+        var cell = row1.insertCell(4);
+        var cl_compute_sub = document.createElement("input");
+        cl_compute_sub.setAttribute("type", "text");
+        cell.appendChild(cl_compute_sub);
+        cell.setAttribute("colspan", "1");
+        cl_compute_sub.id = cl_compute_sub_out;
+        cl_compute_sub.setAttribute("name", cl_compute_sub.id);
+        cl_compute_sub.setAttribute("size", 20);
+        document.getElementById(cl_compute_sub_out).setAttribute("readonly", "readonly");
+        cl_compute_sub.className = "sub cl-compute-sub vm-sub" + vm_num;
+        sub('cl-compute-sub');
+        sub('sub');
+        
+        var row7 = table.insertRow(++rowCount);
+            var cell = row7.insertCell(0);
+            cell.setAttribute("colspan", "1");
+            cell.setAttribute("style", "border-bottom: 1px solid black;");
+        
+            cell = row7.insertCell(1);
+            var description = document.createTextNode("Description");
+            cell.appendChild(description);
+            cell.setAttribute("colspan", "1");
+            cell.setAttribute("style", "border-bottom: 1px solid black;");
+        
+            cell = row7.insertCell(2);
+            var description_box = document.createElement("textarea");
+            description_box.setAttribute("colspan", "3");
+            description_box.id = "description" + vm_num;
+            description_box.setAttribute("num", vm_num);
+            console.log("this is the id: " + description_box.id);
+            description_box.setAttribute("name", " ");
+            description_box.setAttribute("onchange", "changeDescription(this.getAttribute('num'), this.value)");
+            description_box.setAttribute("rows", "5");
+            description_box.setAttribute("cols", "15");
+            cell.appendChild(description_box);
+            cell.setAttribute("colspan", "3");
+            cell.setAttribute("style", "border-bottom: 1px solid black;");
+            document.getElementById("description" + vm_num).innerHTML = "Enter a brief description here";
+        
+    }
 } /* END ADDPRODUCT FUNCTION */
             
 /* Function Name: getEstimate
@@ -1713,7 +2026,7 @@ function getEstimate(type, id, price, dest, num, category)
             }
             document.getElementById(dest).setAttribute("value", "$" + (parseFloat(document.getElementById(id).value) * price).toFixed(2));
         }
-        if (type != 'cl-str' && type != 'consult' && type != 'sp-consult' && type != 'pr-str') {
+        if (type != 'cl-str' && type != 'consult' && type != 'sp-consult' && type != 'pr-str' && type != 'cl-compute') {
             sub('vm-sub' + num);
         }
         
@@ -1744,6 +2057,9 @@ function getEstimate(type, id, price, dest, num, category)
             break;
         case 'RAW':
             var theclass = 'backup-sub';
+            break;
+        case 'CL_COMPUTE':
+            var theclass = 'cl-compute-sub';
             break;
         }
         sub(theclass);
@@ -1851,13 +2167,13 @@ function validate(type, id, dest, num)
         
         case "cl-str":
             if (document.getElementById('cl-units' + num).getAttribute("value") == 'GB') {
-                if (v <= 100) {
+                if (v < 100) {
                     d.setAttribute("value", "Invalid input");
                     d.style.color = "#ff0000";
                     return false;
                 }
             } else {
-                if ( v <= 0.1) {
+                if ( v < 0.1) {
                     d.setAttribute("value", "Invalid input");
                     d.style.color = "#ff0000";
                     return false;
@@ -1866,7 +2182,9 @@ function validate(type, id, dest, num)
             break; 
         
         case 'pr-str':
-            if (document.getElementById('pr-units' + num).getAttribute("value") == 'GB') {
+            if (document.getElementById('pr-units' + num) != null) {
+            
+                if (document.getElementById('pr-units' + num).getAttribute("value") == 'GB') {
                 if (v < 1000 || v % 500 != 0) {
                     d.setAttribute("value", "Invalid input");
                     d.style.color = "#ff0000";
@@ -1879,6 +2197,9 @@ function validate(type, id, dest, num)
                     return false;
                 }
             }
+            }
+            
+            
             break;
         case 'nonrec':
         case 'no_os':
@@ -1886,7 +2207,7 @@ function validate(type, id, dest, num)
         case 'non_os_vendor':
         case 'local_admin_access':
         case 'sys_monitor':
-            if (v != 0 || v != 1) {
+            if (v != 0 && v != 1) {
                 d.setAttribute("value", "Invalid input");
                 d.style.color = "#ff0000";
                 return false;
@@ -1904,6 +2225,13 @@ function validate(type, id, dest, num)
             v = v * 10;
             v = v % 1; 
             if (v != 0) {
+                d.setAttribute("value", "Invalid input");
+                d.style.color = "#ff0000";
+                return false;
+            }
+            break;
+        case 'cl-compute':
+            if ( v < 0 || v % 1 != 0) {
                 d.setAttribute("value", "Invalid input");
                 d.style.color = "#ff0000";
                 return false;
@@ -1956,6 +2284,11 @@ function removeProduct(rowNum, deleteNum, category)
             var totals = "backup-table-totals";
             var theclass = "backup-sub";
             break;
+        case 'CL_COMPUTE':
+            var table = document.getElementById('cl-compute-table');
+            var totals = "cl-compute-table-totals";
+            var theclass = "cl-compute-sub";
+            break;
     }
     var row = document.getElementById(rowNum);
     var index = row.rowIndex;
@@ -1994,39 +2327,60 @@ function processOS(id, o, system, manager, num) {
         name = "" + o;
     }
                 
-    /* determines the type of system management */
+    /*// determines the type of system management 
     if((o == 'Windows' || o == 'Red Hat 6 64-bit') && id != 'HS_VM') {
         document.getElementById(system).setAttribute("value", "Included");
     } else {
         document.getElementById(system).setAttribute("value", "User-managed OR Added Premium (Contact SDSC for details)");
     }
                 
-    /* determines the manager */
+    // determines the manager 
     if(o != 'Red Hat 6 64-bit' || id == 'HS_VM') {
         document.getElementById(manager).setAttribute("value", "Brian Balderston");
     } else {
         document.getElementById(manager).setAttribute("value", "Andrew Ferbert");
-    }
+    } */
 
-    document.getElementById("os" + num).defaultValue = o;
-    document.getElementById("os" + num).defaultSelected = o;
+    /*document.getElementById("os" + num).defaultValue = o;
+    document.getElementById("os" + num).defaultSelected = o; */
     document.getElementById("os" + num).setAttribute("value", o);
+    document.getElementById("RedHat" + num).removeAttribute("selected");
+    document.getElementById("Windows" + num).removeAttribute("selected");
+    document.getElementById("CentOS" + num).removeAttribute("selected");
+    document.getElementById("Ubuntu" + num).removeAttribute("selected");
+    document.getElementById("Other" + num).removeAttribute("selected");
+    document.getElementById(name + num).setAttribute("selected", "selected");
 }
 
 function changePrice(num, originalval, doubleval)
 {
     var val = document.getElementById('dualoptions' + num).value;
     var currentprice = document.getElementById('cl-str-qty' + num).getAttribute('cl-str-price');
+    document.getElementById("No" + num).removeAttribute("selected");
+    document.getElementById("Yes" + num).removeAttribute("selected");
     if (val == 'Yes') {
         document.getElementById('cl-str-price' + num).value = '$' + doubleval + '/TB';
+        document.getElementById('cl-str-price' + num).setAttribute("value", '$' + doubleval + '/TB');
+        
         document.getElementById('Yes' + num).setAttribute("selected", "selected");
         document.getElementById("cl-str-qty" + num).setAttribute("cl-str-price", currentprice * 2);
+        document.getElementById("cl-str-price" + num).setAttribute("value", "$" + (currentprice * 2) + "/TB");
         getEstimate('cl-str', 'cl-str-qty' + num, document.getElementById('cl-str-qty' + num).getAttribute('cl-str-price'), 'cl-str-sub' + num, num, 'CL_STR');
+        document.getElementById("siteoptions" + num).setAttribute("value", "N/A");
+        document.getElementById("siteoptions" + num).setAttribute("disabled", "disabled");
     } else if (val == 'No') {
         document.getElementById('cl-str-price' + num).value = '$' + originalval + '/TB';
+        document.getElementById('cl-str-price' + num).setAttribute("value", '$' + originalval + '/TB');
         document.getElementById('No' + num).setAttribute("selected", "selected");
         document.getElementById("cl-str-qty" + num).setAttribute("cl-str-price", currentprice / 2);
+        document.getElementById("cl-str-price" + num).setAttribute("value", "$" +  (currentprice / 2) + "/TB");
         getEstimate('cl-str', 'cl-str-qty' + num, document.getElementById('cl-str-qty' + num).getAttribute('cl-str-price'), 'cl-str-sub' + num, num, 'CL_STR');
+        document.getElementById("siteoptions" + num).removeAttribute("readonly");
+        document.getElementById("SD" + num).removeAttribute("selected");
+        document.getElementById("Oakland" + num).removeAttribute("selected");
+        document.getElementById("siteoptions" + num).setAttribute("value", "San Diego");
+        document.getElementById("SD" + num).setAttribute("selected", "selected");
+        document.getElementById("siteoptions" + num).removeAttribute("disabled");
     }
     
     document.getElementById('dualoptions' + num).setAttribute("value", val);
@@ -2057,10 +2411,24 @@ function processPackage(o, num)
     }
     
     document.getElementById('monthlybackup-qty' + num).setAttribute("value", "1");
+    document.getElementById('monthlybackup-qty' + num).value = 1;
+    
     document.getElementById('durmonthlybackup-qty' + num).setAttribute("value", duration);
+    document.getElementById('durmonthlybackup-qty' + num).value = duration;
+    
     document.getElementById('diffwk-qty' + num).setAttribute("value", "1");
+    document.getElementById('diffwk-qty' + num).value = 1;
+    
     document.getElementById('incwk-qty' + num).setAttribute("value", "5");
+    document.getElementById('incwk-qty' + num).value = 5;
+    
     document.getElementById('durdiffinc-qty' + num).setAttribute("value", duration);
+    document.getElementById('durdiffinc-qty' + num).value = duration;
+    
+    document.getElementById("Custom" + num).removeAttribute("selected");
+    document.getElementById("threemonth" + num).removeAttribute("selected");
+    document.getElementById("sixmonth" + num).removeAttribute("selected");
+    document.getElementById(optionid).setAttribute("selected", "selected");
     
     if (isReadOnly) {
         document.getElementById('monthlybackup-qty' + num).setAttribute("readonly", "readonly");
@@ -2111,9 +2479,10 @@ function changeName(num)
  * Parameters: id - the id of element
  * Description: Changes the value so the PDF can print it
  */
-function changeValue(id, value)
+function changeValue(id, value, num)
 {
     document.getElementById(id).setAttribute("value", value);
+    calculateBackup(num);
 }
 
 function changeUnits(id, value, num, category)
@@ -2121,11 +2490,30 @@ function changeUnits(id, value, num, category)
     var currentprice;
     document.getElementById(id).setAttribute("value", value);
     
+    if (value == 'TB') {
+        
+        if (category == 'str') {
+            document.getElementById("GB2" + num).removeAttribute("selected");
+            document.getElementById("TB2" + num).setAttribute("selected", "selected");
+            
+        } else {
+            document.getElementById("GB" + num).removeAttribute("selected");
+            document.getElementById("TB" + num).setAttribute("selected", "selected");
+        }
+        
+    } else {
+        if (category == 'str') {
+            document.getElementById("TB2" + num).removeAttribute("selected");
+            document.getElementById("GB2" + num).setAttribute("selected", "selected");
+        } else {
+            document.getElementById("TB" + num).removeAttribute("selected");
+            document.getElementById("GB" + num).setAttribute("selected", "selected");
+        }
+    }
     switch (category) {
         case 'str': 
             if (value == 'TB') {
                 currentprice = document.getElementById("str-qty" + num).getAttribute("str-price");
-
                 currentprice *= 1000;
 
                 document.getElementById("str-qty" + num).setAttribute("str-price", currentprice);
@@ -2204,6 +2592,9 @@ function changeUnits(id, value, num, category)
 function calculateBackup(num)
 {
     var input = document.getElementById("raw-qty" + num);
+    
+    if (document.getElementById("raw-qty" + num) == null) {
+    }
     var fullbackups = document.getElementById("full-qty" + num);
     var monthlynum = document.getElementById("monthlybackup-qty" + num);
     var durmonthly = document.getElementById("durmonthlybackup-qty" + num);
@@ -2226,4 +2617,24 @@ function calculateBackup(num)
     
     getEstimate('full', fullbackups.id, fullbackups.getAttribute('full-price'), fullbackups.getAttribute('dest'),  fullbackups.getAttribute('num'), 'RAW');
     getEstimate('diff', differentials.id, differentials.getAttribute('diff-price'), differentials.getAttribute('dest'),  differentials.getAttribute('num'), 'RAW');
+}
+
+function changeSite(num)
+{
+    var currentValue = document.getElementById("siteoptions" + num).value;
+    document.getElementById("SD" + num).removeAttribute("selected");
+    document.getElementById("Oakland" + num).removeAttribute("selected");
+    if (currentValue == 'San Diego')
+    {
+        document.getElementById("SD" + num).setAttribute("selected", "selected");
+    } else {
+        document.getElementById("Oakland" + num).setAttribute("selected", "selected");
+    }
+}
+
+function changeDescription(num, value)
+{
+    console.log(num);
+    document.getElementById("description" + num).setAttribute("name", value);
+    document.getElementById("description" + num).innerHTML = value;
 }

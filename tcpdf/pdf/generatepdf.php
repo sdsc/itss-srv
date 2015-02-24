@@ -8,8 +8,8 @@
             //$image = '../../images/SDSClogo.jpg';
             //$this->Image($image, 10, 10, 56, 14, 'JPEG', '', '', '', '', '', '', '', '', '', false, true, false, '');
             //$this->Text('50', '10', 'SDSC Service Level Agreement', false, false, false, '', '', 'M', false, '', '', false, 'T', 'T', false);
-            $this->SetFont('helvetica', 'b', 20, '', '', true);
-            $this->Write(30, 'Service Level Agreement', '', false, 'C', false, '', false, false, 150, '', '');
+            $this->SetFont('helvetica', 'b', 15, '', '', true);
+            $this->Write(30, 'Exhibit A - Service Estimates and Customer Information', '', false, 'C', false, '', false, false, 150, '', '');
         }
     }
     $stylecode = '<style>'.file_get_contents('../../css/global.css').'</style>';

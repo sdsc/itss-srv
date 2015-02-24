@@ -148,8 +148,20 @@
                         $80.00
                         </span>
                     </div>
+                    
+                    <button class="add-button" title="Add Service" onclick="addProduct('RECUR');">+
+    </button>
+                    <div class="vm-services">
+                        <span class="service-name" title=""> 
+                        Recurring Consulting Services
+                        </span>
+                        <span class="service-price">
+                        $96.00
+                        </span>
+                    </div>
                     <button class="add-button" title="Add Service" onclick="addProduct('SITE');">+
     </button>
+                   
                     <div class="vm-services">
                         <span class="service-name" title=""> 
                         SharePoint Site
@@ -158,9 +170,23 @@
                         $333.33
                         </span>
                     </div>
+                    <button class="add-button" title="Add Service" onclick="addProduct('CL_COMPUTE');">+
+    </button>
+                   
+                    <div class="vm-services">
+                        <span class="service-name" title=""> 
+                        Cloud Compute
+                        </span>
+                        <span class="service-price">
+                        $0.08
+                        </span>
+                    </div>
            </div>
             <div id = "quote-content">
                 <button type="button" id="pdfbutton" onclick="validateForm();">Generate PDF</button>
+                <button type="button" id="savebutton" onclick="saveForm()">Save Form</button>
+                <button type="button" id="loadbutton" onclick="loadForm()">Load Form</button>
+                <button type="button" id="cleardata" onclick="clearData()">Clear Saved Forms</button>
                 <!--<strong id="table-title">Your SDSC Cost Estimate </strong>-->
                 <form name="quote" id="quote" action="./tcpdf/pdf/generatepdf.php" method="post" target="_blank">
                     <br/><br/>
@@ -328,6 +354,34 @@
                             </td>
                             <td colspan="1" width="135">
                                 <input type="text" id="sp-sub-total" name="vm-sub-total" size="20" value="$0.00" readonly>
+                            </td>
+                        </tr>
+                    </table>
+                    
+                    <table class="tables" id="cl-compute-table" colspan="5" cellspacing="0" style="font-size: 11px">
+                        <tr style="font-size: 11px; background-color: #ccc; font-weight: bold;">
+                            <td colspan="1" width="20">&nbsp;</td>
+                               <td colspan="1" width="170">
+                                Cloud Compute Services
+                            </td>
+                            <td colspan="1" width="152">
+                                Price/Unit
+                            </td>
+                            <td colspan="1" width="63">
+                                Quantity
+                            </td>
+                            <td colspan="1" width="135">
+                                Subtotal
+                            </td>
+                        </tr>
+                    </table>
+                    <table class="total-table" id="cl-compute-table-totals" colspan="5" width="810">
+                        <tr>
+                            <td colspan="4" width="405" height="40" valign="bottom">
+                                <b>Cloud Compute Total: </b>
+                            </td>
+                            <td colspan="1" width="135">
+                                <input type="text" id="cl-compute-sub-total" name="vm-sub-total" size="20" value="$0.00" readonly>
                             </td>
                         </tr>
                     </table>

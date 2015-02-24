@@ -119,19 +119,19 @@ strong
     font-size: 18px;
 }
 
-#vm-table td, #str-table td, #pa-table td, #backup-table td, #consult-table td, #sp-table td, #totals td
+#vm-table td, #str-table td, #pa-table td, #backup-table td, #consult-table td, #sp-table td, #totals td, #cl-compute-table td
 {
     /*padding: 0 14px;*/
     font-size: 14px;
 }
 
-#vm-table, #str-table, #pa-table, #backup-table, #consult-table, #sp-table
+#vm-table, #str-table, #pa-table, #backup-table, #consult-table, #sp-table, #cl-compute-table
 {
     background-color: #fff;
     width: 900px;
 }
 
-#vm-table tr:first-child > td, #str-table tr:first-child > td, #backup-table tr:first-child > td, #consult-table tr:first-child > td, #sp-table tr:first-child > td, #pa-table tr:first-child > td
+#vm-table tr:first-child > td, #str-table tr:first-child > td, #backup-table tr:first-child > td, #consult-table tr:first-child > td, #sp-table tr:first-child > td, #pa-table tr:first-child > td, #cl-compute-table tr:first-child > td
 {
     background-color: #ccc; 
     font-weight: bold;
@@ -213,3 +213,8 @@ table td
 {
     width: 100%;
 }
+
+/*.price-align
+{
+    text-align: right;
+} */

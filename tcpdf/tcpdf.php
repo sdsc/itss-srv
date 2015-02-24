@@ -19351,6 +19351,7 @@ Putting 1 is equivalent to putting 0 and calling Ln() just after. Default value:
 				}
 				if (isset($tag['attribute']['value']) AND !TCPDF_STATIC::empty_string($tag['attribute']['value'])) {
 					$opt['v'] = $tag['attribute']['value'];
+                    $value = $opt['v']; //kimberly
 				}
 				if (isset($tag['attribute']['cols']) AND !TCPDF_STATIC::empty_string($tag['attribute']['cols'])) {
 					$w = intval($tag['attribute']['cols']) * $this->GetStringWidth(chr(32)) * 2;
@@ -19363,7 +19364,16 @@ Putting 1 is equivalent to putting 0 and calling Ln() just after. Default value:
 					$h = 10;
 				}
 				$prop['multiline'] = 'true';
-				$this->TextField($name, $w, $h, $prop, $opt, '', '', false);
+				//$this->TextField($name, $w, $h, $prop, $opt, '', '', false);
+                
+                /*if (isset($value)) {
+							//$opt['v'] = $value;
+                            $this->Write($h, $value, '', false, '', false, 0, false, false, 0, 0, '');
+						} else { //poop
+                            $this->Write($h, '', '', false, '', false, 0, false, false, 0, 0, '');
+                        } */
+                $this->Write(5, $name, '', false, '', false, 0, false, false, 0, 5, '');
+                $this->Ln();
 				break;
 			}
 			case 'select': {
