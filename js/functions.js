@@ -62,8 +62,25 @@ var PRICE_CONSULTATION_SUPPORT = 96.00; //per hour
 var PRICE_CLOUD_COMPUTE = 0.08; //per unit
 
 /**** END PRICES. ****/
-// keep track of the number of services in the quote
 
+/* NUMBER OF ROWS PER PRODUCT 
+    **** EDIT THE NUMBER OF ROWS PER PRODUCT HERE **** */
+
+var ROWS_STANDARD_VM = 12;
+var ROWS_HIGH_SECURITY_VM = 13;
+var ROWS_CLOUD_STORAGE = 7;
+var ROWS_PROJECT_STORAGE = 3;
+var ROWS_PROJECT_CONDO = 3;
+var ROWS_SYSTEM_MANAGEMENT = 15;
+var ROWS_BACKUPS = 14;
+var ROWS_DESKTOP_SERVICES = 3;
+var ROWS_SYSTEMS_SERVICES = 3;
+var ROWS_STORAGE_SERVICES = 3;
+var ROWS_RECURRING_CONSULTING_SERVICES = 3;
+var ROWS_SHAREPOINT_SITES = 7;
+var ROWS_CLOUD_COMPUTE = 3;
+
+/**** END NUMBER OF ROWS CONSTANTS ****/
 var vm_num = 0; //number of VM's ordered
 
 var row1, cell, rowCount;
@@ -82,8 +99,15 @@ var mem_price_val;
 
 var numProducts = 0; // number of products on table currently
 
+/* Function name: addProduct
+ * Parameters: id - type of product being added
+ * Description: This function adds a product to the table. The rows are different
+                depending on the product.
+ */
 function addProduct(id)
 {
+
+    // switch statement necessary to determine which table to add the product to
     switch (id) {
         case 'ST_VM':
         case 'HS_VM':
@@ -122,13 +146,15 @@ function addProduct(id)
             break;
     }
     
-    rowCount = table.rows.length;
+    rowCount = table.rows.length; // current number of rows in table
+
+    // If there is only one row in the table (the totals row), then hide the whole table
     if (rowCount - 1 === 0) {
         table.removeAttribute("hidden");
         totals.removeAttribute("hidden");
     }
     ++vm_num; //increase number of vm's
-    
+
     if (numProducts++ === 0) {
         document.getElementById('totals').removeAttribute("hidden");
     }
@@ -162,9 +188,9 @@ function addProduct(id)
         remove.setAttribute("rownumber", "row" + vm_num);
         remove.setAttribute("title", "Remove Service");
         if (id == 'ST_VM') {
-            remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), 11, 'ST_VM')");
+            remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), ROWS_STANDARD_VM, 'ST_VM')");
         } else {
-            remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), 12, 'ST_VM')");
+            remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), ROWS_HIGH_SECURITY_VM, 'ST_VM')");
         }
         
         var cell = row1.insertCell(1);
@@ -653,7 +679,7 @@ function addProduct(id)
         remove.setAttribute("value", "-");
         remove.setAttribute("rownumber", "row" + vm_num);
         remove.setAttribute("title", "Remove Service");
-        remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), 7, 'CL_STR')");
+        remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), ROWS_CLOUD_STORAGE, 'CL_STR')");
         
         var cell = row1.insertCell(1);
         var name = document.createTextNode("Cloud Storage");                      
@@ -856,10 +882,12 @@ function addProduct(id)
             var cl_str_price_val = PRICE_PROJECT_STORAGE;
             var cl_str_price_string = "$" + cl_str_price_val + "/TB";
             var prod_name = "Project Storage";
+            var numRowsRemove = ROWS_PROJECT_STORAGE;
         } else {
             var cl_str_price_val = PRICE_PROJECT_CONDO;
             var cl_str_price_string = "$" + cl_str_price_val + "/unit";
             var prod_name = "Project Condo";
+            var numRowsRemove = ROWS_PROJECT_CONDO;
         }
         row1 = table.insertRow(rowCount);
         row1.id = "row" + vm_num;
@@ -872,7 +900,8 @@ function addProduct(id)
         remove.setAttribute("value", "-");
         remove.setAttribute("rownumber", "row" + vm_num);
         remove.setAttribute("title", "Remove Service");
-        remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), 3, 'CL_STR')");
+        remove.setAttribute("numRows", numRowsRemove);
+        remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), this.getAttribute('numRows'), 'CL_STR')");
         
         var cell = row1.insertCell(1);
         var name = document.createTextNode(prod_name);                      
@@ -994,18 +1023,23 @@ function addProduct(id)
     else if (id == 'DESK' || id == 'SYSTEMS' || id == 'STORAGE' || id == 'RECUR') {
         var consult_price_val;
         var prod_name;
+        var numRowsRemove;
         if (id == 'DESK') {
             consult_price_val = PRICE_DESKTOP_SERVICES;
             prod_name = "Tier I Consulting Services - Desktop";
+            numRowsRemove = ROWS_DESKTOP_SERVICES;
         } else if (id == 'SYSTEMS') {
             consult_price_val = PRICE_SYSTEMS_SERVICES;
             prod_name = "Tier II Consulting Services - Systems";
+            numRowsRemove = ROWS_SYSTEMS_SERVICES;
         } else if (id == 'STORAGE') {
             consult_price_val = PRICE_STORAGE_SERVICES;
             prod_name = "Tier I Consulting Services - Storage";
+            numRowsRemove = ROWS_STORAGE_SERVICES;
         } else if (id == 'RECUR') {
             consult_price_val = PRICE_RECURRING_CONSULTING_SERVICES;
             prod_name = "Recurring Consulting Services";
+            numRowsRemove = ROWS_RECURRING_CONSULTING_SERVICES;
         }
         
         row1 = table.insertRow(rowCount);
@@ -1019,7 +1053,8 @@ function addProduct(id)
         remove.setAttribute("value", "-");
         remove.setAttribute("rownumber", "row" + vm_num);
         remove.setAttribute("title", "Remove Service");
-        remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), 3, 'DESK')");
+        remove.setAttribute("numRows", numRowsRemove);
+        remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), this.getAttribute('numRows'), 'DESK')");
         
         var cell = row1.insertCell(1);
         var name = document.createTextNode(prod_name);  
@@ -1126,7 +1161,7 @@ function addProduct(id)
         var sp_price_val = PRICE_SHAREPOINT_SITES;
         var prod_name = "SharePoint Site";
         var unit = "/month";
-        var numRows = 7; 
+        var numRows = ROWS_SHAREPOINT_SITES; 
         
         row1 = table.insertRow(rowCount);
         row1.id = "row" + vm_num;
@@ -1365,7 +1400,8 @@ function addProduct(id)
         remove.setAttribute("value", "-");
         remove.setAttribute("rownumber", "row" + vm_num);
         remove.setAttribute("title", "Remove Service");
-        remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), 15, 'SYS_MAN')");
+        remove.setAttribute("numRows", ROWS_SYSTEM_MANAGEMENT);
+        remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), this.getAttribute('numRows'), 'SYS_MAN')");
         
         var cell = row1.insertCell(1);
         var name = document.createTextNode("System Management");                      
@@ -1815,7 +1851,8 @@ function addProduct(id)
         remove.setAttribute("value", "-");
         remove.setAttribute("rownumber", "row" + vm_num);
         remove.setAttribute("title", "Remove Service");
-        remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), 14, 'RAW')");
+        remove.setAttribute("numRows", ROWS_BACKUPS);
+        remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), this.getAttribute('numRows'), 'RAW')");
 
         var cell = row1.insertCell(1);
         var name = document.createTextNode("CommVault Backup");                      
@@ -2243,7 +2280,8 @@ function addProduct(id)
         remove.setAttribute("value", "-");
         remove.setAttribute("rownumber", "row" + vm_num);
         remove.setAttribute("title", "Remove Service");
-        remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), 3, 'CL_COMPUTE')");
+        remove.setAttribute("numRows", ROWS_CLOUD_COMPUTE);
+        remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), this.getAttribute('numRows'), 'CL_COMPUTE')");
         
         var cell = row1.insertCell(1);
         var name = document.createTextNode(prod_name);                      
