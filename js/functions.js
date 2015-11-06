@@ -58,9 +58,6 @@ var PRICE_SHAREPOINT_SITES = 333.33; //per month
 var PRICE_ADD_DA_STORAGE = 10.00; //per month
 var PRICE_CONSULTATION_SUPPORT = 96.00; //per hour
 
-// PRICES FOR CLOUD COMPUTE
-var PRICE_CLOUD_COMPUTE = 0.08; //per unit
-
 /**** END PRICES. ****/
 
 /* NUMBER OF ROWS PER PRODUCT 
@@ -78,7 +75,7 @@ var ROWS_SYSTEMS_SERVICES = 3;
 var ROWS_STORAGE_SERVICES = 3;
 var ROWS_RECURRING_CONSULTING_SERVICES = 3;
 var ROWS_SHAREPOINT_SITES = 7;
-var ROWS_CLOUD_COMPUTE = 3;
+var ROWS_CLOUD_COMPUTE = 29;
 
 /**** END NUMBER OF ROWS CONSTANTS ****/
 var vm_num = 0; //number of VM's ordered
@@ -200,8 +197,6 @@ function addProduct(id)
         cell.className = "service-title";
             
         cell = row1.insertCell(2);
-        //var description_text = document.createTextNode("Description: ");
-        //cell.appendChild(description_text);
         var description_box = document.createElement("textarea");
         description_box.setAttribute("colspan", "3");
         description_box.id = "description" + vm_num;
@@ -563,6 +558,43 @@ function addProduct(id)
         cell.appendChild(dual_text);
         
         var cell = row.insertCell(2);
+        var extrasnap_price = document.createTextNode("$" + parseFloat(PRICE_ADD_SNAPSHOT_STANDARD_VM).toFixed(2));
+        cell.appendChild(extrasnap_price);
+        cell.setAttribute("colspan", "1");
+        
+        var cell = row.insertCell(3);
+        var extrasnap = document.createElement("select");
+        extrasnap.id = "extrasnap" + vm_num;
+        extrasnap.setAttribute("value", "No");
+        extrasnap.setAttribute("num", vm_num);
+        extrasnap.setAttribute("name", extrasnap.id);
+        extrasnap.setAttribute("title", "Marking yes will add $" + PRICE_ADD_SNAPSHOT_STANDARD_VM + " to the subtotal");
+        extrasnap.setAttribute("onchange", "extraSnaps(this.getAttribute('num'))");
+                
+        var options = new Option("No", "No", false, false);
+        options.id = "No" + vm_num;
+        options.setAttribute("num", vm_num);
+        extrasnap.appendChild(options);
+        extrasnap.setAttribute("value", "No");
+        
+        options = new Option("Yes", "Yes", false, false);
+        options.id = "Yes" + vm_num;
+        options.setAttribute("num", vm_num);
+        extrasnap.appendChild(options);
+        cell.appendChild(extrasnap);
+        
+        var cell = row.insertCell(4);
+        var extra_sub = document.createElement("input");
+        extra_sub.setAttribute("type", "text");
+        cell.appendChild(extra_sub);
+        cell.setAttribute("colspan", "1");
+        extra_sub.id = "extra-sub-out" + vm_num;
+        extra_sub.setAttribute("name", extrasnap.id);
+        extra_sub.setAttribute("size", 20);
+        document.getElementById("extra-sub-out" + vm_num).setAttribute("readonly", "readonly");
+        extra_sub.className = "vm-sub vm-sub" + vm_num;
+
+        /*var cell = row.insertCell(2);
         var extrasnap = document.createElement("select");
         extrasnap.id = "extrasnap" + vm_num;
         extrasnap.setAttribute("num", vm_num);
@@ -580,7 +612,7 @@ function addProduct(id)
         options.id = "Yes" + vm_num;
         options.setAttribute("num", vm_num);
         extrasnap.appendChild(options);
-        cell.appendChild(extrasnap);
+        cell.appendChild(extrasnap); */
 
         if (id == 'HS_VM') {
             var row6 = table.insertRow(++rowCount);
@@ -2265,13 +2297,12 @@ function addProduct(id)
     
     /* BEGIN CLOUD COMPUTING SERVICES */
     else if (id == 'CL_COMPUTE') {
-        var cl_compute_price_val = PRICE_CLOUD_COMPUTE;
-        var cl_compute_price_string = "$" + cl_compute_price_val + "/unit";
-        var prod_name = "Cloud Compute Units";
-        
+        prod_name = "Cloud Compute Units";
+
         row1 = table.insertRow(rowCount);
         row1.id = "row" + vm_num;
         var cell = row1.insertCell(0);
+	cell.setAttribute("colspan", "1");
         var remove = document.createElement("button");
         var remove_text = document.createTextNode("-");
         remove.appendChild(remove_text);
@@ -2282,7 +2313,7 @@ function addProduct(id)
         remove.setAttribute("title", "Remove Service");
         remove.setAttribute("numRows", ROWS_CLOUD_COMPUTE);
         remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), this.getAttribute('numRows'), 'CL_COMPUTE')");
-        
+
         var cell = row1.insertCell(1);
         var name = document.createTextNode(prod_name);                      
         cell.appendChild(name);
@@ -2303,6 +2334,54 @@ function addProduct(id)
         cell.setAttribute("colspan", "3");
         document.getElementById("description" + vm_num).innerHTML = "Enter a description here";
         
+        var row = table.insertRow(++rowCount);
+        var cell = row.insertCell(0);
+        cell.setAttribute("colspan", "1");	
+
+	var cell = row.insertCell(1);
+        cell.setAttribute("style", "font-weight: bold");
+        var options_text = document.createTextNode("Options");
+        cell.appendChild(options_text);
+        cell.setAttribute("colspan", "1");
+
+	var row = table.insertRow(++rowCount);
+        var cell = row.insertCell(0);
+        cell.setAttribute("colspan", "1");
+        
+        var cell = row.insertCell(1);
+	cell.setAttribute("colspan", "1");
+        var os_text = document.createTextNode("\u00a0\u00a0\u00a0\u00a0Affiliation:");
+        cell.appendChild(os_text);
+
+	var cell = row.insertCell(2);
+        var os = document.createElement("select"); 
+        os.setAttribute("name", "affiliation");
+        os.setAttribute("title", "Choose client location");
+	os.setAttribute("value", "UC");
+	os.setAttribute("onchange", "changePrices(this.value)");
+
+        option = new Option("UC", "UC", false, false);
+        option.id = "UC" + vm_num;
+        os.appendChild(option);
+
+        option = new Option("External", "External", false, false);
+        option.id = "External" + vm_num;
+        os.appendChild(option);
+
+        cell.appendChild(os);
+        cell.setAttribute("colspan", "2");
+        os.id = "os" + vm_num;
+
+        var row = table.insertRow(++rowCount);
+        var cell = row.insertCell(0);
+        cell.setAttribute("colspan", "1");	
+
+	var cell = row.insertCell(1);
+        cell.setAttribute("style", "font-weight: bold");
+        var specifications_text = document.createTextNode("Specifications");
+        cell.appendChild(specifications_text);
+        cell.setAttribute("colspan", "1");
+
         var row = table.insertRow(++rowCount);
         var cell = row.insertCell(0);
         cell.setAttribute("colspan", "1");
@@ -2331,61 +2410,157 @@ function addProduct(id)
         var item_text = document.createTextNode("Cost");
         cell.appendChild(item_text);
         
-        var row = table.insertRow(++rowCount);
-        cell = row.insertCell(0);
-        cell.setAttribute("colspan", "1");
-        cell.setAttribute("style", "border-bottom: 1px solid black");
-        
-        cell = row.insertCell(1);
-        cell.appendChild(document.createTextNode("\u00a0\u00a0\u00a0\u00a0Cloud Compute Units"));
-        cell.setAttribute("style", "border-bottom: 1px solid black");
-        
-        var cell = row.insertCell(2);
-        var cl_compute_price = document.createTextNode(cl_compute_price_string);
-        cell.appendChild(cl_compute_price);
-        cell.setAttribute("colspan", "1");
-        cell.setAttribute("style", "border-bottom: 1px solid black");
-        
-        var cell = row.insertCell(3);
-        var cl_compute_qty = document.createElement("input");
-        cl_compute_qty.setAttribute("type", "text");
-        cl_compute_qty_in = "cl-compute-qty" + vm_num;
-        cl_compute_sub_out = "cl-compute-sub" + vm_num;
-        cell.appendChild(cl_compute_qty);
-        cell.setAttribute("colspan", "1");
-        cl_compute_qty.id = cl_compute_qty_in;
-        cl_compute_qty.className += " cl_compute_qty userinput";
-        cl_compute_qty.setAttribute("dest", "" + cl_compute_sub_out);
-        cl_compute_qty.setAttribute("num", vm_num);
-        cl_compute_qty.setAttribute("name", cl_compute_qty.id);
-        if (prod_name == 'Project Storage') {
-            cl_compute_qty.setAttribute("title", "Whole numbers only");
-        }
-        cl_compute_qty.setAttribute("size", 5);
-        cl_compute_qty.setAttribute("cl-compute-price", cl_compute_price_val);
-        cl_compute_qty.setAttribute("onchange", "getEstimate('cl-compute', this.id, this.getAttribute('cl-compute-price'), this.getAttribute('dest'), this.getAttribute('num'), 'CL_COMPUTE')");
-        cell.setAttribute("style", "border-bottom: 1px solid black");
-        var blanknode = document.createTextNode("\u00a0");
-        cell.appendChild(blanknode);
-        
-        cell.appendChild(document.createTextNode("\u00a0\u00a0unit(s)"));
+	var flavor = ["m1.medium", "m1.large", "m1.xlarge", "m1.2xlarge", "c1.large", "c1.xlarge", "c1.2xlarge", "r1.large", "r1.xlarge", "r1.2xlarge", "Additional Volume", "Additional Image"];
+	var vcpu = ["1","2","4","8","2","4","8", "2", "4", "8", "0", "0"];
+	var memcount = ["4GB","8GB","16GB","32GB","4GB","8GB","16GB", "16GB", "32GB", "64GB","0", "0"];
+	price = [0.08, 0.16, 0.32, 0.64, 0.13, 0.26, 0.52, 0.22, 0.44, 0.88, 0.000063, 0.000063];
 
-        var cell = row.insertCell(4);
-        var cl_compute_sub = document.createElement("input");
-        cl_compute_sub.setAttribute("type", "text");
-        cell.appendChild(cl_compute_sub);
-        cell.setAttribute("colspan", "1");
-        cell.setAttribute("style", "border-bottom: 1px solid black");
-        cl_compute_sub.id = cl_compute_sub_out;
-        cl_compute_sub.setAttribute("name", cl_compute_sub.id);
-        cl_compute_sub.setAttribute("size", 20);
-        document.getElementById(cl_compute_sub_out).setAttribute("readonly", "readonly");
-        cl_compute_sub.className = "sub cl-compute-sub vm-sub" + vm_num;
-        sub('cl-compute-sub');
-        sub('sub');
+	var flavors = [];
+	var len = flavor.length;
+	for (var i = 0; i < len; i++) {
+    		flavors.push({
+        		flavor: flavor[i],
+        		price: price[i],
+        		vcpu: vcpu[i],
+        		memcount: memcount[i]
+   		});
+	}
+
+	for (i=0; i<flavors.length; i++, vm_num++){
+        		var row = table.insertRow(++rowCount);
+        		cell = row.insertCell(0);
+        		cell.setAttribute("colspan", "1");
+        
+        		cell = row.insertCell(1);
+		cell.setAttribute("colspan", "1");
+        		cell.appendChild(document.createTextNode("\u00a0\u00a0\u00a0\u00a0" + flavors[i].flavor));
+		if (i<10) {
+			cell.setAttribute("title", "vCPU:" + vcpu[i] + "\u00a0\u00a0\u00a0\u00a0Memory Count:" + memcount[i] + "\u00a0\u00a0\u00a0\u00a0System Disk:20GB");
+        		}
+		else {
+			cell.setAttribute("title", "Enter additional storage excluding the free 20GB amount.");
+		}
+		cell.setAttribute("colspan", "1");
+		var cell = row.insertCell(2);
+		if (i<10){
+        			var cl_compute_price = document.createTextNode("$" + price[i] + "/hr/instance");
+		}
+		else {
+			var cl_compute_price = document.createTextNode("$" + price[i] + "/hr/GB");
+		}
+        		cell.appendChild(cl_compute_price);
+        		cell.setAttribute("colspan", "1");
+		cell.id = "cl-compute-price" + vm_num;	
+        
+        		var cell = row.insertCell(3);
+        		var cl_compute_instances = document.createElement("input");
+        		cl_compute_instances.setAttribute("type", "text");
+        		cl_compute_instances_in = "cl-compute-instances" + vm_num;
+        		cl_compute_sub_out = "cl-compute-sub" + vm_num;
+        		cell.appendChild(cl_compute_instances);
+        		cell.setAttribute("colspan", "1");
+        		cl_compute_instances.id = cl_compute_instances_in;
+        		cl_compute_instances.className += " cl_compute_instances userinput";
+        		cl_compute_instances.setAttribute("dest", "" + cl_compute_sub_out);
+        		cl_compute_instances.setAttribute("num", vm_num);
+        		cl_compute_instances.setAttribute("name", cl_compute_instances.id);
+        		cl_compute_instances.setAttribute("size", 5);
+        		cl_compute_instances.setAttribute("cl-compute-price", price[i]);
+        		cl_compute_instances.setAttribute("onchange", "getEstimate('cl-compute', this.id, this.getAttribute('cl-compute-price'), this.getAttribute('dest'), this.getAttribute('num'), 'CL_COMPUTE')");
+        		var blanknode = document.createTextNode("\u00a0");
+        		cell.appendChild(blanknode);
+		if (i<10){
+        			cell.appendChild(document.createTextNode("inst."));
+			cl_compute_instances.setAttribute("title", "Enter number of instances");
+		}
+		else {
+			cell.appendChild(document.createTextNode("GB"));
+			cl_compute_instances.setAttribute("title", "Enter a whole number 0 to 190.");
+		}
+
+        		var cell = row.insertCell(4);
+        		var cl_compute_sub = document.createElement("input");
+        		cl_compute_sub.setAttribute("type", "text");
+        		cell.appendChild(cl_compute_sub);
+        		cell.setAttribute("colspan", "1");
+        		cl_compute_sub.id = cl_compute_sub_out;
+        		cl_compute_sub.setAttribute("name", cl_compute_sub.id);
+        		cl_compute_sub.setAttribute("size", 20);
+        		document.getElementById(cl_compute_sub_out).setAttribute("readonly", "readonly");
+        		cl_compute_sub.className = "sub cl-compute-sub vm-sub" + vm_num;
+        		sub('cl-compute-sub');
+        		sub('sub');
+
+        		var row = table.insertRow(++rowCount);
+		var cell1 = row.insertCell(0);
+        		cell1.setAttribute("colspan", "1");	
+		var cell2 = row.insertCell(1);
+		cell2.id = "flavor-specifications" + vm_num;
+		if (i<10) {
+			var cpu = document.createTextNode("\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0" + vcpu[i] + "vCPU, " + memcount[i] + "Memory");
+			cell2.appendChild(cpu);
+			cell2.setAttribute("style", "color:#fff");	
+		}	
+		var cell3 = row.insertCell(2);
+        		cell3.setAttribute("colspan", "1");
+		var cell4 = row.insertCell(3);
+        		cell4.setAttribute("colspan", "1");
+		if (i==flavors.length-1) {
+			cell1.setAttribute("style", "border-bottom: 1px black solid");
+			cell2.setAttribute("style", "border-bottom: 1px black solid");
+			cell3.setAttribute("style", "border-bottom: 1px black solid");
+			cell4.setAttribute("style", "border-bottom: 1px black solid");
+		}
+        		var cl_compute_hours = document.createElement("input");
+        		cl_compute_hours.setAttribute("type", "text");
+        		cl_compute_hours_in = "cl-compute-hours" + vm_num;
+        		cell4.appendChild(cl_compute_hours);
+        		cell4.setAttribute("colspan", "1");
+        		cl_compute_hours.id = cl_compute_hours_in;
+        		cl_compute_hours.className += " cl_compute_hours userinput";
+        		cl_compute_hours.setAttribute("dest", "" + cl_compute_sub_out);
+        		cl_compute_hours.setAttribute("num", vm_num);
+        		cl_compute_hours.setAttribute("name", cl_compute_hours.id);
+        		cl_compute_hours.setAttribute("size", 5);
+        		cl_compute_hours.setAttribute("cl-compute-price", price[i]);
+		cl_compute_hours.setAttribute("title", "Enter amount of hours per month.");
+        		cl_compute_hours.setAttribute("onchange", "getEstimate('cl-compute', this.id, this.getAttribute('cl-compute-price'), this.getAttribute('dest'), this.getAttribute('num'), 'CL_COMPUTE')");
+        		var blanknode = document.createTextNode("\u00a0");
+        		cell4.appendChild(blanknode);
+        		cell4.appendChild(document.createTextNode("hr(s)"));
+		cell4 = row.insertCell(4);
+        		cell4.setAttribute("colspan", "1");
+		if (i==flavor.length-1) cell4.setAttribute("style", "border-bottom: 1px black solid");	
+	}
     }
 } /* END ADDPRODUCT FUNCTION */
-            
+   
+/* Function Name: changePrices
+ * Parameters:  affiliation - either UC or external to change specific pricings
+		price - array of prices per flavor/item
+ */
+function changePrices(affiliation)
+{
+	if (affiliation == "UC") {
+		price = [0.08, 0.16, 0.32, 0.64, 0.13, 0.26, 0.52, 0.22, 0.44, 0.88, 0.000063, 0.000063];
+	}
+	if (affiliation == "External") {
+		price = [0.116, 0.232, 0.464, 0.928, 0.1885, 0.377, 0.754, 0.319, 0.638, 1.276, 0.00009135, 0.00009135];
+	}
+	for (n=0, vm_num=1; n < price.length; n++, vm_num++) {
+		if (n<10){
+        			document.getElementById("cl-compute-price" + vm_num).innerHTML = "$" + price[n] + "/hr/instance";
+		}
+		else {
+			document.getElementById("cl-compute-price" + vm_num).innerHTML = "$" + price[n] + "/GB/instance";
+		}
+		
+		document.getElementById("cl-compute-instances" + vm_num).setAttribute("cl-compute-price", price[n]);
+		document.getElementById("cl-compute-hours" + vm_num).setAttribute("cl-compute-price",  price[n]);
+		getEstimate('cl-compute', 'cl-compute-hours' + vm_num, price[n], document.getElementById("cl-compute-hours" + vm_num).getAttribute('dest'), vm_num,'CL_COMPUTE');
+	}
+	document.getElementsByName("affiliation")[0].setAttribute("value", affiliation);
+}            
 /* Function Name: getEstimate
  * Parameters: type - the type of field (used in the function validate())
  *             id - the id of the field
@@ -2412,8 +2587,20 @@ function getEstimate(type, id, price, dest, num, category)
             if (type == 'raw') {
                 calculateBackup(num);
             }
-            document.getElementById(dest).setAttribute("value", "$" + (parseFloat(document.getElementById(id).value) * price).toFixed(2));
-        }
+            if (category == 'CL_COMPUTE') {
+		document.getElementById(dest).setAttribute("value", "$" + (parseFloat(document.getElementById("cl-compute-hours" + num).value) * parseFloat(document.getElementById("cl-compute-instances" + num).value) * price).toFixed(2));
+	        if (document.getElementById(dest).getAttribute("value") == "$NaN") {
+			document.getElementById(dest).setAttribute("value", "Missing input");
+			document.getElementById(dest).style.color = "#ff0000";
+		}
+		else {
+			document.getElementById("flavor-specifications"+num).setAttribute("style", "visibility:hidden");
+		}
+	    }
+	    else {
+            	document.getElementById(dest).setAttribute("value", "$" + (parseFloat(document.getElementById(id).value) * price).toFixed(2));
+            }
+	}
         if (type != 'cl-str' && type != 'consult' && type != 'sp-consult' && type != 'pr-str' && type != 'cl-compute') {
             sub('vm-sub' + num);
             if (category == 'ST_VM' || category == 'HS_VM') {
@@ -2709,6 +2896,13 @@ function removeProduct(rowNum, deleteNum, category)
     if (--numProducts === 0) {
         document.getElementById('totals').setAttribute("hidden", "hidden");
     }
+    
+    /*loop through all tooltips on doc to hide before removing product*/
+    var tooltipList = document.getElementsByClassName("ui-tooltip");
+    for (i = 0; i < tooltipList.length; i++) {
+        tooltipList[i].style.display = 'none';	
+    }
+    
     
 }
             
@@ -3054,21 +3248,22 @@ function extraSnaps(num)
     if (val == 'Yes') {
         document.getElementById('vm-sub' + num + '-total').setAttribute("value", '$' + (currentPrice + PRICE_ADD_SNAPSHOT_STANDARD_VM));
         document.getElementById('Yes' + num).setAttribute("selected", "selected");
-        if (document.getElementById("extrasnap" + num).value == 'Yes') {
-            var tempval = parseFloat(document.getElementById('vm-sub-total').value.replace("$", ""));
-            var temptotalval = parseFloat(document.getElementById('sub-total').value.replace("$", ""));
-        }
+        var tempval = parseFloat(document.getElementById('vm-sub-total').value.replace("$", ""));
+        var temptotalval = parseFloat(document.getElementById('sub-total').value.replace("$", ""));
         document.getElementById('vm-sub-total').setAttribute("value", "$" + parseFloat(tempval + PRICE_ADD_SNAPSHOT_STANDARD_VM).toFixed(2));
         document.getElementById('sub-total').setAttribute("value", "$" + parseFloat(temptotalval + PRICE_ADD_SNAPSHOT_STANDARD_VM).toFixed(2));
+        document.getElementById('extra-sub-out' + num).setAttribute("value", "$" + parseFloat(PRICE_ADD_SNAPSHOT_STANDARD_VM).toFixed(2));
+        document.getElementById("extrasnap" + num).setAttribute("value", "Yes");
+        document.getElementById("extrasnap" + num).setAttribute("name", "Yes");
     } else if (val == 'No') {
         document.getElementById('vm-sub' + num + '-total').setAttribute("value", '$' + (currentPrice - PRICE_ADD_SNAPSHOT_STANDARD_VM));
         document.getElementById('No' + num).setAttribute("selected", "selected");
-        if (document.getElementById("extrasnap" + num).value == 'No') {
-            var tempval = parseFloat(document.getElementById('vm-sub-total').value.replace("$", ""));
-            var temptotalval = parseFloat(document.getElementById('sub-total').value.replace("$", ""));
-            document.getElementById('vm-sub-total').setAttribute("value", "$" + parseFloat(tempval - PRICE_ADD_SNAPSHOT_STANDARD_VM).toFixed(2));
-            document.getElementById('sub-total').setAttribute("value", "$" + parseFloat(temptotalval - PRICE_ADD_SNAPSHOT_STANDARD_VM).toFixed(2));
-        }
+        var tempval = parseFloat(document.getElementById('vm-sub-total').value.replace("$", ""));
+        var temptotalval = parseFloat(document.getElementById('sub-total').value.replace("$", ""));
+        document.getElementById('vm-sub-total').setAttribute("value", "$" + parseFloat(tempval - PRICE_ADD_SNAPSHOT_STANDARD_VM).toFixed(2));
+        document.getElementById('sub-total').setAttribute("value", "$" + parseFloat(temptotalval - PRICE_ADD_SNAPSHOT_STANDARD_VM).toFixed(2));
+        document.getElementById('extra-sub-out' + num).setAttribute("value", "$" + parseFloat(0).toFixed(2));
+        document.getElementById("extrasnap" + num).setAttribute("value", "No");
+        document.getElementById("extrasnap" + num).setAttribute("name", "No");
     }
-        document.getElementById('extrasnap' + num).setAttribute("value", this.value); 
 }
