@@ -7,21 +7,33 @@
  */
 
 /* PRICES FOR EVERYTHING.
-	**** EDIT HERE TO CHANGE PRICES **** */
+    **** EDIT HERE TO CHANGE PRICES **** */
 
-// PRICES FOR STANDARD VM
-var PRICE_BASE_STANDARD_VM = 69.75; //per VM
-var PRICE_ADD_CPU_STANDARD_VM = 12.94; //per CPU
-var PRICE_ADD_RAM_STANDARD_VM = 12.94; //per GB
-var PRICE_ADD_SILVER_STANDARD_VM = 45.75; //per TB
-var PRICE_ADD_GOLD_STANDARD_VM = 125.00; //per TB
-var PRICE_ADD_SNAPSHOT_STANDARD_VM = 24.00;
+// PRICES FOR STANDARD VM UC
+var PRICE_BASE_STANDARD_VM_UC = 69.75; //per VM
+var PRICE_ADD_CPU_STANDARD_VM_UC = 12.94; //per CPU
+var PRICE_ADD_RAM_STANDARD_VM_UC = 12.94; //per GB
+var PRICE_ADD_SILVER_STANDARD_VM_UC = 45.75; //per TB
+var PRICE_ADD_GOLD_STANDARD_VM_UC = 125.00; //per TB
+var PRICE_ADD_SNAPSHOT_STANDARD_VM_UC = 24.00;
+var PRICE_ST_VM_UC = [PRICE_BASE_STANDARD_VM_UC, PRICE_ADD_CPU_STANDARD_VM_UC, PRICE_ADD_RAM_STANDARD_VM_UC, PRICE_ADD_SILVER_STANDARD_VM_UC, PRICE_ADD_GOLD_STANDARD_VM_UC, PRICE_ADD_SNAPSHOT_STANDARD_VM_UC];
 
-// PRICES FOR HIGH SECURITY VM
-var PRICE_HIGH_SECURITY_VM = 93.75; //per VM
-var PRICE_ADD_CPU_HIGH_SECURITY_VM = 15.61; //per CPU
-var PRICE_ADD_RAM_HIGH_SECURITY_VM = 15.61; //per GB
-var PRICE_ADD_GOLD_HIGH_SECURITY_VM = 125.00; //per TB
+//PRICES FOR STANDARD VM EXTERNAL
+var PRICE_BASE_STANDARD_VM_EXT = 101.1375; //per VM
+var PRICE_ADD_CPU_STANDARD_VM_EXT = 18.763; //per CPU
+var PRICE_ADD_RAM_STANDARD_VM_EXT = 18.763; //per GB
+var PRICE_ADD_SILVER_STANDARD_VM_EXT = 66.3375; //per TB
+var PRICE_ADD_GOLD_STANDARD_VM_EXT = 181.25; //per TB
+var PRICE_ADD_SNAPSHOT_STANDARD_VM_EXT = 34.80;
+var PRICE_ST_VM_EXT = [PRICE_BASE_STANDARD_VM_EXT, PRICE_ADD_CPU_STANDARD_VM_EXT, PRICE_ADD_RAM_STANDARD_VM_EXT, PRICE_ADD_SILVER_STANDARD_VM_EXT, PRICE_ADD_GOLD_STANDARD_VM_EXT, PRICE_ADD_SNAPSHOT_STANDARD_VM_EXT];
+
+// PRICES FOR HIGH SECURITY VM UC
+var PRICE_HIGH_SECURITY_VM_UC = 93.75; //per VM
+var PRICE_ADD_CPU_HIGH_SECURITY_VM_UC = 15.61; //per CPU
+var PRICE_ADD_RAM_HIGH_SECURITY_VM_UC = 15.61; //per GB
+var PRICE_ADD_GOLD_HIGH_SECURITY_VM_UC = 125.00; //per TB
+var PRICE_ADD_SNAPSHOT_STANDARD_VM_UC = 24.00;
+var PRICE_HS_VM_UC = [PRICE_HIGH_SECURITY_VM_UC, PRICE_ADD_CPU_HIGH_SECURITY_VM_UC, PRICE_ADD_RAM_HIGH_SECURITY_VM_UC, 0,PRICE_ADD_GOLD_HIGH_SECURITY_VM_UC, PRICE_ADD_SNAPSHOT_STANDARD_VM_UC];
 
 // PRICES FOR CLOUD STORAGE
 var PRICE_CLOUD_STORAGE = 32.16; //per TB
@@ -58,13 +70,17 @@ var PRICE_SHAREPOINT_SITES = 333.33; //per month
 var PRICE_ADD_DA_STORAGE = 10.00; //per month
 var PRICE_CONSULTATION_SUPPORT = 96.00; //per hour
 
+// PRICES FOR CLOUD COMPUTE
+var PRICE_CL_COMPUTE_UC = [0.08, 0.16, 0.32, 0.64, 0.13, 0.26, 0.52, 0.22, 0.44, 0.88, 0.000063, 0.000063];
+var PRICE_CL_COMPUTE_EXT = [0.116, 0.232, 0.464, 0.928, 0.1885, 0.377, 0.754, 0.319, 0.638, 1.276, 0.00009135, 0.00009135];
+
 /**** END PRICES. ****/
 
 /* NUMBER OF ROWS PER PRODUCT 
     **** EDIT THE NUMBER OF ROWS PER PRODUCT HERE **** */
 
-var ROWS_STANDARD_VM = 12;
-var ROWS_HIGH_SECURITY_VM = 13;
+var ROWS_STANDARD_VM = 13;
+var ROWS_HIGH_SECURITY_VM = 14;
 var ROWS_CLOUD_STORAGE = 7;
 var ROWS_PROJECT_STORAGE = 3;
 var ROWS_PROJECT_CONDO = 3;
@@ -78,7 +94,10 @@ var ROWS_SHAREPOINT_SITES = 7;
 var ROWS_CLOUD_COMPUTE = 29;
 
 /**** END NUMBER OF ROWS CONSTANTS ****/
-var vm_num = 0; //number of VM's ordered
+var service_num = 0; //number of Services added to grid
+var vm_num = 0; //number of VM's ordered, st and hs
+var numProducts = 0; // number of products on table currently
+var item_num = 0; //for item and price id within each service
 
 var row1, cell, rowCount;
 
@@ -87,14 +106,8 @@ var cpu_qty_in, cpu_sub_out, mem_qty_in, mem_sub_out, str_qty_in, str_sub_out, s
             
 /* options variable for dropdown menus */
 var option; 
-            
-/* other variables and stuff */
-var slice_text;
-var slice_price;
-var cpu_price_val;
-var mem_price_val;
 
-var numProducts = 0; // number of products on table currently
+
 
 /* Function name: addProduct
  * Parameters: id - type of product being added
@@ -103,7 +116,8 @@ var numProducts = 0; // number of products on table currently
  */
 function addProduct(id)
 {
-
+    item_num = 0; //reset item_num after adding a new product
+    ++service_num;
     // switch statement necessary to determine which table to add the product to
     switch (id) {
         case 'ST_VM':
@@ -150,7 +164,7 @@ function addProduct(id)
         table.removeAttribute("hidden");
         totals.removeAttribute("hidden");
     }
-    ++vm_num; //increase number of vm's
+    
 
     if (numProducts++ === 0) {
         document.getElementById('totals').removeAttribute("hidden");
@@ -158,22 +172,25 @@ function addProduct(id)
     
     /* ALL OF THIS IS FOR VM'S!!! */
     if (id == 'ST_VM' || id == 'HS_VM') {
-        
+        ++vm_num;
         /* user has chosen standard vm */
         if(id == 'ST_VM') {
+        price_vm = PRICE_ST_VM_UC;
             slice_text = "Standard VM";
-            slice_price = PRICE_BASE_STANDARD_VM;
-            cpu_price_val = PRICE_ADD_CPU_STANDARD_VM;
-            mem_price_val = PRICE_ADD_RAM_STANDARD_VM;
+        vm_type_sub = "st-vm-sub"; //for sub id
+        vm_type_price = "st-vm-price"; //for each price id
+        vm_type_qty = "st-vm-qty"; //for each input qty id
+
         } else if (id == 'HS_VM') {
-            slice_text = "High Security VM";
-            slice_price = PRICE_HIGH_SECURITY_VM;
-            cpu_price_val = PRICE_ADD_CPU_HIGH_SECURITY_VM;
-            mem_price_val = PRICE_ADD_RAM_HIGH_SECURITY_VM;
+        price_vm = PRICE_HS_VM_UC;
+           slice_text = "High Security VM";
+        vm_type_sub = "hs-vm-sub"; //for sub id
+        vm_type_price = "hs-vm-price"; //for each price id
+        vm_type_qty = "hs-vm-qty"; //for each input qty id
         }
         
         row1 = table.insertRow(rowCount);
-        row1.id = "row" + vm_num;
+        row1.id = "row" + service_num;
         var cell = row1.insertCell(0);
         var remove = document.createElement("button");
         var remove_text = document.createTextNode("-");
@@ -182,7 +199,7 @@ function addProduct(id)
         cell.setAttribute("colspan", "1");
         remove.className = "remove-button";
         remove.setAttribute("value", "-");
-        remove.setAttribute("rownumber", "row" + vm_num);
+        remove.setAttribute("rownumber", "row" + service_num);
         remove.setAttribute("title", "Remove Service");
         if (id == 'ST_VM') {
             remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), ROWS_STANDARD_VM, 'ST_VM')");
@@ -199,14 +216,14 @@ function addProduct(id)
         cell = row1.insertCell(2);
         var description_box = document.createElement("textarea");
         description_box.setAttribute("colspan", "3");
-        description_box.id = "description" + vm_num;
-        description_box.setAttribute("num", vm_num);
+        description_box.id = "description" + service_num;
+        description_box.setAttribute("num", service_num);
         description_box.setAttribute("name", " ");
         description_box.setAttribute("onchange", "changeDescription(this.getAttribute('num'), this.value)");
         description_box.setAttribute("rows", "5");
         description_box.setAttribute("cols", "30");
         cell.appendChild(description_box);
-        document.getElementById("description" + vm_num).innerHTML = "Enter a description here";
+        document.getElementById("description" + service_num).innerHTML = "Enter a description here";
         cell.setAttribute("colspan", 2);
         
         var row = table.insertRow(++rowCount);
@@ -218,7 +235,35 @@ function addProduct(id)
         var options_text = document.createTextNode("Options");
         cell.appendChild(options_text);
         cell.setAttribute("colspan", "1");
+    var row = table.insertRow(++rowCount);
+        var cell = row.insertCell(0);
+        cell.setAttribute("colspan", "1");
         
+        var cell = row.insertCell(1);
+    cell.setAttribute("colspan", "1");
+        var os_text = document.createTextNode("\u00a0\u00a0\u00a0\u00a0Affiliation:");
+        cell.appendChild(os_text);
+
+    var cell = row.insertCell(2);
+        var os = document.createElement("select"); 
+        os.setAttribute("name", "affiliation");
+        os.setAttribute("title", "Choose client location");
+    os.setAttribute("value", "UC");
+    if (id == 'ST_VM'){
+        os.setAttribute("onchange", "changePrices(this.value, 'ST_VM')");
+    }
+    else os.setAttribute("onchange", "changePrices(this.value, 'HS_VM')");
+
+        option = new Option("UC", "UC", false, false);
+        option.id = "UC" + service_num;
+        os.appendChild(option);
+        option = new Option("External", "External", false, false);
+        option.id = "External" + service_num;
+        os.appendChild(option);
+        cell.appendChild(os);
+        cell.setAttribute("colspan", "2");
+        os.id = "os" + service_num;
+       
         var row = table.insertRow(++rowCount);
         var cell = row.insertCell(0);
         cell.setAttribute("colspan", "1");
@@ -229,37 +274,34 @@ function addProduct(id)
         
         var cell = row.insertCell(2);
         var os = document.createElement("select"); 
-        os.setAttribute("name", "os" + vm_num);
+        os.setAttribute("name", "os" + service_num);
         os.setAttribute("value", "Windows");
         os.setAttribute("title", "Choose an operating system for your VM");
 
         option = new Option("Windows", "Windows", false, false);
-        option.id = "Windows" + vm_num;
+        option.id = "Windows" + service_num;
         os.appendChild(option);
-
         option = new Option("Red Hat 6 64-bit", "Red Hat 6 64-bit", false, false);
-        option.id = "RedHat" + vm_num;
+        option.id = "RedHat" + service_num;
         os.appendChild(option);
-
         option = new Option("CentOS", "CentOS", false, false);
-        option.id = "CentOS" + vm_num;
+        option.id = "CentOS" + service_num;
         os.appendChild(option);
         option = new Option("Ubuntu", "Ubuntu", false, false);
-        option.id = "Ubuntu" + vm_num;
+        option.id = "Ubuntu" + service_num;
         os.appendChild(option);
         option = new Option("Other", "Other", false, false);
-        option.id = "Other" + vm_num;
+        option.id = "Other" + service_num;
         os.appendChild(option);
         cell.appendChild(os);
         cell.setAttribute("colspan", "2");
-        os.id = "os" + vm_num;
-        os.setAttribute("optionval", vm_num);
-        os.setAttribute("sys", "sys" + vm_num);
-        os.setAttribute("manager", "manager" + vm_num);
+        os.id = "os" + service_num;
+        os.setAttribute("optionval", service_num);
+        os.setAttribute("sys", "sys" + service_num);
+        os.setAttribute("manager", "manager" + service_num);
         os.setAttribute("vm-type", id);
         os.setAttribute("onchange", "processOS(this.getAttribute('vm-type'), document.getElementById(this.id).value, this.getAttribute('sys'), this.getAttribute('manager'), this.getAttribute('optionval'))");
         os.setAttribute("readonly", "readonly");
-        //os.defaultSelected = "Other" + vm_num;
         
         var row = table.insertRow(++rowCount);
         var cell = row.insertCell(0);
@@ -311,8 +353,9 @@ function addProduct(id)
         
         var cell = row.insertCell(2);
         cell.setAttribute("colspan", "1");
-        var price_text = document.createTextNode("$" + slice_price);
-        cell.appendChild(price_text);
+        var base_price = document.createTextNode("$" + price_vm[0]);
+    cell.id = vm_type_price + (++item_num); //first item
+        cell.appendChild(base_price);
         
         var cell = row.insertCell(3);
         cell.setAttribute("colspan", "1");
@@ -320,17 +363,17 @@ function addProduct(id)
         
         var cell = row.insertCell(4);
         var price = document.createElement("input");
-        price.setAttribute("name", "serviceprice" + vm_num);
+        price.setAttribute("name", vm_type_sub + item_num);
         price.setAttribute("type", "text");
-        cell.appendChild(price);
-        cell.setAttribute("colspan", "1");
-        price.id = "service-price" + vm_num;
+        price.id = vm_type_sub + item_num;
         price.className = "vm-sub vm-sub" + vm_num;
         price.classname += " price-align";
-        price.value = "$" + slice_price;
+        price.value = "$" + price_vm[0];
         price.setAttribute("size", 20);
         price.setAttribute("readonly", "readonly");
         price.setAttribute("value", price.value);
+        cell.appendChild(price);
+        cell.setAttribute("colspan", "1");
 
         var row2 = table.insertRow(++rowCount);
         var cell = row2.insertCell(0);
@@ -341,15 +384,16 @@ function addProduct(id)
         cell.setAttribute("colspan", "1");
         
         var cell = row2.insertCell(2);
-        var cpu_price = document.createTextNode("$" + cpu_price_val + "/CPU");
+        var cpu_price = document.createTextNode("$" + price_vm[1] + "/CPU");
         cell.appendChild(cpu_price);
+     cell.id = vm_type_price + (++item_num);
         cell.setAttribute("colspan", "1");
         
         var cell = row2.insertCell(3);
         var cpu_qty = document.createElement("input");
         cpu_qty.setAttribute("type", "text");
-        cpu_qty_in = "cpu-qty" + vm_num;
-        cpu_sub_out = "cpu-sub" + vm_num;
+        cpu_qty_in = vm_type_qty + item_num;
+        cpu_sub_out = vm_type_sub + item_num;
         cell.appendChild(cpu_qty);
         cell.setAttribute("colspan", "1");
         cpu_qty.id = cpu_qty_in;
@@ -357,8 +401,8 @@ function addProduct(id)
         cpu_qty.setAttribute("title", "Enter a whole number 0 to 11");
         cpu_qty.className += " cpu_qty userinput";
         cpu_qty.setAttribute("dest", "" + cpu_sub_out);
-        cpu_qty.setAttribute("num", vm_num);
-        cpu_qty.setAttribute("cpu-price", cpu_price_val);
+        cpu_qty.setAttribute("num", service_num);
+        cpu_qty.setAttribute("cpu-price", price_vm[1]);
         cpu_qty.setAttribute("size", 5);
         cpu_qty.setAttribute("onchange", "getEstimate('cpu', this.id, this.getAttribute('cpu-price'), this.getAttribute('dest'), this.getAttribute('num'), 'ST_VM')");
         cell.appendChild(document.createTextNode("\u00a0\u00a0CPU(s)"));
@@ -382,15 +426,16 @@ function addProduct(id)
         cell.appendChild(mem);
         cell.setAttribute("colspan", "1");
         var cell = row3.insertCell(2);
-        var mem_price = document.createTextNode("$" + mem_price_val + "/GB");
+        var mem_price = document.createTextNode("$" + price_vm[2] + "/GB");
         cell.appendChild(mem_price);
         cell.setAttribute("colspan", "1");
+     cell.id = vm_type_price + (++item_num);
 
         var cell = row3.insertCell(3);
         var mem_qty = document.createElement("input");
         mem_qty.setAttribute("type", "text");
-        mem_qty_in = "mem-qty" + vm_num;
-        mem_sub_out = "mem-sub" + vm_num;
+        mem_qty_in = vm_type_qty + item_num;
+        mem_sub_out = vm_type_sub + item_num;
         cell.appendChild(mem_qty);
         cell.setAttribute("colspan", "1");
         mem_qty.id = mem_qty_in;
@@ -398,8 +443,8 @@ function addProduct(id)
         mem_qty.setAttribute("title", "Enter a whole number 0 to 190");
         mem_qty.className += " userinput";
         mem_qty.setAttribute("dest", mem_sub_out);
-        mem_qty.setAttribute("num", vm_num);
-        mem_qty.setAttribute("mem-price", mem_price_val);
+        mem_qty.setAttribute("num", service_num);
+        mem_qty.setAttribute("mem-price", price_vm[2]);
         mem_qty.setAttribute("size", 5);
         mem_qty.setAttribute("onchange", "getEstimate('mem', this.id, this.getAttribute('mem-price'), this.getAttribute('dest'), this.getAttribute('num'), 'ST_VM')");
         cell.appendChild(document.createTextNode("\u00a0\u00a0GB"));
@@ -415,7 +460,6 @@ function addProduct(id)
         document.getElementById(mem_sub_out).setAttribute("readonly", "readonly");
         mem_sub.className = "vm-sub vm-sub" + vm_num;
 
-
         var row4 = table.insertRow(++rowCount);
         var cell = row4.insertCell(0);
         cell.setAttribute("colspan", "1");
@@ -426,15 +470,16 @@ function addProduct(id)
             cell.setAttribute("colspan", "1");
 
             var cell = row4.insertCell(2);
-            var str_price = document.createTextNode("$" + PRICE_ADD_SILVER_STANDARD_VM + "/TB");
+            var str_price = document.createTextNode("$" + price_vm[3] + "/TB");
             cell.appendChild(str_price);
             cell.setAttribute("colspan", "1");
+        cell.id = vm_type_price + (++item_num);
 
             var cell = row4.insertCell(3);
             var str_qty = document.createElement("input");
             str_qty.setAttribute("type", "text");
-            str_qty_in = "str-qty" + vm_num;
-            str_sub_out = "str-sub" + vm_num;
+            str_qty_in = vm_type_qty + item_num;
+            str_sub_out = vm_type_sub + item_num;
             cell.appendChild(str_qty);
             cell.setAttribute("colspan", "1");
             str_qty.id = str_qty_in;
@@ -442,27 +487,27 @@ function addProduct(id)
             str_qty.setAttribute("title", "Minimum value 0.001TB (1GB). Max value 30TB (30000GB)");
             str_qty.className += " userinput";
             str_qty.setAttribute("dest", str_sub_out);
-            str_qty.setAttribute("num", vm_num);
-            str_qty.setAttribute("str-price", PRICE_ADD_SILVER_STANDARD_VM);
+            str_qty.setAttribute("num", service_num);
+            str_qty.setAttribute("str-price", price_vm[3]);
             str_qty.setAttribute("size", 5);
             str_qty.setAttribute("onchange", "getEstimate('silver', this.id, this.getAttribute('str-price'), this.getAttribute('dest'), this.getAttribute('num'), 'ST_VM')");
             var blanknode = document.createTextNode("\u00a0");
             cell.appendChild(blanknode);
             
             var str_units = document.createElement("select");
-            str_units.setAttribute("name", "str-units" + vm_num);
+            str_units.setAttribute("name", "str-units" + item_num);
             str_units.setAttribute("value", "TB");
             str_units.setAttribute("title", "Choose the units");
-            str_units.setAttribute("num", vm_num);
-            str_units.id = "str-units" + vm_num;
+            str_units.setAttribute("num", service_num);
+            str_units.id = "str-units" + service_num;
             
             /* add all unit options */
             option = new Option("TB", "TB", false, false);
-            option.id = "TB2" + vm_num;
+            option.id = "TB2" + service_num;
             str_units.appendChild(option);
 
             option = new Option("GB", "GB", false, false);
-            option.id = "GB2" + vm_num;
+            option.id = "GB2" + service_num;
             str_units.appendChild(option);
             str_units.setAttribute("onchange", "changeUnits(this.id, this.value, this.getAttribute('num'), 'str')");
             cell.appendChild(str_units);
@@ -497,15 +542,16 @@ function addProduct(id)
         cell.setAttribute("colspan", "1");
 
         var cell = row5.insertCell(2);
-        var san_price = document.createTextNode("$" + parseFloat(PRICE_ADD_GOLD_STANDARD_VM).toFixed(2));
+        var san_price = document.createTextNode("$" + parseFloat(price_vm[4]).toFixed(2));
         cell.appendChild(san_price);
         cell.setAttribute("colspan", "1");
+        cell.id = vm_type_price + (++item_num);
 
         var cell = row5.insertCell(3);
         var san_qty = document.createElement("input");
         san_qty.setAttribute("type", "text");
-        san_qty_in = "san-qty" + vm_num;
-        san_sub_out = "san-sub" + vm_num;
+        san_qty_in = vm_type_qty + item_num;;
+        san_sub_out = vm_type_sub + item_num;;
         cell.appendChild(san_qty);
         cell.setAttribute("colspan", "1");
         san_qty.id = san_qty_in;
@@ -513,27 +559,27 @@ function addProduct(id)
         san_qty.setAttribute("title", "Min value 0.001TB (1GB). Max value 4.9TB (4900GB)");
         san_qty.className += " userinput";
         san_qty.setAttribute("dest", san_sub_out);
-        san_qty.setAttribute("num", vm_num);
-        san_qty.setAttribute("san-price", PRICE_ADD_GOLD_STANDARD_VM);
+        san_qty.setAttribute("num", service_num);
+        san_qty.setAttribute("san-price", price_vm[4]);
         san_qty.setAttribute("size", 5);
         san_qty.setAttribute("onchange", "getEstimate('gold', this.id, this.getAttribute('san-price'), this.getAttribute('dest'), this.getAttribute('num'), 'ST_VM')");
         var blanknode = document.createTextNode("\u00a0");
         cell.appendChild(blanknode);
         
         var san_units = document.createElement("select");
-        san_units.setAttribute("name", "san-units" + vm_num);
+        san_units.setAttribute("name", "san-units" + service_num);
         san_units.setAttribute("value", "TB");
         san_units.setAttribute("title", "Choose the units");
-        san_units.setAttribute("num", vm_num);
-        san_units.id = "san-units" + vm_num;
+        san_units.setAttribute("num", service_num);
+        san_units.id = "san-units" + service_num;
         
         /* add all unit options */
         option = new Option("TB", "TB", false, false);
-        option.id = "TB" + vm_num;
+        option.id = "TB" + service_num;
         san_units.appendChild(option);
 
         option = new Option("GB", "GB", false, false);
-        option.id = "GB" + vm_num;
+        option.id = "GB" + service_num;
         san_units.appendChild(option);
         san_units.setAttribute("onchange", "changeUnits(this.id, this.value, this.getAttribute('num'), 'san')");
         cell.appendChild(san_units);
@@ -550,7 +596,7 @@ function addProduct(id)
         san_sub.className = "vm-sub vm-sub" + vm_num;
         
         var row = table.insertRow(++rowCount);
-        row.id = "row" + vm_num;
+        row.id = "row" + service_num;
         var cell = row.insertCell(0);
         
         var cell = row.insertCell(1);
@@ -558,17 +604,18 @@ function addProduct(id)
         cell.appendChild(dual_text);
         
         var cell = row.insertCell(2);
-        var extrasnap_price = document.createTextNode("$" + parseFloat(PRICE_ADD_SNAPSHOT_STANDARD_VM).toFixed(2));
+        var extrasnap_price = document.createTextNode("$" + parseFloat(price_vm[5]).toFixed(2));
         cell.appendChild(extrasnap_price);
         cell.setAttribute("colspan", "1");
-        
+        cell.id = vm_type_price + (++item_num);        
+
         var cell = row.insertCell(3);
         var extrasnap = document.createElement("select");
         extrasnap.id = "extrasnap" + vm_num;
         extrasnap.setAttribute("value", "No");
         extrasnap.setAttribute("num", vm_num);
         extrasnap.setAttribute("name", extrasnap.id);
-        extrasnap.setAttribute("title", "Marking yes will add $" + PRICE_ADD_SNAPSHOT_STANDARD_VM + " to the subtotal");
+        extrasnap.setAttribute("title", "Marking yes will add $" + price_vm[5] + " to the subtotal");
         extrasnap.setAttribute("onchange", "extraSnaps(this.getAttribute('num'))");
                 
         var options = new Option("No", "No", false, false);
@@ -591,19 +638,19 @@ function addProduct(id)
         extra_sub.id = "extra-sub-out" + vm_num;
         extra_sub.setAttribute("name", extrasnap.id);
         extra_sub.setAttribute("size", 20);
-        document.getElementById("extra-sub-out" + vm_num).setAttribute("readonly", "readonly");
+        document.getElementById(extra_sub.id).setAttribute("readonly", "readonly");
         extra_sub.className = "vm-sub vm-sub" + vm_num;
 
         /*var cell = row.insertCell(2);
         var extrasnap = document.createElement("select");
         extrasnap.id = "extrasnap" + vm_num;
-        extrasnap.setAttribute("num", vm_num);
+        extrasnap.setAttribute("num", vm _num);
         extrasnap.setAttribute("name", extrasnap.id);
-        extrasnap.setAttribute("title", "Marking yes will add $" + PRICE_ADD_SNAPSHOT_STANDARD_VM + " to the subtotal");
+        extrasnap.setAttribute("title", "Marking yes will add $" + price_vm[5] + " to the subtotal");
         extrasnap.setAttribute("onchange", "extraSnaps(this.getAttribute('num'))");
                 
         var options = new Option("No", "No", false, false);
-        options.id = "No" + vm_num;
+        options.id = "No" + item_num;
         options.setAttribute("num", vm_num);
         extrasnap.appendChild(options);
         extrasnap.setAttribute("value", "No");
@@ -644,27 +691,6 @@ function addProduct(id)
             /*}*/
         }
 
-        /*var row7 = table.insertRow(++rowCount);
-        var cell = row7.insertCell(0);
-        cell.setAttribute("colspan", "1");
-        
-        cell = row7.insertCell(1);
-        var manager = document.createTextNode("Manager");
-        cell.appendChild(manager);
-        cell.setAttribute("colspan", "1");
-
-        cell = row7.insertCell(2);
-        var themanager = document.createElement("input");
-        themanager.setAttribute("type", "text");
-        cell.appendChild(themanager);
-        cell.setAttribute("colspan", "3");
-        themanager.id = "manager" + vm_num;
-        themanager.setAttribute("name", themanager.id);
-        themanager.setAttribute("size", 30);
-        sysmanagement_text.className = "info";
-        document.getElementById(themanager.id).setAttribute("readonly", "readonly");
-        document.getElementById(themanager.id).setAttribute("value", "Brian Balderston"); */
-
         var row8 = table.insertRow(++rowCount);
         var cell = row8.insertCell(0);
         cell.setAttribute("colspan", "1");
@@ -683,11 +709,11 @@ function addProduct(id)
         vmsubtotal.setAttribute("size", 20);
         cell.appendChild(vmsubtotal);
         cell.setAttribute("colspan", "1");
-        vmsubtotal.id = "vm-sub" + vm_num + "-total";
+        vmsubtotal.id = "vm-sub" + vm_num + "-total"
         vmsubtotal.setAttribute("name", vmsubtotal.id);
         //vmsubtotal.className = "sub";
         document.getElementById(vmsubtotal.id).setAttribute("readonly", "readonly");
-        document.getElementById(vmsubtotal.id).setAttribute("value", "$" + slice_price);
+        document.getElementById(vmsubtotal.id).setAttribute("value", "$" + price_vm[0]);
         cell.setAttribute("style", "border-bottom: 1px solid black;");
         sub('vm-sub');
         sub('sub');
@@ -900,7 +926,7 @@ function addProduct(id)
         cell.setAttribute("colspan", "1");
         cl_str_sub.id = cl_str_sub_out;
         document.getElementById(cl_str_sub_out).setAttribute("readonly", "readonly");
-        cl_str_sub.className = "str-sub vm-sub" + vm_num;
+        cl_str_sub.className = "str-sub" + vm_num;
         cl_str_sub.setAttribute("name", cl_str_sub.id);
         cl_str_sub.setAttribute("size", 20);
     
@@ -2300,16 +2326,16 @@ function addProduct(id)
         prod_name = "Cloud Compute Units";
 
         row1 = table.insertRow(rowCount);
-        row1.id = "row" + vm_num;
+        row1.id = "row" + service_num;
         var cell = row1.insertCell(0);
-	cell.setAttribute("colspan", "1");
+    cell.setAttribute("colspan", "1");
         var remove = document.createElement("button");
         var remove_text = document.createTextNode("-");
         remove.appendChild(remove_text);
         cell.appendChild(remove);
         remove.className = "remove-button";
         remove.setAttribute("value", "-");
-        remove.setAttribute("rownumber", "row" + vm_num);
+        remove.setAttribute("rownumber", "row" + service_num);
         remove.setAttribute("title", "Remove Service");
         remove.setAttribute("numRows", ROWS_CLOUD_COMPUTE);
         remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), this.getAttribute('numRows'), 'CL_COMPUTE')");
@@ -2324,59 +2350,59 @@ function addProduct(id)
         cell = row1.insertCell(2);
         var description_box = document.createElement("textarea");
         description_box.setAttribute("colspan", "3");
-        description_box.id = "description" + vm_num;
-        description_box.setAttribute("num", vm_num);
+        description_box.id = "description" + service_num;
+        description_box.setAttribute("num", service_num);
         description_box.setAttribute("name", " ");
         description_box.setAttribute("onchange", "changeDescription(this.getAttribute('num'), this.value)");
         description_box.setAttribute("rows", "5");
         description_box.setAttribute("cols", "30");
         cell.appendChild(description_box);
         cell.setAttribute("colspan", "3");
-        document.getElementById("description" + vm_num).innerHTML = "Enter a description here";
+        document.getElementById("description" + service_num).innerHTML = "Enter a description here";
         
         var row = table.insertRow(++rowCount);
         var cell = row.insertCell(0);
-        cell.setAttribute("colspan", "1");	
+        cell.setAttribute("colspan", "1");  
 
-	var cell = row.insertCell(1);
+    var cell = row.insertCell(1);
         cell.setAttribute("style", "font-weight: bold");
         var options_text = document.createTextNode("Options");
         cell.appendChild(options_text);
         cell.setAttribute("colspan", "1");
 
-	var row = table.insertRow(++rowCount);
+    var row = table.insertRow(++rowCount);
         var cell = row.insertCell(0);
         cell.setAttribute("colspan", "1");
         
         var cell = row.insertCell(1);
-	cell.setAttribute("colspan", "1");
+    cell.setAttribute("colspan", "1");
         var os_text = document.createTextNode("\u00a0\u00a0\u00a0\u00a0Affiliation:");
         cell.appendChild(os_text);
 
-	var cell = row.insertCell(2);
+    var cell = row.insertCell(2);
         var os = document.createElement("select"); 
         os.setAttribute("name", "affiliation");
         os.setAttribute("title", "Choose client location");
-	os.setAttribute("value", "UC");
-	os.setAttribute("onchange", "changePrices(this.value)");
+    os.setAttribute("value", "UC");
+    os.setAttribute("onchange", "changePrices(this.value, 'CL_COMPUTE')");
 
         option = new Option("UC", "UC", false, false);
-        option.id = "UC" + vm_num;
+        option.id = "UC" + service_num;
         os.appendChild(option);
 
         option = new Option("External", "External", false, false);
-        option.id = "External" + vm_num;
+        option.id = "External" + service_num;
         os.appendChild(option);
 
         cell.appendChild(os);
         cell.setAttribute("colspan", "2");
-        os.id = "os" + vm_num;
+        os.id = "os" + service_num;
 
         var row = table.insertRow(++rowCount);
         var cell = row.insertCell(0);
-        cell.setAttribute("colspan", "1");	
+        cell.setAttribute("colspan", "1");  
 
-	var cell = row.insertCell(1);
+    var cell = row.insertCell(1);
         cell.setAttribute("style", "font-weight: bold");
         var specifications_text = document.createTextNode("Specifications");
         cell.appendChild(specifications_text);
@@ -2410,156 +2436,216 @@ function addProduct(id)
         var item_text = document.createTextNode("Cost");
         cell.appendChild(item_text);
         
-	var flavor = ["m1.medium", "m1.large", "m1.xlarge", "m1.2xlarge", "c1.large", "c1.xlarge", "c1.2xlarge", "r1.large", "r1.xlarge", "r1.2xlarge", "Additional Volume", "Additional Image"];
-	var vcpu = ["1","2","4","8","2","4","8", "2", "4", "8", "0", "0"];
-	var memcount = ["4GB","8GB","16GB","32GB","4GB","8GB","16GB", "16GB", "32GB", "64GB","0", "0"];
-	price = [0.08, 0.16, 0.32, 0.64, 0.13, 0.26, 0.52, 0.22, 0.44, 0.88, 0.000063, 0.000063];
+    var flavor = ["m1.medium", "m1.large", "m1.xlarge", "m1.2xlarge", "c1.large", "c1.xlarge", "c1.2xlarge", "r1.large", "r1.xlarge", "r1.2xlarge", "Additional Volume", "Additional Image"];
+    var vcpu = ["1","2","4","8","2","4","8", "2", "4", "8", "0", "0"];
+    var memcount = ["4GB","8GB","16GB","32GB","4GB","8GB","16GB", "16GB", "32GB", "64GB","0", "0"];
+    price = PRICE_CL_COMPUTE_UC;
 
-	var flavors = [];
-	var len = flavor.length;
-	for (var i = 0; i < len; i++) {
-    		flavors.push({
-        		flavor: flavor[i],
-        		price: price[i],
-        		vcpu: vcpu[i],
-        		memcount: memcount[i]
-   		});
-	}
-
-	for (i=0; i<flavors.length; i++, vm_num++){
-        		var row = table.insertRow(++rowCount);
-        		cell = row.insertCell(0);
-        		cell.setAttribute("colspan", "1");
-        
-        		cell = row.insertCell(1);
-		cell.setAttribute("colspan", "1");
-        		cell.appendChild(document.createTextNode("\u00a0\u00a0\u00a0\u00a0" + flavors[i].flavor));
-		if (i<10) {
-			cell.setAttribute("title", "vCPU:" + vcpu[i] + "\u00a0\u00a0\u00a0\u00a0Memory Count:" + memcount[i] + "\u00a0\u00a0\u00a0\u00a0System Disk:20GB");
-        		}
-		else {
-			cell.setAttribute("title", "Enter additional storage excluding the free 20GB amount.");
-		}
-		cell.setAttribute("colspan", "1");
-		var cell = row.insertCell(2);
-		if (i<10){
-        			var cl_compute_price = document.createTextNode("$" + price[i] + "/hr/instance");
-		}
-		else {
-			var cl_compute_price = document.createTextNode("$" + price[i] + "/hr/GB");
-		}
-        		cell.appendChild(cl_compute_price);
-        		cell.setAttribute("colspan", "1");
-		cell.id = "cl-compute-price" + vm_num;	
-        
-        		var cell = row.insertCell(3);
-        		var cl_compute_instances = document.createElement("input");
-        		cl_compute_instances.setAttribute("type", "text");
-        		cl_compute_instances_in = "cl-compute-instances" + vm_num;
-        		cl_compute_sub_out = "cl-compute-sub" + vm_num;
-        		cell.appendChild(cl_compute_instances);
-        		cell.setAttribute("colspan", "1");
-        		cl_compute_instances.id = cl_compute_instances_in;
-        		cl_compute_instances.className += " cl_compute_instances userinput";
-        		cl_compute_instances.setAttribute("dest", "" + cl_compute_sub_out);
-        		cl_compute_instances.setAttribute("num", vm_num);
-        		cl_compute_instances.setAttribute("name", cl_compute_instances.id);
-        		cl_compute_instances.setAttribute("size", 5);
-        		cl_compute_instances.setAttribute("cl-compute-price", price[i]);
-        		cl_compute_instances.setAttribute("onchange", "getEstimate('cl-compute', this.id, this.getAttribute('cl-compute-price'), this.getAttribute('dest'), this.getAttribute('num'), 'CL_COMPUTE')");
-        		var blanknode = document.createTextNode("\u00a0");
-        		cell.appendChild(blanknode);
-		if (i<10){
-        			cell.appendChild(document.createTextNode("inst."));
-			cl_compute_instances.setAttribute("title", "Enter number of instances");
-		}
-		else {
-			cell.appendChild(document.createTextNode("GB"));
-			cl_compute_instances.setAttribute("title", "Enter a whole number 0 to 190.");
-		}
-
-        		var cell = row.insertCell(4);
-        		var cl_compute_sub = document.createElement("input");
-        		cl_compute_sub.setAttribute("type", "text");
-        		cell.appendChild(cl_compute_sub);
-        		cell.setAttribute("colspan", "1");
-        		cl_compute_sub.id = cl_compute_sub_out;
-        		cl_compute_sub.setAttribute("name", cl_compute_sub.id);
-        		cl_compute_sub.setAttribute("size", 20);
-        		document.getElementById(cl_compute_sub_out).setAttribute("readonly", "readonly");
-        		cl_compute_sub.className = "sub cl-compute-sub vm-sub" + vm_num;
-        		sub('cl-compute-sub');
-        		sub('sub');
-
-        		var row = table.insertRow(++rowCount);
-		var cell1 = row.insertCell(0);
-        		cell1.setAttribute("colspan", "1");	
-		var cell2 = row.insertCell(1);
-		cell2.id = "flavor-specifications" + vm_num;
-		if (i<10) {
-			var cpu = document.createTextNode("\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0" + vcpu[i] + "vCPU, " + memcount[i] + "Memory");
-			cell2.appendChild(cpu);
-			cell2.setAttribute("style", "color:#fff");	
-		}	
-		var cell3 = row.insertCell(2);
-        		cell3.setAttribute("colspan", "1");
-		var cell4 = row.insertCell(3);
-        		cell4.setAttribute("colspan", "1");
-		if (i==flavors.length-1) {
-			cell1.setAttribute("style", "border-bottom: 1px black solid");
-			cell2.setAttribute("style", "border-bottom: 1px black solid");
-			cell3.setAttribute("style", "border-bottom: 1px black solid");
-			cell4.setAttribute("style", "border-bottom: 1px black solid");
-		}
-        		var cl_compute_hours = document.createElement("input");
-        		cl_compute_hours.setAttribute("type", "text");
-        		cl_compute_hours_in = "cl-compute-hours" + vm_num;
-        		cell4.appendChild(cl_compute_hours);
-        		cell4.setAttribute("colspan", "1");
-        		cl_compute_hours.id = cl_compute_hours_in;
-        		cl_compute_hours.className += " cl_compute_hours userinput";
-        		cl_compute_hours.setAttribute("dest", "" + cl_compute_sub_out);
-        		cl_compute_hours.setAttribute("num", vm_num);
-        		cl_compute_hours.setAttribute("name", cl_compute_hours.id);
-        		cl_compute_hours.setAttribute("size", 5);
-        		cl_compute_hours.setAttribute("cl-compute-price", price[i]);
-		cl_compute_hours.setAttribute("title", "Enter amount of hours per month.");
-        		cl_compute_hours.setAttribute("onchange", "getEstimate('cl-compute', this.id, this.getAttribute('cl-compute-price'), this.getAttribute('dest'), this.getAttribute('num'), 'CL_COMPUTE')");
-        		var blanknode = document.createTextNode("\u00a0");
-        		cell4.appendChild(blanknode);
-        		cell4.appendChild(document.createTextNode("hr(s)"));
-		cell4 = row.insertCell(4);
-        		cell4.setAttribute("colspan", "1");
-		if (i==flavor.length-1) cell4.setAttribute("style", "border-bottom: 1px black solid");	
-	}
+    var flavors = [];
+    var len = flavor.length;
+    for (var i = 0; i < len; i++) {
+            flavors.push({
+                flavor: flavor[i],
+                price: price[i],
+                vcpu: vcpu[i],
+                memcount: memcount[i]
+        });
     }
+
+    for (i=0, item_num=1; i<flavors.length; i++, item_num++){
+                var row = table.insertRow(++rowCount);
+                cell = row.insertCell(0);
+                cell.setAttribute("colspan", "1");
+        
+                cell = row.insertCell(1);
+        cell.setAttribute("colspan", "1");
+                cell.appendChild(document.createTextNode("\u00a0\u00a0\u00a0\u00a0" + flavors[i].flavor));
+        if (i<10) {
+            cell.setAttribute("title", "vCPU:" + vcpu[i] + "\u00a0\u00a0\u00a0\u00a0Memory Count:" + memcount[i] + "\u00a0\u00a0\u00a0\u00a0System Disk:20GB");
+                }
+        else {
+            cell.setAttribute("title", "Enter additional storage excluding the free 20GB amount.");
+        }
+        cell.setAttribute("colspan", "1");
+        var cell = row.insertCell(2);
+        if (i<10){
+                    var cl_compute_price = document.createTextNode("$" + price[i] + "/hr/instance");
+        }
+        else {
+            var cl_compute_price = document.createTextNode("$" + price[i] + "/hr/GB");
+        }
+                cell.appendChild(cl_compute_price);
+                cell.setAttribute("colspan", "1");
+        cell.id = "cl-compute-price" + item_num;    
+        
+                var cell = row.insertCell(3);
+                var cl_compute_instances = document.createElement("input");
+                cl_compute_instances.setAttribute("type", "text");
+                cl_compute_instances_in = "cl-compute-instances" + item_num;
+                cl_compute_sub_out = "cl-compute-sub" + item_num;
+                cell.appendChild(cl_compute_instances);
+                cell.setAttribute("colspan", "1");
+                cl_compute_instances.id = cl_compute_instances_in;
+                cl_compute_instances.className += " cl_compute_instances userinput";
+                cl_compute_instances.setAttribute("dest", "" + cl_compute_sub_out);
+                cl_compute_instances.setAttribute("num", item_num);
+                cl_compute_instances.setAttribute("name", cl_compute_instances.id);
+                cl_compute_instances.setAttribute("size", 5);
+                cl_compute_instances.setAttribute("cl-compute-price", price[i]);
+                cl_compute_instances.setAttribute("onchange", "getEstimate('cl-compute', this.id, this.getAttribute('cl-compute-price'), this.getAttribute('dest'), this.getAttribute('num'), 'CL_COMPUTE')");
+                var blanknode = document.createTextNode("\u00a0");
+                cell.appendChild(blanknode);
+        if (i<10){
+                    cell.appendChild(document.createTextNode("inst."));
+            cl_compute_instances.setAttribute("title", "Enter number of instances");
+        }
+        else {
+            cell.appendChild(document.createTextNode("GB"));
+            cl_compute_instances.setAttribute("title", "Enter a whole number 0 to 190.");
+        }
+
+                var cell = row.insertCell(4);
+                var cl_compute_sub = document.createElement("input");
+                cl_compute_sub.setAttribute("type", "text");
+                cell.appendChild(cl_compute_sub);
+                cell.setAttribute("colspan", "1");
+                cl_compute_sub.id = cl_compute_sub_out;
+                cl_compute_sub.setAttribute("name", cl_compute_sub.id);
+                cl_compute_sub.setAttribute("size", 20);
+                document.getElementById(cl_compute_sub_out).setAttribute("readonly", "readonly");
+                cl_compute_sub.className = "sub cl-compute-sub vm-sub" + item_num;
+                sub('cl-compute-sub');
+                sub('sub');
+
+                var row = table.insertRow(++rowCount);
+        var cell1 = row.insertCell(0);
+                cell1.setAttribute("colspan", "1"); 
+        var cell2 = row.insertCell(1);
+        cell2.id = "flavor-specifications" + item_num;
+        if (i<10) {
+            var cpu = document.createTextNode("\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0" + vcpu[i] + "vCPU, " + memcount[i] + "Memory");
+            cell2.appendChild(cpu);
+            cell2.setAttribute("style", "color:#fff");  
+        }   
+        var cell3 = row.insertCell(2);
+                cell3.setAttribute("colspan", "1");
+        var cell4 = row.insertCell(3);
+                cell4.setAttribute("colspan", "1");
+        if (i==flavors.length-1) {
+            cell1.setAttribute("style", "border-bottom: 1px black solid");
+            cell2.setAttribute("style", "border-bottom: 1px black solid");
+            cell3.setAttribute("style", "border-bottom: 1px black solid");
+            cell4.setAttribute("style", "border-bottom: 1px black solid");
+        }
+                var cl_compute_hours = document.createElement("input");
+                cl_compute_hours.setAttribute("type", "text");
+                cl_compute_hours_in = "cl-compute-hours" + item_num;
+                cell4.appendChild(cl_compute_hours);
+                cell4.setAttribute("colspan", "1");
+                cl_compute_hours.id = cl_compute_hours_in;
+                cl_compute_hours.className += " cl_compute_hours userinput";
+                cl_compute_hours.setAttribute("dest", "" + cl_compute_sub_out);
+                cl_compute_hours.setAttribute("num", item_num);
+                cl_compute_hours.setAttribute("name", cl_compute_hours.id);
+                cl_compute_hours.setAttribute("size", 5);
+                cl_compute_hours.setAttribute("cl-compute-price", price[i]);
+        cl_compute_hours.setAttribute("title", "Enter amount of hours per month.");
+                cl_compute_hours.setAttribute("onchange", "getEstimate('cl-compute', this.id, this.getAttribute('cl-compute-price'), this.getAttribute('dest'), this.getAttribute('num'), 'CL_COMPUTE')");
+                var blanknode = document.createTextNode("\u00a0");
+                cell4.appendChild(blanknode);
+                cell4.appendChild(document.createTextNode("hr(s)"));
+        cell4 = row.insertCell(4);
+                cell4.setAttribute("colspan", "1");
+        if (i==flavor.length-1) cell4.setAttribute("style", "border-bottom: 1px black solid");  
+    }
+    }
+    console.log(vm_num + " vm_num");
+    console.log(service_num + " service_num");
+    
 } /* END ADDPRODUCT FUNCTION */
    
 /* Function Name: changePrices
  * Parameters:  affiliation - either UC or external to change specific pricings
-		price - array of prices per flavor/item
+        price - array of prices per flavor/item
  */
-function changePrices(affiliation)
+function changePrices(affiliation, id)
 {
-	if (affiliation == "UC") {
-		price = [0.08, 0.16, 0.32, 0.64, 0.13, 0.26, 0.52, 0.22, 0.44, 0.88, 0.000063, 0.000063];
-	}
-	if (affiliation == "External") {
-		price = [0.116, 0.232, 0.464, 0.928, 0.1885, 0.377, 0.754, 0.319, 0.638, 1.276, 0.00009135, 0.00009135];
-	}
-	for (n=0, vm_num=1; n < price.length; n++, vm_num++) {
-		if (n<10){
-        			document.getElementById("cl-compute-price" + vm_num).innerHTML = "$" + price[n] + "/hr/instance";
-		}
-		else {
-			document.getElementById("cl-compute-price" + vm_num).innerHTML = "$" + price[n] + "/GB/instance";
-		}
-		
-		document.getElementById("cl-compute-instances" + vm_num).setAttribute("cl-compute-price", price[n]);
-		document.getElementById("cl-compute-hours" + vm_num).setAttribute("cl-compute-price",  price[n]);
-		getEstimate('cl-compute', 'cl-compute-hours' + vm_num, price[n], document.getElementById("cl-compute-hours" + vm_num).getAttribute('dest'), vm_num,'CL_COMPUTE');
-	}
-	document.getElementsByName("affiliation")[0].setAttribute("value", affiliation);
+
+    if (affiliation == "UC") {
+            switch (id) {
+            case 'ST_VM':
+            price_vm = PRICE_ST_VM_UC;
+            break;
+            case 'HS_VM':
+            case 'CL_STR':
+            case 'PR_STR':
+            case 'PR_CON':
+            case 'DESK':
+            case 'SYSTEMS':
+            case 'STORAGE':
+            case 'SITE':
+            case 'SUPPORT':
+            case 'SYS_MAN':
+            case 'RAW':
+            case 'CL_COMPUTE':
+            price = PRICE_CL_COMPUTE_UC; 
+                    break;
+            }
+    }
+    else {
+            switch (id) {
+            case 'ST_VM':
+            price_vm = PRICE_ST_VM_EXT;
+            break;
+            case 'HS_VM':
+            case 'CL_STR':
+            case 'PR_STR':
+            case 'PR_CON':
+            case 'DESK':
+            case 'SYSTEMS':
+            case 'STORAGE':
+            case 'SITE':
+            case 'SUPPORT':
+            case 'SYS_MAN':
+            case 'RAW':
+            case 'CL_COMPUTE':
+                    price = PRICE_CL_COMPUTE_EXT; 
+                    break;
+            }
+    }
+    switch (id) {
+            case 'ST_VM': 
+            for (n=0, item_num=1; n < price_vm.length; n++, item_num++) {
+            document.getElementById("st-vm-price" + item_num).innerHTML = "$" + price_vm[n];
+            //getEstimate('cl-compute', 'cl-compute-hours' + item_num, price[n], document.getElementById("cl-compute-hours" + item_num).getAttribute('dest'), item_num,'CL_COMPUTE');   
+            }
+            break;
+            case 'HS_VM':
+            case 'CL_STR':
+            case 'PR_STR':
+            case 'PR_CON':
+            case 'DESK':
+            case 'SYSTEMS':
+            case 'STORAGE':
+            case 'SITE':
+            case 'SUPPORT':
+            case 'SYS_MAN':
+            case 'RAW':
+            case 'CL_COMPUTE':
+            for (n=0, item_num=1; n < price.length; n++, item_num++) {
+            if (n<10){
+                        document.getElementById("cl-compute-price" + item_num).innerHTML = "$" + price[n] + "/hr/instance";
+            }
+            else {
+                document.getElementById("cl-compute-price" + item_num).innerHTML = "$" + price[n] + "/GB/instance";
+            }
+            document.getElementById("cl-compute-instances" + item_num).setAttribute("cl-compute-price", price[n]);
+            document.getElementById("cl-compute-hours" + item_num).setAttribute("cl-compute-price",  price[n]);
+            getEstimate('cl-compute', 'cl-compute-hours' + item_num, price[n], document.getElementById("cl-compute-hours" + item_num).getAttribute('dest'), item_num,'CL_COMPUTE'); 
+            }
+            break;
+    }
+    document.getElementsByName("affiliation")[0].setAttribute("value", affiliation);
 }            
 /* Function Name: getEstimate
  * Parameters: type - the type of field (used in the function validate())
@@ -2575,7 +2661,8 @@ function getEstimate(type, id, price, dest, num, category)
     
     if (item.value === null || item.value === "" || isNaN(item.value)) {
         subtotal.setAttribute("value", "");
-    } else if (validate(type, id, dest, num)) {
+    } 
+    else if (validate(type, id, dest, num)) {
         if (type == 'sys-man' && document.getElementById('psa' + num).value == 'Custom') {
             document.getElementById(dest).value = 0;
             document.getElementById('vm-sub' + num + '-total').setAttribute("value", "0");
@@ -2588,25 +2675,25 @@ function getEstimate(type, id, price, dest, num, category)
                 calculateBackup(num);
             }
             if (category == 'CL_COMPUTE') {
-		document.getElementById(dest).setAttribute("value", "$" + (parseFloat(document.getElementById("cl-compute-hours" + num).value) * parseFloat(document.getElementById("cl-compute-instances" + num).value) * price).toFixed(2));
-	        if (document.getElementById(dest).getAttribute("value") == "$NaN") {
-			document.getElementById(dest).setAttribute("value", "Missing input");
-			document.getElementById(dest).style.color = "#ff0000";
-		}
-		else {
-			document.getElementById("flavor-specifications"+num).setAttribute("style", "visibility:hidden");
-		}
-	    }
-	    else {
-            	document.getElementById(dest).setAttribute("value", "$" + (parseFloat(document.getElementById(id).value) * price).toFixed(2));
+        document.getElementById(dest).setAttribute("value", "$" + (parseFloat(document.getElementById("cl-compute-hours" + num).value) * parseFloat(document.getElementById("cl-compute-instances" + num).value) * price).toFixed(2));
+            if (document.getElementById(dest).getAttribute("value") == "$NaN") {
+            document.getElementById(dest).setAttribute("value", "Missing input");
+            document.getElementById(dest).style.color = "#ff0000";
+        }
+        else {
+            document.getElementById("flavor-specifications"+num).setAttribute("style", "visibility:hidden");
+        }
+        }
+        else {
+                document.getElementById(dest).setAttribute("value", "$" + (parseFloat(document.getElementById(id).value) * price).toFixed(2));
             }
-	}
+    }
         if (type != 'cl-str' && type != 'consult' && type != 'sp-consult' && type != 'pr-str' && type != 'cl-compute') {
             sub('vm-sub' + num);
             if (category == 'ST_VM' || category == 'HS_VM') {
                 if (document.getElementById("extrasnap" + num).value == 'Yes') {
-                    var tempval = parseFloat(document.getElementById('vm-sub' + num + '-total').value.replace("$", ""));
-                    document.getElementById('vm-sub' + num + '-total').setAttribute("value", "$" + (eval(tempval - parseFloat(PRICE_ADD_SNAPSHOT_STANDARD_VM))));
+                    var tempval = parseFloat(document.getElementById('st-vm-total').value.replace("$", ""));
+                    document.getElementById('vm-sub' + num + '-total').setAttribute("value", "$" + (eval(tempval - parseFloat(PRICE_ADD_SNAPSHOT_STANDARD_VM_UC))));
                 }
             }
         }
@@ -2649,8 +2736,8 @@ function getEstimate(type, id, price, dest, num, category)
                 if (document.getElementById("extrasnap" + num).value == 'Yes') {
                     var tempval = parseFloat(document.getElementById('vm-sub-total').value.replace("$", ""));
                     var temptotalval = parseFloat(document.getElementById('sub-total').value.replace("$", ""));
-                    document.getElementById('vm-sub-total').setAttribute("value", "$" + (tempval + PRICE_ADD_SNAPSHOT_STANDARD_VM));
-                    document.getElementById('sub-total').setAttribute("value", "$" + (temptotalval + PRICE_ADD_SNAPSHOT_STANDARD_VM));
+                    document.getElementById('vm-sub-total').setAttribute("value", "$" + (tempval + PRICE_ADD_SNAPSHOT_STANDARD_VM_UC));
+                    document.getElementById('sub-total').setAttribute("value", "$" + (temptotalval + PRICE_ADD_SNAPSHOT_STANDARD_VM_UC));
                 }
         }
                     
@@ -2900,7 +2987,7 @@ function removeProduct(rowNum, deleteNum, category)
     /*loop through all tooltips on doc to hide before removing product*/
     var tooltipList = document.getElementsByClassName("ui-tooltip");
     for (i = 0; i < tooltipList.length; i++) {
-        tooltipList[i].style.display = 'none';	
+        tooltipList[i].style.display = 'none';  
     }
     
     
@@ -3246,22 +3333,22 @@ function extraSnaps(num)
     document.getElementById("No" + num).removeAttribute("selected");
     document.getElementById("Yes" + num).removeAttribute("selected");
     if (val == 'Yes') {
-        document.getElementById('vm-sub' + num + '-total').setAttribute("value", '$' + (currentPrice + PRICE_ADD_SNAPSHOT_STANDARD_VM));
+        document.getElementById('vm-sub' + num + '-total').setAttribute("value", '$' + (currentPrice + PRICE_ADD_SNAPSHOT_STANDARD_VM_UC));
         document.getElementById('Yes' + num).setAttribute("selected", "selected");
         var tempval = parseFloat(document.getElementById('vm-sub-total').value.replace("$", ""));
         var temptotalval = parseFloat(document.getElementById('sub-total').value.replace("$", ""));
-        document.getElementById('vm-sub-total').setAttribute("value", "$" + parseFloat(tempval + PRICE_ADD_SNAPSHOT_STANDARD_VM).toFixed(2));
-        document.getElementById('sub-total').setAttribute("value", "$" + parseFloat(temptotalval + PRICE_ADD_SNAPSHOT_STANDARD_VM).toFixed(2));
-        document.getElementById('extra-sub-out' + num).setAttribute("value", "$" + parseFloat(PRICE_ADD_SNAPSHOT_STANDARD_VM).toFixed(2));
+        document.getElementById('vm-sub-total').setAttribute("value", "$" + parseFloat(tempval + PRICE_ADD_SNAPSHOT_STANDARD_VM_UC).toFixed(2));
+        document.getElementById('sub-total').setAttribute("value", "$" + parseFloat(temptotalval + PRICE_ADD_SNAPSHOT_STANDARD_VM_UC).toFixed(2));
+        document.getElementById('extra-sub-out' + num).setAttribute("value", "$" + parseFloat(PRICE_ADD_SNAPSHOT_STANDARD_VM_UC).toFixed(2));
         document.getElementById("extrasnap" + num).setAttribute("value", "Yes");
         document.getElementById("extrasnap" + num).setAttribute("name", "Yes");
     } else if (val == 'No') {
-        document.getElementById('vm-sub' + num + '-total').setAttribute("value", '$' + (currentPrice - PRICE_ADD_SNAPSHOT_STANDARD_VM));
+        document.getElementById('vm-sub' + num + '-total').setAttribute("value", '$' + (currentPrice - PRICE_ADD_SNAPSHOT_STANDARD_VM_UC));
         document.getElementById('No' + num).setAttribute("selected", "selected");
         var tempval = parseFloat(document.getElementById('vm-sub-total').value.replace("$", ""));
         var temptotalval = parseFloat(document.getElementById('sub-total').value.replace("$", ""));
-        document.getElementById('vm-sub-total').setAttribute("value", "$" + parseFloat(tempval - PRICE_ADD_SNAPSHOT_STANDARD_VM).toFixed(2));
-        document.getElementById('sub-total').setAttribute("value", "$" + parseFloat(temptotalval - PRICE_ADD_SNAPSHOT_STANDARD_VM).toFixed(2));
+        document.getElementById('vm-sub-total').setAttribute("value", "$" + parseFloat(tempval - PRICE_ADD_SNAPSHOT_STANDARD_VM_UC).toFixed(2));
+        document.getElementById('sub-total').setAttribute("value", "$" + parseFloat(temptotalval - PRICE_ADD_SNAPSHOT_STANDARD_VM_UC).toFixed(2));
         document.getElementById('extra-sub-out' + num).setAttribute("value", "$" + parseFloat(0).toFixed(2));
         document.getElementById("extrasnap" + num).setAttribute("value", "No");
         document.getElementById("extrasnap" + num).setAttribute("name", "No");
