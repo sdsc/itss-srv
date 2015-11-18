@@ -2606,9 +2606,10 @@ function changePrices(affiliation, id)
     switch (id) {
             case 'ST_VM': 
                 for (n=0, item_num=1; n < price_vm.length; n++, item_num++) {
-                    document.getElementById("st-vm-price" + item_num).setAttribute("st-vm-price"+vm_num, parseFloat(price_vm[n]).toFixed(2));
+                    document.getElementById("st-vm-price" + item_num).setAttribute("st-vm-price"+item_num, parseFloat(price_vm[n]).toFixed(2));
                     switch (n) {
                         case 0:
+                            document.getElementById("st-vm-price" + item_num).innerHTML = "$" + parseFloat(price_vm[n]).toFixed(2) + "/CPU";
                             document.getElementById("st-vm-sub1").value = "$" + parseFloat(price_vm[n]).toFixed(2);
                             break;
                         case 1:
@@ -2633,30 +2634,34 @@ function changePrices(affiliation, id)
                 }
             break;
             case 'HS_VM':
-            for (n=0, item_num=1; n < price_vm.length; n++, item_num++) {
-                document.getElementById("hs-vm-price" + item_num).setAttribute("hs-vm-price"+vm_num, parseFloat(price_vm[n]).toFixed(2));
-                switch (n) {
-                    case 0:
-                        document.getElementById("hs-vm-sub1").value = "$" + parseFloat(price_vm[n]).toFixed(2);
-                        break;
-                    case 1:
-                        document.getElementById("hs-vm-price" + item_num).innerHTML = "$" + parseFloat(price_vm[n]).toFixed(2) + "/CPU";
-                        getEstimate('cpu', "hs-vm-qty" + item_num, price_vm[n], "hs-vm-sub" + item_num, vm_num, 'HS_VM');
-                        break;
-                    case 2:
-                        document.getElementById("hs-vm-price" + item_num).innerHTML = "$" + parseFloat(price_vm[n]).toFixed(2) + "/GB";
-                        getEstimate('mem', "hs-vm-qty" + item_num, price_vm[n], "hs-vm-sub" + item_num, vm_num, 'HS_VM');
-                        break;
-                    case 3:
-                        break;
-                    case 4:
-                        document.getElementById("hs-vm-price" + item_num).innerHTML = "$" + parseFloat(price_vm[n]).toFixed(2) + "/TB";
-                        getEstimate('gold', "hs-vm-qty" + item_num, price_vm[n], "hs-vm-sub" + item_num, vm_num, 'HS_VM');
-                        break;
-                    case 5:
-                        document.getElementById("hs-vm-price" + item_num).innerHTML = "$" + parseFloat(price_vm[n]).toFixed(2);
+                for (n=0, item_num=1; n < price_vm.length; n++, item_num++) {
+                    document.getElementById("hs-vm-price" + item_num).setAttribute("hs-vm-price"+item_num, parseFloat(price_vm[n]).toFixed(2));
+                    switch (n) {
+                        case 0:
+                            document.getElementById("hs-vm-price" + item_num).innerHTML = "$" + parseFloat(price_vm[n]).toFixed(2) + "/CPU";
+                            document.getElementById("hs-vm-sub1").value = "$" + parseFloat(price_vm[n]).toFixed(2);
+                            break;
+                        case 1:
+                            document.getElementById("hs-vm-price" + item_num).innerHTML = "$" + parseFloat(price_vm[n]).toFixed(2) + "/CPU";
+                            getEstimate('cpu', "hs-vm-qty" + item_num, price_vm[n], "hs-vm-sub" + item_num, vm_num, 'HS_VM');
+                            break;
+                        case 2:
+                            document.getElementById("hs-vm-price" + item_num).innerHTML = "$" + parseFloat(price_vm[n]).toFixed(2) + "/GB";
+                            getEstimate('mem', "hs-vm-qty" + item_num, price_vm[n], "hs-vm-sub" + item_num, vm_num, 'HS_VM');
+                            break;
+                        case 3:
+                            item_num--;
+                            break;
+                        case 4:
+                            document.getElementById("hs-vm-price" + item_num).innerHTML = "$" + parseFloat(price_vm[n]).toFixed(2) + "/TB";
+                            getEstimate('gold', "hs-vm-qty" + item_num, price_vm[n], "hs-vm-sub" + item_num, vm_num, 'HS_VM');
+                            break;
+                        case 5:
+                            document.getElementById("hs-vm-price" + item_num).innerHTML = "$" + parseFloat(price_vm[n]).toFixed(2);
+                            break;
+                    }
                 }
-            }
+                break;
             case 'CL_STR':
             case 'PR_STR':
             case 'PR_CON':
