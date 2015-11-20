@@ -576,7 +576,7 @@ function addProduct(id)
         san_qty.setAttribute("num", service_num);
         san_qty.setAttribute("san-price", price_vm[4]);
         san_qty.setAttribute("size", 5);
-        san_qty.setAttribute("onchange", "getEstimate('gold', this.id, price_vm[4], this.getAttribute('dest'), this.getAttribute('num'), 'ST_VM')");
+        san_qty.setAttribute("onchange", "getEstimate('gold', this.id, this.getAttribute('san-price'), this.getAttribute('dest'), this.getAttribute('num'), 'ST_VM')");
         var blanknode = document.createTextNode("\u00a0");
         cell.appendChild(blanknode);
         
@@ -2621,10 +2621,12 @@ function changePrices(affiliation, id)
                             getEstimate('cpu', "st-vm-qty" + item_num, price_vm[n], "st-vm-sub" + item_num, vm_num, 'ST_VM');
                             break;
                         case 1:
+                            document.getElementById("st-vm-qty" + item_num).setAttribute("cpu-price", parseFloat(price_vm[n]).toFixed(2));
                             document.getElementById("st-vm-price" + item_num).innerHTML = "$" + parseFloat(price_vm[n]).toFixed(2) + "/CPU";
                             getEstimate('cpu', "st-vm-qty" + item_num, price_vm[n], "st-vm-sub" + item_num, vm_num, 'ST_VM');
                             break;
                         case 2:
+                            document.getElementById("st-vm-qty" + item_num).setAttribute("mem-price", parseFloat(price_vm[n]).toFixed(2));
                             document.getElementById("st-vm-price" + item_num).innerHTML = "$" + parseFloat(price_vm[n]).toFixed(2) + "/GB";
                             getEstimate('mem', "st-vm-qty" + item_num, price_vm[n], "st-vm-sub" + item_num, vm_num, 'ST_VM');
                             break;
