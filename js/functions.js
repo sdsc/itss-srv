@@ -523,7 +523,8 @@ function addProduct(id)
             option = new Option("GB", "GB", false, false);
             option.id = "GB2" + item_num;
             str_units.appendChild(option);
-            str_units.setAttribute("onchange", "changeUnits(vm_type_qty, this.id, this.value, this.getAttribute('num'), 'str')");
+            str_units.setAttribute("vm_type_qty", vm_type_qty);
+            str_units.setAttribute("onchange", "changeUnits(this.getAttribute('vm_type_qty'), this.id, this.value, this.getAttribute('num'), 'str')");
             cell.appendChild(str_units);
             
             var cell = row4.insertCell(4);
@@ -595,7 +596,8 @@ function addProduct(id)
         option = new Option("GB", "GB", false, false);
         option.id = "GB" + item_num;
         san_units.appendChild(option);
-        san_units.setAttribute("onchange", "changeUnits(vm_type_qty, this.id, this.value, this.getAttribute('num'), 'san')");
+        san_units.setAttribute("vm_type_qty", vm_type_qty);
+        san_units.setAttribute("onchange", "changeUnits(this.getAttribute('vm_type_qty'), this.id, this.value, this.getAttribute('num'), 'san')");
         cell.appendChild(san_units);
 
         var cell = row5.insertCell(4);
@@ -2618,7 +2620,7 @@ function changePrices(affiliation, id)
                         case 0:
                             document.getElementById("st-vm-price" + item_num).innerHTML = "$" + parseFloat(price_vm[n]).toFixed(2) + "/CPU";
                             document.getElementById("st-vm-sub1").value = "$" + parseFloat(price_vm[n]).toFixed(2);
-                            getEstimate('cpu', "st-vm-qty" + item_num, price_vm[n], "st-vm-sub" + item_num, vm_num, 'ST_VM');
+                            getEstimate('cpu', "st-vm-qty" + item_num, price_vm[n], "st-vm-sub" + item_num, 1, 'ST_VM');
                             break;
                         case 1:
                             document.getElementById("st-vm-qty" + item_num).setAttribute("cpu-price", parseFloat(price_vm[n]).toFixed(2));
@@ -2642,22 +2644,28 @@ function changePrices(affiliation, id)
                             break;
                         case 5:
                             document.getElementById("st-vm-price" + item_num).innerHTML = "$" + parseFloat(price_vm[n]).toFixed(2);
+                            break;
                     }
                 }
+            sub('vm-sub');
             break;
             case 'HS_VM':
                 for (n=0, item_num=1; n < price_vm.length; n++, item_num++) {
                     document.getElementById("hs-vm-price" + item_num).setAttribute("hs-vm-price"+item_num, parseFloat(price_vm[n]).toFixed(2));
+                    if (item_num!=5)document.getElementById("hs-vm-qty" + item_num).setAttribute("hs-vm-price" + item_num, parseFloat(price_vm[n]).toFixed(2));
                     switch (n) {
                         case 0:
                             document.getElementById("hs-vm-price" + item_num).innerHTML = "$" + parseFloat(price_vm[n]).toFixed(2) + "/CPU";
                             document.getElementById("hs-vm-sub1").value = "$" + parseFloat(price_vm[n]).toFixed(2);
+                            getEstimate('cpu', "hs-vm-qty" + item_num, price_vm[n], "hs-vm-sub" + item_num, vm_num, 'HS_VM');
                             break;
                         case 1:
+                            document.getElementById("hs-vm-qty" + item_num).setAttribute("cpu-price", parseFloat(price_vm[n]).toFixed(2));
                             document.getElementById("hs-vm-price" + item_num).innerHTML = "$" + parseFloat(price_vm[n]).toFixed(2) + "/CPU";
                             getEstimate('cpu', "hs-vm-qty" + item_num, price_vm[n], "hs-vm-sub" + item_num, vm_num, 'HS_VM');
                             break;
                         case 2:
+                            document.getElementById("hs-vm-qty" + item_num).setAttribute("mem-price", parseFloat(price_vm[n]).toFixed(2));
                             document.getElementById("hs-vm-price" + item_num).innerHTML = "$" + parseFloat(price_vm[n]).toFixed(2) + "/GB";
                             getEstimate('mem', "hs-vm-qty" + item_num, price_vm[n], "hs-vm-sub" + item_num, vm_num, 'HS_VM');
                             break;
@@ -2686,18 +2694,19 @@ function changePrices(affiliation, id)
             case 'SYS_MAN':
             case 'RAW':
             case 'CL_COMPUTE':
-            for (n=0, item_num=1; n < price.length; n++, item_num++) {
-            if (n<10){
-                        document.getElementById("cl-compute-price" + item_num).innerHTML = "$" + price[n] + "/hr/instance";
-            }
-            else {
-                document.getElementById("cl-compute-price" + item_num).innerHTML = "$" + price[n] + "/GB/instance";
-            }
-            document.getElementById("cl-compute-instances" + item_num).setAttribute("cl-compute-price", price[n]);
-            document.getElementById("cl-compute-hours" + item_num).setAttribute("cl-compute-price",  price[n]);
-            getEstimate('cl-compute', 'cl-compute-hours' + item_num, price[n], document.getElementById("cl-compute-hours" + item_num).getAttribute('dest'), item_num,'CL_COMPUTE'); 
-            }
-            break;
+                for (n=0, item_num=1; n < price.length; n++, item_num++) {
+                if (n<10){
+                            document.getElementById("cl-compute-price" + item_num).innerHTML = "$" + price[n] + "/hr/instance";
+                }
+                else {
+                    document.getElementById("cl-compute-price" + item_num).innerHTML = "$" + price[n] + "/GB/instance";
+                }
+                document.getElementById("cl-compute-instances" + item_num).setAttribute("cl-compute-price", price[n]);
+                document.getElementById("cl-compute-hours" + item_num).setAttribute("cl-compute-price",  price[n]);
+                getEstimate('cl-compute', 'cl-compute-hours' + item_num, price[n], document.getElementById("cl-compute-hours" + item_num).getAttribute('dest'), item_num,'CL_COMPUTE'); 
+                }
+                break;
+
     }
     document.getElementsByName("affiliation")[0].setAttribute("value", affiliation);
 }            
@@ -3232,7 +3241,7 @@ function changeValue(id, value, num)
     calculateBackup(num);
 }
 
-function changeUnits(vm_type_qty, id, value, num, category)
+function changeUnits(vm_qty, id, value, num, category)
 {
     var currentprice;
     document.getElementById(id).setAttribute("value", value);
@@ -3260,35 +3269,35 @@ function changeUnits(vm_type_qty, id, value, num, category)
     switch (category) {
         case 'str': 
             if (value == 'TB') {
-                currentprice = document.getElementById(vm_type_qty + num).getAttribute("str-price");
+                currentprice = document.getElementById(vm_qty + num).getAttribute("str-price");
                 currentprice *= 1000;
 
-                document.getElementById(vm_type_qty + num).setAttribute("str-price", currentprice);
+                document.getElementById(vm_qty + num).setAttribute("str-price", currentprice);
                 
             } else {
-                currentprice = document.getElementById(vm_type_qty + num).getAttribute("str-price");
+                currentprice = document.getElementById(vm_qty + num).getAttribute("str-price");
                 
                 currentprice /= 1000;
                 
-                document.getElementById(vm_type_qty + num).setAttribute("str-price", currentprice);
+                document.getElementById(vm_qty + num).setAttribute("str-price", currentprice);
                 
             }
             
-            var element = document.getElementById(vm_type_qty + num);
+            var element = document.getElementById(vm_qty + num);
             getEstimate('silver', element.id, element.getAttribute('str-price'), element.getAttribute('dest'), element.getAttribute('num'), 'ST_VM');
             break;
         
         case 'san': 
             if (value == 'TB') {
-                currentprice = document.getElementById(vm_type_qty + num).getAttribute("san-price");
+                currentprice = document.getElementById(vm_qty + num).getAttribute("san-price");
                 currentprice *= 1000;
-                document.getElementById(vm_type_qty + num).setAttribute("san-price", currentprice);
+                document.getElementById(vm_qty + num).setAttribute("san-price", currentprice);
             } else {
-                currentprice = document.getElementById(vm_type_qty + num).getAttribute("san-price");
+                currentprice = document.getElementById(vm_qty + num).getAttribute("san-price");
                 currentprice /= 1000;
-                document.getElementById(vm_type_qty + num).setAttribute("san-price", currentprice);
+                document.getElementById(vm_qty + num).setAttribute("san-price", currentprice);
             }
-            var element = document.getElementById(vm_type_qty + num);
+            var element = document.getElementById(vm_qty + num);
             getEstimate('gold', element.id, element.getAttribute('san-price'), element.getAttribute('dest'), element.getAttribute('num'), 'ST_VM');
             break;
         
