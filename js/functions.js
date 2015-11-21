@@ -718,7 +718,7 @@ function addProduct(id)
                 
     /* THIS CODE IS FOR CLOUD STORAGE */
     else if (id == 'CL_STR') {
-        
+        ++vm_num;
         var cl_str_price_val = 32.16;
         var cl_str_price_val_double = 64.32;
         
@@ -859,7 +859,7 @@ function addProduct(id)
         cell.setAttribute("style", "border-bottom: black 1px solid");
         
         cell = row.insertCell(1);
- cell.appendChild(document.createTextNode("\u00a0\u00a0\u00a0\u00a0Storage"));
+        cell.appendChild(document.createTextNode("\u00a0\u00a0\u00a0\u00a0Storage"));
         cell.setAttribute("style", "border-bottom: black 1px solid");        
         
         cell = row.insertCell(2);
@@ -922,7 +922,7 @@ function addProduct(id)
         cell.setAttribute("colspan", "1");
         cl_str_sub.id = cl_str_sub_out;
         document.getElementById(cl_str_sub_out).setAttribute("readonly", "readonly");
-        cl_str_sub.className = "str-sub" + vm_num;
+        cl_str_sub.className = "str-sub";
         cl_str_sub.setAttribute("name", cl_str_sub.id);
         cl_str_sub.setAttribute("size", 20);
     
@@ -931,7 +931,7 @@ function addProduct(id)
     
     /* BEGIN PROJECT STORAGE AND PROJECT CONDO CODE */
     else if (id == 'PR_STR' || id == 'PR_CON') {
-        
+        ++vm_num;
         if(id == 'PR_STR') {
             var cl_str_price_val = PRICE_PROJECT_STORAGE;
             var cl_str_price_string = "$" + cl_str_price_val + "/TB";
@@ -1067,7 +1067,7 @@ function addProduct(id)
         cl_str_sub.setAttribute("name", cl_str_sub.id);
         cl_str_sub.setAttribute("size", 20);
         document.getElementById(cl_str_sub_out).setAttribute("readonly", "readonly");
-        cl_str_sub.className = "str-sub vm-sub" + vm_num;
+        cl_str_sub.className = "str-sub";
         sub('str-sub');
         sub('sub');
         
