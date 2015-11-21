@@ -44,8 +44,9 @@ var PRICE_ADD_SNAPSHOT_STANDARD_VM_EXT = 34.80;
 var PRICE_HS_VM_EXT = [PRICE_HIGH_SECURITY_VM_EXT, PRICE_ADD_CPU_HIGH_SECURITY_VM_EXT, PRICE_ADD_RAM_HIGH_SECURITY_VM_EXT, 0,PRICE_ADD_GOLD_HIGH_SECURITY_VM_EXT, PRICE_ADD_SNAPSHOT_STANDARD_VM_EXT];
 
 // PRICES FOR CLOUD STORAGE
-var PRICE_CLOUD_STORAGE = 32.16; //per TB
-var PRICE_DUAL_SITE_CLOUD_STORAGE = 2 * PRICE_CLOUD_STORAGE; //per TB
+var PRICE_CLOUD_STORAGE_UC = 32.16; //per TB
+var PRICE_DUAL_SITE_CLOUD_STORAGE = 2 * PRICE_CLOUD_STORAGE_UC; //per TB
+var PRICE_CLOUD_STORAGE_EXT = 64.632;
 
 // PRICES FOR PROJECT STORAGE
 var PRICE_PROJECT_STORAGE = 45.75; //per TB
@@ -719,8 +720,8 @@ function addProduct(id)
     /* THIS CODE IS FOR CLOUD STORAGE */
     else if (id == 'CL_STR') {
         ++vm_num;
-        var cl_str_price_val = 32.16;
-        var cl_str_price_val_double = 64.32;
+        var cl_str_price_val = PRICE_CLOUD_STORAGE_UC;
+        var cl_str_price_val_double = PRICE_DUAL_SITE_CLOUD_STORAGE;
         
         row1 = table.insertRow(rowCount);
         row1.id = "row" + vm_num;
@@ -823,7 +824,33 @@ function addProduct(id)
             cell.appendChild(siteoptions);
 
         }
+        var row = table.insertRow(++rowCount);
+        var cell = row.insertCell(0);
+        cell.setAttribute("colspan", "1");
         
+        var cell = row.insertCell(1);
+        cell.setAttribute("colspan", "1");
+        var os_text = document.createTextNode("\u00a0\u00a0\u00a0\u00a0Affiliation:");
+        cell.appendChild(os_text);
+
+        var cell = row.insertCell(2);
+        var os = document.createElement("select"); 
+        os.setAttribute("name", "affiliation");
+        os.setAttribute("title", "Choose client location");
+        os.setAttribute("value", "UC");
+        os.setAttribute("onchange", "changePrices(this.value, 'CL_STR')");
+
+        option = new Option("UC", "UC", false, false);
+        option.id = "UC" + service_num;
+        os.appendChild(option);
+
+        option = new Option("External", "External", false, false);
+        option.id = "External" + service_num;
+        os.appendChild(option);
+
+        cell.appendChild(os);
+        cell.setAttribute("colspan", "2");
+        os.id = "os" + service_num;
         var row = table.insertRow(++rowCount);
         var cell = row.insertCell(0);
         cell.setAttribute("colspan", "1");
@@ -864,17 +891,11 @@ function addProduct(id)
         
         cell = row.insertCell(2);
         cell.setAttribute("style", "border-bottom: black 1px solid");
-        var cl_str_price = document.createElement("input");
-        cl_str_price.id = "cl-str-price" + vm_num;
-        cl_str_price.className += " varprice";
-        cl_str_price.setAttribute("type", "text");
-        cl_str_price.setAttribute("readonly", "readonly");
-        cl_str_price.value = "$" + cl_str_price_val + "/TB";
-        cl_str_price.setAttribute("value", "$" + cl_str_price_val + "/TB");
-        cl_str_price.setAttribute("name", cl_str_price.id);
+        var cl_str_price = document.createTextNode("$" + cl_str_price_val + "/TB");
+        cell.id = "cl-str-price" + vm_num;
+        cell.setAttribute("value",cl_str_price_val);
+        cell.setAttribute("name", cell.id);
         cell.appendChild(cl_str_price);
-        document.getElementById("cl-str-price" + vm_num).setAttribute("value", "$" + cl_str_price_val + "/TB");
-        cell.setAttribute("colspan", "1");
         
         var cell = row.insertCell(3);
         cell.setAttribute("style", "border-bottom: black 1px solid");
@@ -2574,6 +2595,8 @@ function changePrices(affiliation, id)
                 price_vm = PRICE_HS_VM_UC;
                 break;
             case 'CL_STR':
+                price_cl_str = PRICE_CLOUD_STORAGE_UC;
+                break;
             case 'PR_STR':
             case 'PR_CON':
             case 'DESK':
@@ -2597,6 +2620,8 @@ function changePrices(affiliation, id)
                 price_vm = PRICE_HS_VM_EXT;
                 break;
             case 'CL_STR':
+                price_cl_str = PRICE_CLOUD_STORAGE_EXT;
+                break;
             case 'PR_STR':
             case 'PR_CON':
             case 'DESK':
@@ -2684,6 +2709,11 @@ function changePrices(affiliation, id)
                 }
                 break;
             case 'CL_STR':
+                document.getElementById("cl-str-price1").value = parseFloat(price_cl_str).toFixed(2);
+                document.getElementById("cl-str-qty1").setAttribute("cl-str-price", price_cl_str);
+                document.getElementById("cl-str-price1").innerHTML = "$" + parseFloat(price_cl_str).toFixed(2) + "/TB";
+                getEstimate("cl-str", "cl-str-qty1", price_cl_str, "cl-str-sub1", 1, "CL_STR");
+                break;
             case 'PR_STR':
             case 'PR_CON':
             case 'DESK':
