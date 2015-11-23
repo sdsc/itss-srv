@@ -107,6 +107,8 @@ var service_num = 0; //number of Services added to grid
 var vm_num = 0; //number of VM's ordered, st and hs
 var numProducts = 0; // number of products on table currently
 var item_num = 0; //for item and price id within each service
+var st_vm_num = 0;
+var hs_vm_num = 0;
 
 var row1, cell, rowCount;
 
@@ -182,6 +184,8 @@ function addProduct(id)
     /* ALL OF THIS IS FOR VM'S!!! */
     if (id == 'ST_VM' || id == 'HS_VM') {
         ++vm_num;
+        if (id == 'ST_VM') st_vm_num = vm_num;
+        else hs_vm_num = vm_num;
         /* user has chosen standard vm */
         if(id == 'ST_VM') {
         price_vm = PRICE_ST_VM_UC;
@@ -2645,27 +2649,33 @@ function changePrices(affiliation, id)
                         case 0:
                             document.getElementById("st-vm-price" + item_num).innerHTML = "$" + parseFloat(price_vm[n]).toFixed(2) + "/CPU";
                             document.getElementById("st-vm-sub1").value = "$" + parseFloat(price_vm[n]).toFixed(2);
-                            getEstimate('cpu', "st-vm-qty" + item_num, price_vm[n], "st-vm-sub" + item_num, 1, 'ST_VM');
+                            getEstimate('cpu', "st-vm-qty" + item_num, price_vm[n], "st-vm-sub" + item_num, st_vm_num, 'ST_VM');
                             break;
                         case 1:
                             document.getElementById("st-vm-qty" + item_num).setAttribute("cpu-price", parseFloat(price_vm[n]).toFixed(2));
                             document.getElementById("st-vm-price" + item_num).innerHTML = "$" + parseFloat(price_vm[n]).toFixed(2) + "/CPU";
-                            getEstimate('cpu', "st-vm-qty" + item_num, price_vm[n], "st-vm-sub" + item_num, vm_num, 'ST_VM');
+                            getEstimate('cpu', "st-vm-qty" + item_num, price_vm[n], "st-vm-sub" + item_num, st_vm_num, 'ST_VM');
                             break;
                         case 2:
                             document.getElementById("st-vm-qty" + item_num).setAttribute("mem-price", parseFloat(price_vm[n]).toFixed(2));
                             document.getElementById("st-vm-price" + item_num).innerHTML = "$" + parseFloat(price_vm[n]).toFixed(2) + "/GB";
-                            getEstimate('mem', "st-vm-qty" + item_num, price_vm[n], "st-vm-sub" + item_num, vm_num, 'ST_VM');
+                            getEstimate('mem', "st-vm-qty" + item_num, price_vm[n], "st-vm-sub" + item_num, st_vm_num, 'ST_VM');
                             break;
                         case 3:
                             document.getElementById("st-vm-price" + item_num).innerHTML = "$" + parseFloat(price_vm[n]).toFixed(2) + "/TB";
                             document.getElementById("st-vm-qty" + item_num).setAttribute("str-price",price_vm[n]);
-                            getEstimate('silver', "st-vm-qty" + item_num, price_vm[n], "st-vm-sub" + item_num, vm_num, 'ST_VM');
+                            getEstimate('silver', "st-vm-qty" + item_num, price_vm[n], "st-vm-sub" + item_num, st_vm_num, 'ST_VM');
+                            document.getElementById("str-units" + st_vm_num).setAttribute("value", "TB");
+                            document.getElementById("GB2" + item_num).removeAttribute("selected");
+                            document.getElementById("TB2" + item_num).setAttribute("selected", "selected");
                             break;
                         case 4:
                             document.getElementById("st-vm-price" + item_num).innerHTML = "$" + parseFloat(price_vm[n]).toFixed(2) + "/TB";
                             document.getElementById("st-vm-qty" + item_num).setAttribute("san-price",price_vm[n]);
-                            getEstimate('gold', "st-vm-qty" + item_num, price_vm[n], "st-vm-sub" + item_num, vm_num, 'ST_VM');
+                            getEstimate('gold', "st-vm-qty" + item_num, price_vm[n], "st-vm-sub" + item_num, st_vm_num, 'ST_VM');
+                            document.getElementById("san-units" + st_vm_num).setAttribute("value", "TB");
+                            document.getElementById("GB" + item_num).removeAttribute("selected");
+                            document.getElementById("TB" + item_num).setAttribute("selected", "selected");
                             break;
                         case 5:
                             document.getElementById("st-vm-price" + item_num).innerHTML = "$" + parseFloat(price_vm[n]).toFixed(2);
@@ -2682,17 +2692,17 @@ function changePrices(affiliation, id)
                         case 0:
                             document.getElementById("hs-vm-price" + item_num).innerHTML = "$" + parseFloat(price_vm[n]).toFixed(2) + "/CPU";
                             document.getElementById("hs-vm-sub1").value = "$" + parseFloat(price_vm[n]).toFixed(2);
-                            getEstimate('cpu', "hs-vm-qty" + item_num, price_vm[n], "hs-vm-sub" + item_num, vm_num, 'HS_VM');
+                            getEstimate('cpu', "hs-vm-qty" + item_num, price_vm[n], "hs-vm-sub" + item_num, hs_vm_num, 'HS_VM');
                             break;
                         case 1:
                             document.getElementById("hs-vm-qty" + item_num).setAttribute("cpu-price", parseFloat(price_vm[n]).toFixed(2));
                             document.getElementById("hs-vm-price" + item_num).innerHTML = "$" + parseFloat(price_vm[n]).toFixed(2) + "/CPU";
-                            getEstimate('cpu', "hs-vm-qty" + item_num, price_vm[n], "hs-vm-sub" + item_num, vm_num, 'HS_VM');
+                            getEstimate('cpu', "hs-vm-qty" + item_num, price_vm[n], "hs-vm-sub" + item_num, hs_vm_num, 'HS_VM');
                             break;
                         case 2:
                             document.getElementById("hs-vm-qty" + item_num).setAttribute("mem-price", parseFloat(price_vm[n]).toFixed(2));
                             document.getElementById("hs-vm-price" + item_num).innerHTML = "$" + parseFloat(price_vm[n]).toFixed(2) + "/GB";
-                            getEstimate('mem', "hs-vm-qty" + item_num, price_vm[n], "hs-vm-sub" + item_num, vm_num, 'HS_VM');
+                            getEstimate('mem', "hs-vm-qty" + item_num, price_vm[n], "hs-vm-sub" + item_num, hs_vm_num, 'HS_VM');
                             break;
                         case 3:
                             item_num--;
@@ -2700,7 +2710,10 @@ function changePrices(affiliation, id)
                         case 4:
                             document.getElementById("hs-vm-price" + item_num).innerHTML = "$" + parseFloat(price_vm[n]).toFixed(2) + "/TB";
                             document.getElementById("hs-vm-qty" + item_num).setAttribute("san-price",price_vm[n]);
-                            getEstimate('gold', "hs-vm-qty" + item_num, price_vm[n], "hs-vm-sub" + item_num, vm_num, 'HS_VM');
+                            getEstimate('gold', "hs-vm-qty" + item_num, price_vm[n], "hs-vm-sub" + item_num, hs_vm_num, 'HS_VM');
+                            document.getElementById("san-units" + hs_vm_num).setAttribute("value", "TB");
+                            document.getElementById("GB" + item_num).removeAttribute("selected");
+                            document.getElementById("TB" + item_num).setAttribute("selected", "selected");
                             break;
                         case 5:
                             document.getElementById("hs-vm-price" + item_num).innerHTML = "$" + parseFloat(price_vm[n]).toFixed(2);
@@ -2908,7 +2921,7 @@ function validate(type, id, dest, num)
             break;
         
         case "silver":
-            if (document.getElementById('str-units1').getAttribute("value") == 'GB') {
+            if (document.getElementById('str-units' + st_vm_num).getAttribute("value") == 'GB') {
                 if (v < 1 || v > 30000) {
                     d.setAttribute("value", "Invalid input");
                     d.style.color = "#ff0000";
