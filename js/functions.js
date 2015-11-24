@@ -56,14 +56,24 @@ var PRICE_PROJECT_STORAGE_EXT = 66.3375;
 var PRICE_PROJECT_CONDO_UC = 1134.016; //per TB
 var PRICE_PROJECT_CONDO_EXT = 351.936;
 
-// PRICES FOR SYSTEM MANAGEMENT
-var PRICE_SYSTEM = 69.00; //per system
-var PRICE_NON_REC_HARDWARE = 45.00; //per month
-var PRICE_HARDWARE_WO_OS_SUPPORT = 90.00; //per month
-var PRICE_ATTACHED_STORAGE_ARRAY = 56.00; //per month
-var PRICE_NON_OS_SOFTWARE = 23.00; //per month
-var PRICE_LOCAL_ADMIN_ACCESS = 34.00; //per month
-var PRICE_SYSTEM_MONITOR_SUPPORT = 142.00; //per month
+// PRICES FOR SYSTEM MANAGEMENT UC
+var PRICE_SYSTEM_UC = 69.00; //per system
+var PRICE_NON_REC_HARDWARE_UC = 45.00; //per month
+var PRICE_HARDWARE_WO_OS_SUPPORT_UC = 90.00; //per month
+var PRICE_ATTACHED_STORAGE_ARRAY_UC = 56.00; //per month
+var PRICE_NON_OS_SOFTWARE_UC = 23.00; //per month
+var PRICE_LOCAL_ADMIN_ACCESS_UC = 34.00; //per month
+var PRICE_SYSTEM_MONITOR_SUPPORT_UC = 142.00; //per month
+var PRICE_SYSTEM_MANAGEMENT_UC =  [PRICE_SYSTEM_UC, PRICE_NON_REC_HARDWARE_UC, PRICE_HARDWARE_WO_OS_SUPPORT_UC, PRICE_ATTACHED_STORAGE_ARRAY_UC, PRICE_NON_OS_SOFTWARE_UC, PRICE_LOCAL_ADMIN_ACCESS_UC, PRICE_SYSTEM_MONITOR_SUPPORT_UC, PRICE_SYSTEM_MANAGEMENT_UC];
+// PRICES FOR SYSTEM MANAGEMENT EXT
+var PRICE_SYSTEM_EXT = 100.05; //per system
+var PRICE_NON_REC_HARDWARE_EXT = 65.25; //per month
+var PRICE_HARDWARE_WO_OS_SUPPORT_EXT = 130.50; //per month
+var PRICE_ATTACHED_STORAGE_ARRAY_EXT = 81.20; //per month
+var PRICE_NON_OS_SOFTWARE_EXT = 33.35; //per month
+var PRICE_LOCAL_ADMIN_ACCESS_EXT = 49.30; //per month
+var PRICE_SYSTEM_MONITOR_SUPPORT_EXT = 205.90; //per month
+var PRICE_SYSTEM_MANAGEMENT_EXT =  [PRICE_SYSTEM_EXT, PRICE_NON_REC_HARDWARE_EXT, PRICE_HARDWARE_WO_OS_SUPPORT_EXT, PRICE_ATTACHED_STORAGE_ARRAY_EXT, PRICE_NON_OS_SOFTWARE_EXT, PRICE_LOCAL_ADMIN_ACCESS_EXT, PRICE_SYSTEM_MONITOR_SUPPORT_EXT, PRICE_SYSTEM_MANAGEMENT_EXT];
 
 // PRICES FOR COMMVAULT BACKUP
 var PRICE_RAW_BACKUP_DATA = 91.67; //per TB
@@ -95,7 +105,7 @@ var ROWS_HIGH_SECURITY_VM = 14;
 var ROWS_CLOUD_STORAGE = 8;
 var ROWS_PROJECT_STORAGE = 5;
 var ROWS_PROJECT_CONDO = 5;
-var ROWS_SYSTEM_MANAGEMENT = 15;
+var ROWS_SYSTEM_MANAGEMENT = 16;
 var ROWS_BACKUPS = 14;
 var ROWS_DESKTOP_SERVICES = 3;
 var ROWS_SYSTEMS_SERVICES = 3;
@@ -114,6 +124,7 @@ var hs_vm_num = 0;
 var cl_str_vm_num = 0;
 var pr_str_vm_num = 0;
 var pr_con_vm_num = 0;
+var sys_man_vm_num = 0;
 
 var row1, cell, rowCount;
 
@@ -1518,7 +1529,8 @@ function addProduct(id)
     
     /* BEGIN SYSTEM MANAGEMENT */
     else if (id == 'SYS_MAN') {
-        
+        ++vm_num;
+        sys_man_vm_num = vm_num;
         row1 = table.insertRow(rowCount);
         row1.id = "row" + vm_num;
         var cell = row1.insertCell(0);
@@ -1584,7 +1596,35 @@ function addProduct(id)
         psa.setAttribute("optionval", vm_num);
         psa.setAttribute("onchange", "processPrice(document.getElementById(this.id).value, this.getAttribute('optionval'))");
         psa.setAttribute("value", "Standard");
+
+        var row = table.insertRow(++rowCount);
+        var cell = row.insertCell(0);
+        cell.setAttribute("colspan", "1");
         
+        var cell = row.insertCell(1);
+        cell.setAttribute("colspan", "1");
+        var os_text = document.createTextNode("\u00a0\u00a0\u00a0\u00a0Affiliation:");
+        cell.appendChild(os_text);
+
+        var cell = row.insertCell(2);
+        var os = document.createElement("select"); 
+        os.setAttribute("name", "affiliation");
+        os.setAttribute("title", "Choose client location");
+        os.setAttribute("value", "UC");
+        os.setAttribute("onchange", "changePrices(this.value, 'SYS_MAN')");
+
+        option = new Option("UC", "UC", false, false);
+        option.id = "UC" + service_num;
+        os.appendChild(option);
+
+        option = new Option("External", "External", false, false);
+        option.id = "External" + service_num;
+        os.appendChild(option);
+
+        cell.appendChild(os);
+        cell.setAttribute("colspan", "2");
+        os.id = "os" + service_num;
+
         var row = table.insertRow(++rowCount);
         var cell = row.insertCell(0);
         cell.setAttribute("colspan", "1");
@@ -1623,11 +1663,10 @@ function addProduct(id)
         cell.setAttribute("colspan", "1");
         
         cell = row.insertCell(2);
-        //kimberly keep adding here
         var system_price = document.createElement("input");
         system_price.setAttribute("type", "text");
         system_price.setAttribute("readonly", "readonly");
-        system_price.setAttribute("value", "$" + PRICE_SYSTEM);
+        system_price.setAttribute("value", "$" + parseFloat(PRICE_SYSTEM_MANAGEMENT_UC[0]).toFixed(2));
         system_price.id = "system-price" + vm_num;
         system_price.setAttribute("name", system_price.id);
         cell.appendChild(system_price);
@@ -1644,7 +1683,7 @@ function addProduct(id)
         sys_man_qty.className += " sys_man_qty userinput";
         sys_man_qty.setAttribute("dest", "" + sys_man_sub_out);
         sys_man_qty.setAttribute("num", vm_num);
-        sys_man_qty.setAttribute("sys-man-price", PRICE_SYSTEM);
+        sys_man_qty.setAttribute("sys-man-price", PRICE_SYSTEM_MANAGEMENT_UC[0]);
         sys_man_qty.setAttribute("name", sys_man_qty.id);
         sys_man_qty.setAttribute("size", 5);
         sys_man_qty.setAttribute("onchange", "getEstimate('sys-man', this.id, this.getAttribute('sys-man-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'SYS_MAN')");
@@ -1676,9 +1715,14 @@ function addProduct(id)
         var nonrec = document.createTextNode("\u00a0\u00a0\u00a0\u00a0Non-recommended hardware");                       
         cell.appendChild(nonrec);
         cell.setAttribute("colspan", "1");
-        
-        var cell = row3.insertCell(2);
-        var nonrec_price = document.createTextNode("$" + PRICE_NON_REC_HARDWARE + "/month");
+
+        cell = row3.insertCell(2);
+        var nonrec_price = document.createElement("input");
+        nonrec_price.setAttribute("type", "text");
+        nonrec_price.setAttribute("readonly", "readonly");
+        nonrec_price.setAttribute("value", "$" + parseFloat(PRICE_SYSTEM_MANAGEMENT_UC[1]).toFixed(2));
+        nonrec_price.id = "nonrec-price" + vm_num;
+        nonrec_price.setAttribute("name", nonrec_price.id);
         cell.appendChild(nonrec_price);
         cell.setAttribute("colspan", "1");
         
@@ -1693,7 +1737,7 @@ function addProduct(id)
         nonrec_qty.className += " nonrec_qty userinput";
         nonrec_qty.setAttribute("dest", "" + nonrec_sub_out);
         nonrec_qty.setAttribute("num", vm_num);
-        nonrec_qty.setAttribute("nonrec-price", PRICE_NON_REC_HARDWARE);
+        nonrec_qty.setAttribute("nonrec-price", PRICE_SYSTEM_MANAGEMENT_UC[1]);
         nonrec_qty.setAttribute("name", nonrec_qty.id);
         nonrec_qty.setAttribute("title", "To receive this option, enter 1");
         nonrec_qty.setAttribute("size", 5);
@@ -1720,27 +1764,32 @@ function addProduct(id)
         cell.appendChild(no_os);
         cell.setAttribute("colspan", "1");
         
-        var cell = row4.insertCell(2);
-        var no_os_price = document.createTextNode("$" + PRICE_HARDWARE_WO_OS_SUPPORT + "/month");
+        cell = row4.insertCell(2);
+        var no_os_price = document.createElement("input");
+        no_os_price.setAttribute("type", "text");
+        no_os_price.setAttribute("readonly", "readonly");
+        no_os_price.setAttribute("value", "$" + parseFloat(PRICE_SYSTEM_MANAGEMENT_UC[2]).toFixed(2));
+        no_os_price.id = "no-os-price" + vm_num;
+        no_os_price.setAttribute("name", no_os_price.id);
         cell.appendChild(no_os_price);
         cell.setAttribute("colspan", "1");
         
         var cell = row4.insertCell(3);
         var no_os_qty = document.createElement("input");
         no_os_qty.setAttribute("type", "text");
-        no_os_qty_in = "no_os-qty" + vm_num;
-        no_os_sub_out = "no_os-sub" + vm_num;
+        no_os_qty_in = "no-os-qty" + vm_num;
+        no_os_sub_out = "no-os-sub" + vm_num;
         cell.appendChild(no_os_qty);
         cell.setAttribute("colspan", "1");
         no_os_qty.id = no_os_qty_in;
         no_os_qty.className += " no_os_qty userinput";
         no_os_qty.setAttribute("dest", "" + no_os_sub_out);
         no_os_qty.setAttribute("num", vm_num);
-        no_os_qty.setAttribute("no_os-price", PRICE_HARDWARE_WO_OS_SUPPORT);
+        no_os_qty.setAttribute("no-os-price", PRICE_SYSTEM_MANAGEMENT_UC[2]);
         no_os_qty.setAttribute("name", no_os_qty.id);
         no_os_qty.setAttribute("title", "To receive this option, enter 1");
         no_os_qty.setAttribute("size", 5);
-        no_os_qty.setAttribute("onchange", "getEstimate('no_os', this.id, this.getAttribute('no_os-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'SYS_MAN')");
+        no_os_qty.setAttribute("onchange", "getEstimate('no_os', this.id, this.getAttribute('no-os-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'SYS_MAN')");
 
         var cell = row4.insertCell(4);
         var no_os_sub = document.createElement("input");
@@ -1762,27 +1811,33 @@ function addProduct(id)
         cell.appendChild(storage_array);
         cell.setAttribute("colspan", "1");
         
-        var cell = row5.insertCell(2);
-        var storage_array_price = document.createTextNode("$" + PRICE_ATTACHED_STORAGE_ARRAY + "/month");
+
+        cell = row5.insertCell(2);
+        var storage_array_price = document.createElement("input");
+        storage_array_price.setAttribute("type", "text");
+        storage_array_price.setAttribute("readonly", "readonly");
+        storage_array_price.setAttribute("value", "$" + parseFloat(PRICE_SYSTEM_MANAGEMENT_UC[3]).toFixed(2));
+        storage_array_price.id = "storage-array-price" + vm_num;
+        storage_array_price.setAttribute("name", storage_array_price.id);
         cell.appendChild(storage_array_price);
-        cell.setAttribute("colspan", "1");
-        
+        cell.setAttribute("colspan", "1");        
+
         var cell = row5.insertCell(3);
         var storage_array_qty = document.createElement("input");
         storage_array_qty.setAttribute("type", "text");
-        storage_array_qty_in = "storage_array-qty" + vm_num;
-        storage_array_sub_out = "storage_array-sub" + vm_num;
+        storage_array_qty_in = "storage-array-qty" + vm_num;
+        storage_array_sub_out = "storage-array-sub" + vm_num;
         cell.appendChild(storage_array_qty);
         cell.setAttribute("colspan", "1");
         storage_array_qty.id = storage_array_qty_in;
         storage_array_qty.className += " storage_array_qty userinput";
         storage_array_qty.setAttribute("dest", "" + storage_array_sub_out);
         storage_array_qty.setAttribute("num", vm_num);
-        storage_array_qty.setAttribute("storage_array-price", PRICE_ATTACHED_STORAGE_ARRAY);
+        storage_array_qty.setAttribute("storage-array-price", PRICE_SYSTEM_MANAGEMENT_UC[3]);
         storage_array_qty.setAttribute("name", storage_array_qty.id);
         storage_array_qty.setAttribute("title", "To receive this option, enter 1");
         storage_array_qty.setAttribute("size", 5);
-        storage_array_qty.setAttribute("onchange", "getEstimate('storage_array', this.id, this.getAttribute('storage_array-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'SYS_MAN')");
+        storage_array_qty.setAttribute("onchange", "getEstimate('storage_array', this.id, this.getAttribute('storage-array-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'SYS_MAN')");
 
         var cell = row5.insertCell(4);
         var storage_array_sub = document.createElement("input");
@@ -1804,16 +1859,21 @@ function addProduct(id)
         cell.appendChild(non_os_vendor);
         cell.setAttribute("colspan", "1");
         
-        var cell = row6.insertCell(2);
-        var non_os_vendor_price = document.createTextNode("$" + PRICE_NON_OS_SOFTWARE + "/month");
+        cell = row6.insertCell(2);
+        var non_os_vendor_price = document.createElement("input");
+        non_os_vendor_price.setAttribute("type", "text");
+        non_os_vendor_price.setAttribute("readonly", "readonly");
+        non_os_vendor_price.setAttribute("value", "$" + parseFloat(PRICE_SYSTEM_MANAGEMENT_UC[4]).toFixed(2));
+        non_os_vendor_price.id = "non-os-vendor-price" + vm_num;
+        non_os_vendor_price.setAttribute("name", non_os_vendor_price.id);
         cell.appendChild(non_os_vendor_price);
-        cell.setAttribute("colspan", "1");
-        
+        cell.setAttribute("colspan", "1");    
+
         var cell = row6.insertCell(3);
         var non_os_vendor_qty = document.createElement("input");
         non_os_vendor_qty.setAttribute("type", "text");
-        non_os_vendor_qty_in = "non_os_vendor-qty" + vm_num;
-        non_os_vendor_sub_out = "non_os_vendor-sub" + vm_num;
+        non_os_vendor_qty_in = "non-os-vendor-qty" + vm_num;
+        non_os_vendor_sub_out = "non-os-vendor-sub" + vm_num;
         cell.appendChild(non_os_vendor_qty);
         cell.setAttribute("colspan", "1");
         non_os_vendor_qty.id = non_os_vendor_qty_in;
@@ -1823,8 +1883,8 @@ function addProduct(id)
         non_os_vendor_qty.setAttribute("size", 5);
         non_os_vendor_qty.setAttribute("name", non_os_vendor_qty.id);
         non_os_vendor_qty.setAttribute("title", "To receive this option, enter 1");
-        non_os_vendor_qty.setAttribute("non_os_vendor-price", PRICE_NON_OS_SOFTWARE);
-        non_os_vendor_qty.setAttribute("onchange", "getEstimate('non_os_vendor', this.id, this.getAttribute('non_os_vendor-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'SYS_MAN')");
+        non_os_vendor_qty.setAttribute("non-os-vendor-price", PRICE_SYSTEM_MANAGEMENT_UC[4]);
+        non_os_vendor_qty.setAttribute("onchange", "getEstimate('non_os_vendor', this.id, this.getAttribute('non-os-vendor-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'SYS_MAN')");
 
         var cell = row6.insertCell(4);
         var non_os_vendor_sub = document.createElement("input");
@@ -1846,27 +1906,32 @@ function addProduct(id)
         cell.appendChild(local_admin_access);
         cell.setAttribute("colspan", "1");
         
-        var cell = row7.insertCell(2);
-        var local_admin_access_price = document.createTextNode("$" + PRICE_LOCAL_ADMIN_ACCESS + "/month");
+        cell = row7.insertCell(2);
+        var local_admin_access_price = document.createElement("input");
+        local_admin_access_price.setAttribute("type", "text");
+        local_admin_access_price.setAttribute("readonly", "readonly");
+        local_admin_access_price.setAttribute("value", "$" + parseFloat(PRICE_SYSTEM_MANAGEMENT_UC[5]).toFixed(2));
+        local_admin_access_price.id = "local-admin-access-price" + vm_num;
+        local_admin_access_price.setAttribute("name", local_admin_access_price.id);
         cell.appendChild(local_admin_access_price);
-        cell.setAttribute("colspan", "1");
+        cell.setAttribute("colspan", "1");  
         
         var cell = row7.insertCell(3);
         var local_admin_access_qty = document.createElement("input");
         local_admin_access_qty.setAttribute("type", "text");
-        local_admin_access_qty_in = "local_admin_access-qty" + vm_num;
-        local_admin_access_sub_out = "local_admin_access-sub" + vm_num;
+        local_admin_access_qty_in = "local-admin-access-qty" + vm_num;
+        local_admin_access_sub_out = "local-admin-access-sub" + vm_num;
         cell.appendChild(local_admin_access_qty);
         cell.setAttribute("colspan", "1");
         local_admin_access_qty.id = local_admin_access_qty_in;
         local_admin_access_qty.className += " local_admin_access_qty userinput";
         local_admin_access_qty.setAttribute("dest", "" + local_admin_access_sub_out);
         local_admin_access_qty.setAttribute("num", vm_num);
-        local_admin_access_qty.setAttribute("local_admin_access-price", PRICE_LOCAL_ADMIN_ACCESS);
+        local_admin_access_qty.setAttribute("local-admin-access-price", PRICE_SYSTEM_MANAGEMENT_UC[5]);
         local_admin_access_qty.setAttribute("name", local_admin_access_qty.id);
         local_admin_access_qty.setAttribute("title", "To receive this option, enter 1");
         local_admin_access_qty.setAttribute("size", 5);
-        local_admin_access_qty.setAttribute("onchange", "getEstimate('local_admin_access', this.id, this.getAttribute('local_admin_access-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'SYS_MAN')");
+        local_admin_access_qty.setAttribute("onchange", "getEstimate('local_admin_access', this.id, this.getAttribute('local-admin-access-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'SYS_MAN')");
 
         var cell = row7.insertCell(4);
         var local_admin_access_sub = document.createElement("input");
@@ -1887,28 +1952,33 @@ function addProduct(id)
         var sys_monitor = document.createTextNode("\u00a0\u00a0\u00a0\u00a024/7 system monitoring and support");                       
         cell.appendChild(sys_monitor);
         cell.setAttribute("colspan", "1");
-        
-        var cell = row8.insertCell(2);
-        var sys_monitor_price = document.createTextNode("$" + PRICE_SYSTEM_MONITOR_SUPPORT + "/month");
+ 
+        cell = row8.insertCell(2);
+        var sys_monitor_price = document.createElement("input");
+        sys_monitor_price.setAttribute("type", "text");
+        sys_monitor_price.setAttribute("readonly", "readonly");
+        sys_monitor_price.setAttribute("value", "$" + parseFloat(PRICE_SYSTEM_MANAGEMENT_UC[6]).toFixed(2));
+        sys_monitor_price.id = "sys-monitor-price" + vm_num;
+        sys_monitor_price.setAttribute("name", sys_monitor_price.id);
         cell.appendChild(sys_monitor_price);
-        cell.setAttribute("colspan", "1");
-        
+        cell.setAttribute("colspan", "1");  
+
         var cell = row8.insertCell(3);
         var sys_monitor_qty = document.createElement("input");
         sys_monitor_qty.setAttribute("type", "text");
-        sys_monitor_qty_in = "sys_monitor-qty" + vm_num;
-        sys_monitor_sub_out = "sys_monitor-sub" + vm_num;
+        sys_monitor_qty_in = "sys-monitor-qty" + vm_num;
+        sys_monitor_sub_out = "sys-monitor-sub" + vm_num;
         cell.appendChild(sys_monitor_qty);
         cell.setAttribute("colspan", "1");
         sys_monitor_qty.id = sys_monitor_qty_in;
         sys_monitor_qty.className += " sys_monitor_qty userinput";
         sys_monitor_qty.setAttribute("dest", "" + sys_monitor_sub_out);
         sys_monitor_qty.setAttribute("num", vm_num);
-        sys_monitor_qty.setAttribute("sys_monitor-price", PRICE_SYSTEM_MONITOR_SUPPORT);
+        sys_monitor_qty.setAttribute("sys-monitor-price", PRICE_SYSTEM_MANAGEMENT_UC[6]);
         sys_monitor_qty.setAttribute("name", sys_monitor_qty.id);
         sys_monitor_qty.setAttribute("title", "To receive this option, enter 1");
         sys_monitor_qty.setAttribute("size", 5);
-        sys_monitor_qty.setAttribute("onchange", "getEstimate('sys_monitor', this.id, this.getAttribute('sys_monitor-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'SYS_MAN')");
+        sys_monitor_qty.setAttribute("onchange", "getEstimate('sys_monitor', this.id, this.getAttribute('sys-monitor-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'SYS_MAN')");
 
         var cell = row8.insertCell(4);
         var sys_monitor_sub = document.createElement("input");
@@ -2664,6 +2734,7 @@ function changePrices(affiliation, id)
             case 'SITE':
             case 'SUPPORT':
             case 'SYS_MAN':
+                price_sys_man = PRICE_SYSTEM_MANAGEMENT_UC;
             case 'RAW':
             case 'CL_COMPUTE':
                 price = PRICE_CL_COMPUTE_UC; 
@@ -2693,6 +2764,8 @@ function changePrices(affiliation, id)
             case 'SITE':
             case 'SUPPORT':
             case 'SYS_MAN':
+                price_sys_man = PRICE_SYSTEM_MANAGEMENT_EXT;
+                break;
             case 'RAW':
             case 'CL_COMPUTE':
                     price = PRICE_CL_COMPUTE_EXT; 
@@ -2738,6 +2811,7 @@ function changePrices(affiliation, id)
                             break;
                         case 5:
                             document.getElementById("st-vm-price" + item_num).innerHTML = "$" + parseFloat(price_vm[n]).toFixed(2);
+                            if (document.getElementById("extrasnap" + st_vm_num).value == "Yes") extraSnaps(st_vm_num);
                             break;
                     }
                 }
@@ -2776,6 +2850,7 @@ function changePrices(affiliation, id)
                             break;
                         case 5:
                             document.getElementById("hs-vm-price" + item_num).innerHTML = "$" + parseFloat(price_vm[n]).toFixed(2);
+                            if (document.getElementById("extrasnap" + hs_vm_num).value == "Yes") extraSnaps(hs_vm_num);
                             break;
                     }
                 }
@@ -2810,6 +2885,35 @@ function changePrices(affiliation, id)
             case 'SITE':
             case 'SUPPORT':
             case 'SYS_MAN':
+                document.getElementById("system-price" + sys_man_vm_num).value = "$" + parseFloat(price_sys_man[0]).toFixed(2);
+                document.getElementById("system-price" + sys_man_vm_num).innerHTML = "$" + parseFloat(price_sys_man[0]).toFixed(2);
+                document.getElementById("sys-man-qty" + sys_man_vm_num).setAttribute("sys-man-price", price_sys_man[0]);
+                getEstimate('sys-man', "sys-man-qty" + sys_man_vm_num, price_sys_man[0], "sys-man-sub" + sys_man_vm_num, sys_man_vm_num, 'SYS_MAN');
+                document.getElementById("nonrec-price" + sys_man_vm_num).value = "$" + parseFloat(price_sys_man[1]).toFixed(2);
+                document.getElementById("nonrec-price" + sys_man_vm_num).innerHTML = "$" + parseFloat(price_sys_man[1]).toFixed(2);
+                document.getElementById("nonrec-qty" + sys_man_vm_num).setAttribute("nonrec-price", price_sys_man[1]);
+                getEstimate('nonrec', "nonrec-qty" + sys_man_vm_num, price_sys_man[1], "nonrec-sub" + sys_man_vm_num, sys_man_vm_num, 'SYS_MAN');
+                document.getElementById("no-os-price" + sys_man_vm_num).value = "$" + parseFloat(price_sys_man[2]).toFixed(2);
+                document.getElementById("no-os-price" + sys_man_vm_num).innerHTML = "$" + parseFloat(price_sys_man[2]).toFixed(2);
+                document.getElementById("no-os-qty" + sys_man_vm_num).setAttribute("no-os-price", price_sys_man[2]);
+                getEstimate('no_os', "no-os-qty" + sys_man_vm_num, price_sys_man[2], "no-os-sub" + sys_man_vm_num, sys_man_vm_num, 'SYS_MAN');
+                document.getElementById("storage-array-price" + sys_man_vm_num).value = "$" + parseFloat(price_sys_man[3]).toFixed(2);
+                document.getElementById("storage-array-price" + sys_man_vm_num).innerHTML = "$" + parseFloat(price_sys_man[3]).toFixed(2);
+                document.getElementById("storage-array-qty" + sys_man_vm_num).setAttribute("storage-array-price", price_sys_man[3]);
+                getEstimate('storage_array', "storage-array-qty" + sys_man_vm_num, price_sys_man[3], "storage-array-sub" + sys_man_vm_num, sys_man_vm_num, 'SYS_MAN');
+                document.getElementById("non-os-vendor-price" + sys_man_vm_num).value = "$" + parseFloat(price_sys_man[4]).toFixed(2);
+                document.getElementById("non-os-vendor-price" + sys_man_vm_num).innerHTML = "$" + parseFloat(price_sys_man[4]).toFixed(2);
+                document.getElementById("non-os-vendor-qty" + sys_man_vm_num).setAttribute("non-os-vendor-price", price_sys_man[4]);
+                getEstimate('non_os_vendor', "non-os-vendor-qty" + sys_man_vm_num, price_sys_man[4], "non-os-vendor-sub" + sys_man_vm_num, sys_man_vm_num, 'SYS_MAN');              
+                document.getElementById("local-admin-access-price" + sys_man_vm_num).value = "$" + parseFloat(price_sys_man[5]).toFixed(2);
+                document.getElementById("local-admin-access-price" + sys_man_vm_num).innerHTML = "$" + parseFloat(price_sys_man[5]).toFixed(2);
+                document.getElementById("local-admin-access-qty" + sys_man_vm_num).setAttribute("local-admin-access-price", price_sys_man[5]);
+                getEstimate('local_admin_access', "local-admin-access-qty" + sys_man_vm_num, price_sys_man[5], "local-admin-access-sub" + sys_man_vm_num, sys_man_vm_num, 'SYS_MAN');              
+                document.getElementById("sys-monitor-price" + sys_man_vm_num).value = "$" + parseFloat(price_sys_man[6]).toFixed(2);
+                document.getElementById("sys-monitor-price" + sys_man_vm_num).innerHTML = "$" + parseFloat(price_sys_man[6]).toFixed(2);
+                document.getElementById("sys-monitor-qty" + sys_man_vm_num).setAttribute("sys-monitor-price", price_sys_man[6]);
+                getEstimate('sys_monitor', "sys-monitor-qty" + sys_man_vm_num, price_sys_man[6], "sys-monitor-sub" + sys_man_vm_num, sys_man_vm_num, 'SYS_MAN');              
+                break;
             case 'RAW':
             case 'CL_COMPUTE':
                 for (n=0, item_num=1; n < price.length; n++, item_num++) {
