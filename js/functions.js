@@ -45,16 +45,17 @@ var PRICE_HS_VM_EXT = [PRICE_HIGH_SECURITY_VM_EXT, PRICE_ADD_CPU_HIGH_SECURITY_V
 
 // PRICES FOR CLOUD STORAGE
 var PRICE_CLOUD_STORAGE_UC = 32.16; //per TB
-var PRICE_DUAL_SITE_CLOUD_STORAGE = 2 * PRICE_CLOUD_STORAGE_UC; //per TB
-var PRICE_CLOUD_STORAGE_EXT = 64.632;
+var PRICE_DUAL_SITE_CLOUD_STORAGE_UC = 2 * PRICE_CLOUD_STORAGE_UC; //per TB
+var PRICE_CLOUD_STORAGE_EXT = 46.632;
+var PRICE_DUAL_SITE_CLOUD_STORAGE_EXT = 2 * PRICE_CLOUD_STORAGE_EXT;
 
 // PRICES FOR PROJECT STORAGE
 var PRICE_PROJECT_STORAGE_UC = 45.75; //per TB
 var PRICE_PROJECT_STORAGE_EXT = 66.3375;
 
 // PRICES FOR PROJECT CONDO
-var PRICE_PROJECT_CONDO_UC = 1134.016; //per TB
-var PRICE_PROJECT_CONDO_EXT = 351.936;
+var PRICE_PROJECT_CONDO_UC = 782.08; //per TB
+var PRICE_PROJECT_CONDO_EXT = 1134.016;
 
 // PRICES FOR SYSTEM MANAGEMENT UC
 var PRICE_SYSTEM_UC = 69.00; //per system
@@ -742,7 +743,7 @@ function addProduct(id)
         ++vm_num;
         cl_str_vm_num = vm_num;
         var cl_str_price_val = PRICE_CLOUD_STORAGE_UC;
-        var cl_str_price_val_double = PRICE_DUAL_SITE_CLOUD_STORAGE;
+        var cl_str_price_val_double = PRICE_DUAL_SITE_CLOUD_STORAGE_UC;
         
         row1 = table.insertRow(rowCount);
         row1.id = "row" + cl_str_vm_num;
@@ -2721,6 +2722,8 @@ function changePrices(affiliation, id)
                 break;
             case 'CL_STR':
                 price_cl_str = PRICE_CLOUD_STORAGE_UC;
+                original = PRICE_CLOUD_STORAGE_UC;
+                dual = PRICE_DUAL_SITE_CLOUD_STORAGE_UC;
                 break;
             case 'PR_STR':
                 price_pr_str = PRICE_PROJECT_STORAGE_UC;
@@ -2751,6 +2754,8 @@ function changePrices(affiliation, id)
                 break;
             case 'CL_STR':
                 price_cl_str = PRICE_CLOUD_STORAGE_EXT;
+                original = PRICE_CLOUD_STORAGE_EXT;
+                dual = PRICE_DUAL_SITE_CLOUD_STORAGE_EXT;
                 break;
             case 'PR_STR':
                 price_pr_str = PRICE_PROJECT_STORAGE_EXT;
@@ -2862,7 +2867,11 @@ function changePrices(affiliation, id)
                 document.getElementById("cl-units" + cl_str_vm_num).setAttribute("value", "TB");
                 document.getElementById("GB" + cl_str_vm_num).removeAttribute("selected");
                 document.getElementById("TB" + cl_str_vm_num).setAttribute("selected", "selected");
-                getEstimate("cl-str", "cl-str-qty" + cl_str_vm_num, price_cl_str, "cl-str-sub" + cl_str_vm_num, cl_str_vm_num, "CL_STR");
+                document.getElementById("dualoptions" + cl_str_vm_num).setAttribute("original", original);
+                document.getElementById("dualoptions" + cl_str_vm_num).setAttribute("double", dual);
+                document.getElementById("onchange", "changePrice(cl_str_vm_num, document.getElementById('dualoptions' + cl_str_vm_num).getAttribute('original'), document.getElementById('dualoptions' + cl_str_vm_num).getAttribute('double'))");
+                if (document.getElementById("dualoptions" + cl_str_vm_num).value == "Yes") changePrice(cl_str_vm_num, document.getElementById('dualoptions' + cl_str_vm_num).getAttribute('original'), document.getElementById('dualoptions' + cl_str_vm_num).getAttribute('double'));
+                getEstimate("cl-str", "cl-str-qty" + cl_str_vm_num, document.getElementById("cl-str-price" + cl_str_vm_num).value, "cl-str-sub" + cl_str_vm_num, cl_str_vm_num, "CL_STR");
                 break;
             case 'PR_STR':
                 document.getElementById("cl-str-price" + pr_str_vm_num).value = parseFloat(price_pr_str).toFixed(2);
@@ -3332,9 +3341,9 @@ function changePrice(num, originalval, doubleval)
     document.getElementById("No" + num).removeAttribute("selected");
     document.getElementById("Yes" + num).removeAttribute("selected");
     if (val == 'Yes') {
-        document.getElementById('cl-str-price' + num).value = '$' + doubleval + '/TB';
-        document.getElementById('cl-str-price' + num).setAttribute("value", '$' + doubleval + '/TB');
-        
+        document.getElementById('cl-str-price' + num).value = doubleval;
+        document.getElementById('cl-str-price' + num).setAttribute("value", doubleval);
+        document.getElementById('cl-str-price' + num).innerHTML = '$' + doubleval + '/TB';
         document.getElementById('Yes' + num).setAttribute("selected", "selected");
         document.getElementById("cl-str-qty" + num).setAttribute("cl-str-price", currentprice * 2);
         document.getElementById("cl-str-price" + num).setAttribute("value", "$" + (currentprice * 2) + "/TB");
@@ -3342,8 +3351,9 @@ function changePrice(num, originalval, doubleval)
         document.getElementById("siteoptions" + num).setAttribute("value", "N/A");
         document.getElementById("siteoptions" + num).setAttribute("disabled", "disabled");
     } else if (val == 'No') {
-        document.getElementById('cl-str-price' + num).value = '$' + originalval + '/TB';
-        document.getElementById('cl-str-price' + num).setAttribute("value", '$' + originalval + '/TB');
+        document.getElementById('cl-str-price' + num).value = originalval;
+        document.getElementById('cl-str-price' + num).setAttribute("value", originalval);
+        document.getElementById('cl-str-price' + num).innerHTML = '$' + originalval + '/TB';
         document.getElementById('No' + num).setAttribute("selected", "selected");
         document.getElementById("cl-str-qty" + num).setAttribute("cl-str-price", currentprice / 2);
         document.getElementById("cl-str-price" + num).setAttribute("value", "$" +  (currentprice / 2) + "/TB");
