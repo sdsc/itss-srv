@@ -120,8 +120,6 @@ var service_num = 0; //number of Services added to grid
 var vm_num = 0; //number of VM's ordered, st and hs
 var numProducts = 0; // number of products on table currently
 var item_num = 0; //for item and price id within each service
-var pr_con_vm_num = 0;
-var sys_man_vm_num = 0;
 
 var row1, cell, rowCount;
 
@@ -1529,7 +1527,6 @@ function addProduct(id)
     /* BEGIN SYSTEM MANAGEMENT */
     else if (id == 'SYS_MAN') {
         ++vm_num;
-        sys_man_vm_num = vm_num;
         row1 = table.insertRow(rowCount);
         row1.id = "row" + vm_num;
         var cell = row1.insertCell(0);
@@ -1610,7 +1607,8 @@ function addProduct(id)
         os.setAttribute("name", "affiliation");
         os.setAttribute("title", "Choose client location");
         os.setAttribute("value", "UC");
-        os.setAttribute("onchange", "changePrices(this.value, 'SYS_MAN')");
+        os.setAttribute("num", vm_num);
+        os.setAttribute("onchange", "changePrices(this.value, 'SYS_MAN', this.getAttribute('num'))");
 
         option = new Option("UC", "UC", false, false);
         option.id = "UC" + vm_num;
@@ -2887,7 +2885,7 @@ function changePrices(affiliation, id, num)
                 document.getElementById("cl-str-price" + num + item_num).value = parseFloat(price_pr_con).toFixed(2);
                 document.getElementById("cl-str-qty" + num + item_num).setAttribute("cl-str-price", price_pr_con);
                 document.getElementById("cl-str-price" + num + item_num).innerHTML = "$" + parseFloat(price_pr_con).toFixed(2) + "/unit";
-                getEstimate('pr-str', 'cl-str-qty' + num + item_num, price_pr_con, 'cl-str-sub' + num + item_num, pr_con_vm_num, 'CL_STR');
+                getEstimate('pr-str', 'cl-str-qty' + num + item_num, price_pr_con, 'cl-str-sub' + num + item_num, num, 'CL_STR');
                 break;
             case 'DESK':
             case 'SYSTEMS':
@@ -2895,34 +2893,34 @@ function changePrices(affiliation, id, num)
             case 'SITE':
             case 'SUPPORT':
             case 'SYS_MAN':
-                document.getElementById("system-price" + sys_man_vm_num).value = "$" + parseFloat(price_sys_man[0]).toFixed(2);
-                document.getElementById("system-price" + sys_man_vm_num).innerHTML = "$" + parseFloat(price_sys_man[0]).toFixed(2);
-                document.getElementById("sys-man-qty" + sys_man_vm_num).setAttribute("sys-man-price", price_sys_man[0]);
-                getEstimate('sys-man', "sys-man-qty" + sys_man_vm_num, price_sys_man[0], "sys-man-sub" + sys_man_vm_num, sys_man_vm_num, 'SYS_MAN');
-                document.getElementById("nonrec-price" + sys_man_vm_num).value = "$" + parseFloat(price_sys_man[1]).toFixed(2);
-                document.getElementById("nonrec-price" + sys_man_vm_num).innerHTML = "$" + parseFloat(price_sys_man[1]).toFixed(2);
-                document.getElementById("nonrec-qty" + sys_man_vm_num).setAttribute("nonrec-price", price_sys_man[1]);
-                getEstimate('nonrec', "nonrec-qty" + sys_man_vm_num, price_sys_man[1], "nonrec-sub" + sys_man_vm_num, sys_man_vm_num, 'SYS_MAN');
-                document.getElementById("no-os-price" + sys_man_vm_num).value = "$" + parseFloat(price_sys_man[2]).toFixed(2);
-                document.getElementById("no-os-price" + sys_man_vm_num).innerHTML = "$" + parseFloat(price_sys_man[2]).toFixed(2);
-                document.getElementById("no-os-qty" + sys_man_vm_num).setAttribute("no-os-price", price_sys_man[2]);
-                getEstimate('no_os', "no-os-qty" + sys_man_vm_num, price_sys_man[2], "no-os-sub" + sys_man_vm_num, sys_man_vm_num, 'SYS_MAN');
-                document.getElementById("storage-array-price" + sys_man_vm_num).value = "$" + parseFloat(price_sys_man[3]).toFixed(2);
-                document.getElementById("storage-array-price" + sys_man_vm_num).innerHTML = "$" + parseFloat(price_sys_man[3]).toFixed(2);
-                document.getElementById("storage-array-qty" + sys_man_vm_num).setAttribute("storage-array-price", price_sys_man[3]);
-                getEstimate('storage_array', "storage-array-qty" + sys_man_vm_num, price_sys_man[3], "storage-array-sub" + sys_man_vm_num, sys_man_vm_num, 'SYS_MAN');
-                document.getElementById("non-os-vendor-price" + sys_man_vm_num).value = "$" + parseFloat(price_sys_man[4]).toFixed(2);
-                document.getElementById("non-os-vendor-price" + sys_man_vm_num).innerHTML = "$" + parseFloat(price_sys_man[4]).toFixed(2);
-                document.getElementById("non-os-vendor-qty" + sys_man_vm_num).setAttribute("non-os-vendor-price", price_sys_man[4]);
-                getEstimate('non_os_vendor', "non-os-vendor-qty" + sys_man_vm_num, price_sys_man[4], "non-os-vendor-sub" + sys_man_vm_num, sys_man_vm_num, 'SYS_MAN');              
-                document.getElementById("local-admin-access-price" + sys_man_vm_num).value = "$" + parseFloat(price_sys_man[5]).toFixed(2);
-                document.getElementById("local-admin-access-price" + sys_man_vm_num).innerHTML = "$" + parseFloat(price_sys_man[5]).toFixed(2);
-                document.getElementById("local-admin-access-qty" + sys_man_vm_num).setAttribute("local-admin-access-price", price_sys_man[5]);
-                getEstimate('local_admin_access', "local-admin-access-qty" + sys_man_vm_num, price_sys_man[5], "local-admin-access-sub" + sys_man_vm_num, sys_man_vm_num, 'SYS_MAN');              
-                document.getElementById("sys-monitor-price" + sys_man_vm_num).value = "$" + parseFloat(price_sys_man[6]).toFixed(2);
-                document.getElementById("sys-monitor-price" + sys_man_vm_num).innerHTML = "$" + parseFloat(price_sys_man[6]).toFixed(2);
-                document.getElementById("sys-monitor-qty" + sys_man_vm_num).setAttribute("sys-monitor-price", price_sys_man[6]);
-                getEstimate('sys_monitor', "sys-monitor-qty" + sys_man_vm_num, price_sys_man[6], "sys-monitor-sub" + sys_man_vm_num, sys_man_vm_num, 'SYS_MAN');              
+                document.getElementById("system-price" + num).value = "$" + parseFloat(price_sys_man[0]).toFixed(2);
+                document.getElementById("system-price" + num).innerHTML = "$" + parseFloat(price_sys_man[0]).toFixed(2);
+                document.getElementById("sys-man-qty" + num).setAttribute("sys-man-price", price_sys_man[0]);
+                getEstimate('sys-man', "sys-man-qty" + num, price_sys_man[0], "sys-man-sub" + num, num, 'SYS_MAN');
+                document.getElementById("nonrec-price" + num).value = "$" + parseFloat(price_sys_man[1]).toFixed(2);
+                document.getElementById("nonrec-price" + num).innerHTML = "$" + parseFloat(price_sys_man[1]).toFixed(2);
+                document.getElementById("nonrec-qty" + num).setAttribute("nonrec-price", price_sys_man[1]);
+                getEstimate('nonrec', "nonrec-qty" + num, price_sys_man[1], "nonrec-sub" + num, num, 'SYS_MAN');
+                document.getElementById("no-os-price" + num).value = "$" + parseFloat(price_sys_man[2]).toFixed(2);
+                document.getElementById("no-os-price" + num).innerHTML = "$" + parseFloat(price_sys_man[2]).toFixed(2);
+                document.getElementById("no-os-qty" + num).setAttribute("no-os-price", price_sys_man[2]);
+                getEstimate('no_os', "no-os-qty" + num, price_sys_man[2], "no-os-sub" + num, num, 'SYS_MAN');
+                document.getElementById("storage-array-price" + num).value = "$" + parseFloat(price_sys_man[3]).toFixed(2);
+                document.getElementById("storage-array-price" + num).innerHTML = "$" + parseFloat(price_sys_man[3]).toFixed(2);
+                document.getElementById("storage-array-qty" + num).setAttribute("storage-array-price", price_sys_man[3]);
+                getEstimate('storage_array', "storage-array-qty" + num, price_sys_man[3], "storage-array-sub" + num, num, 'SYS_MAN');
+                document.getElementById("non-os-vendor-price" + num).value = "$" + parseFloat(price_sys_man[4]).toFixed(2);
+                document.getElementById("non-os-vendor-price" + num).innerHTML = "$" + parseFloat(price_sys_man[4]).toFixed(2);
+                document.getElementById("non-os-vendor-qty" + num).setAttribute("non-os-vendor-price", price_sys_man[4]);
+                getEstimate('non_os_vendor', "non-os-vendor-qty" + num, price_sys_man[4], "non-os-vendor-sub" + num, num, 'SYS_MAN');              
+                document.getElementById("local-admin-access-price" + num).value = "$" + parseFloat(price_sys_man[5]).toFixed(2);
+                document.getElementById("local-admin-access-price" + num).innerHTML = "$" + parseFloat(price_sys_man[5]).toFixed(2);
+                document.getElementById("local-admin-access-qty" + num).setAttribute("local-admin-access-price", price_sys_man[5]);
+                getEstimate('local_admin_access', "local-admin-access-qty" + num, price_sys_man[5], "local-admin-access-sub" + num, num, 'SYS_MAN');              
+                document.getElementById("sys-monitor-price" + num).value = "$" + parseFloat(price_sys_man[6]).toFixed(2);
+                document.getElementById("sys-monitor-price" + num).innerHTML = "$" + parseFloat(price_sys_man[6]).toFixed(2);
+                document.getElementById("sys-monitor-qty" + num).setAttribute("sys-monitor-price", price_sys_man[6]);
+                getEstimate('sys_monitor', "sys-monitor-qty" + num, price_sys_man[6], "sys-monitor-sub" + num, num, 'SYS_MAN');              
                 break;
             case 'RAW':
             case 'CL_COMPUTE':
