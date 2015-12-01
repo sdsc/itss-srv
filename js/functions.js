@@ -120,8 +120,6 @@ var service_num = 0; //number of Services added to grid
 var vm_num = 0; //number of VM's ordered, st and hs
 var numProducts = 0; // number of products on table currently
 var item_num = 0; //for item and price id within each service
-var st_vm_num = 0;
-var hs_vm_num = 0;
 var cl_str_vm_num = 0;
 var pr_str_vm_num = 0;
 var pr_con_vm_num = 0;
@@ -201,8 +199,6 @@ function addProduct(id)
     /* ALL OF THIS IS FOR VM'S!!! */
     if (id == 'ST_VM' || id == 'HS_VM') {
         ++vm_num;
-        if (id == 'ST_VM') st_vm_num = vm_num;
-        else hs_vm_num = vm_num;
         /* user has chosen standard vm */
         if(id == 'ST_VM') {
         price_vm = PRICE_ST_VM_UC;
@@ -277,12 +273,13 @@ function addProduct(id)
         var cell = row.insertCell(2);
         var os = document.createElement("select"); 
         os.setAttribute("name", "affiliation");
+        os.setAttribute("num", vm_num);
         os.setAttribute("title", "Choose client location");
         os.setAttribute("value", "UC");
         if (id == 'ST_VM'){
-            os.setAttribute("onchange", "changePrices(this.value, 'ST_VM')");
+            os.setAttribute("onchange", "changePrices(this.value, 'ST_VM', this.getAttribute('num'))");
         }
-        else os.setAttribute("onchange", "changePrices(this.value, 'HS_VM')");
+        else os.setAttribute("onchange", "changePrices(this.value, 'HS_VM', this.getAttribute('num'))");
 
         option = new Option("UC", "UC", false, false);
         option.id = "UC" + service_num;
@@ -384,21 +381,21 @@ function addProduct(id)
         var cell = row.insertCell(2);
         cell.setAttribute("colspan", "1");
         var base_price = document.createTextNode("$" + price_vm[0]);
-        cell.id = vm_type_price + (++item_num); //first item
+        cell.id = vm_type_price + vm_num + (++item_num); //first item
         cell.appendChild(base_price);
         
         var cell = row.insertCell(3);
         cell.setAttribute("colspan", "1");
         cell.appendChild(document.createTextNode("1"));
         cell.setAttribute("value", 1);
-        cell.setAttribute(vm_type_qty + item_num, 1);
-        cell.id = vm_type_qty + item_num;
+        cell.setAttribute(vm_type_qty + vm_num + item_num, 1);
+        cell.id = vm_type_qty + vm_num + item_num;
         
         var cell = row.insertCell(4);
         var price = document.createElement("input");
-        price.setAttribute("name", vm_type_sub + item_num);
+        price.setAttribute("name", vm_type_sub + vm_num + item_num);
         price.setAttribute("type", "text");
-        price.id = vm_type_sub + item_num;
+        price.id = vm_type_sub + vm_num + item_num;
         price.className = "vm-sub vm-sub" + vm_num;
         price.className += " price-align";
         price.value = "$" + price_vm[0];
@@ -419,15 +416,15 @@ function addProduct(id)
         var cell = row2.insertCell(2);
         var cpu_price = document.createTextNode("$" + price_vm[1] + "/CPU");
         cell.appendChild(cpu_price);
-        cell.id = vm_type_price + (++item_num);
-        cell.setAttribute(vm_type_price + item_num, price_vm[1]);
+        cell.id = vm_type_price + vm_num+ (++item_num);
+        cell.setAttribute(vm_type_price + vm_num + item_num, price_vm[1]);
         cell.setAttribute("colspan", "1");
 
         var cell = row2.insertCell(3);
         var cpu_qty = document.createElement("input");
         cpu_qty.setAttribute("type", "text");
-        cpu_qty_in = vm_type_qty + item_num;
-        cpu_sub_out = vm_type_sub + item_num;
+        cpu_qty_in = vm_type_qty + vm_num + item_num;
+        cpu_sub_out = vm_type_sub + vm_num + item_num;
 
         cell.appendChild(cpu_qty);
         cell.setAttribute("colspan", "1");
@@ -437,7 +434,7 @@ function addProduct(id)
         cpu_qty.className += " cpu_qty userinput";
         cpu_qty.setAttribute("dest", "" + cpu_sub_out);
         cpu_qty.setAttribute("num", service_num);
-        cpu_qty.setAttribute(vm_type_price + item_num, price_vm[1]);
+        cpu_qty.setAttribute(vm_type_price + vm_num + item_num, price_vm[1]);
         cpu_qty.setAttribute("cpu-price", price_vm[1])
         cpu_qty.setAttribute("size", 5);
         cpu_qty.setAttribute("onchange", "getEstimate('cpu', this.id, this.getAttribute('cpu-price'), this.getAttribute('dest'), this.getAttribute('num'), 'ST_VM')");
@@ -465,13 +462,13 @@ function addProduct(id)
         var mem_price = document.createTextNode("$" + price_vm[2] + "/GB");
         cell.appendChild(mem_price);
         cell.setAttribute("colspan", "1");
-        cell.id = vm_type_price + (++item_num);
+        cell.id = vm_type_price + vm_num + (++item_num);
 
         var cell = row3.insertCell(3);
         var mem_qty = document.createElement("input");
         mem_qty.setAttribute("type", "text");
-        mem_qty_in = vm_type_qty + item_num;
-        mem_sub_out = vm_type_sub + item_num;
+        mem_qty_in = vm_type_qty + vm_num + item_num;
+        mem_sub_out = vm_type_sub + vm_num + item_num;
         cell.appendChild(mem_qty);
         cell.setAttribute("colspan", "1");
         mem_qty.id = mem_qty_in;
@@ -509,13 +506,13 @@ function addProduct(id)
             var str_price = document.createTextNode("$" + price_vm[3] + "/TB");
             cell.appendChild(str_price);
             cell.setAttribute("colspan", "1");
-        cell.id = vm_type_price + (++item_num);
+        cell.id = vm_type_price + vm_num + (++item_num);
 
             var cell = row4.insertCell(3);
             var str_qty = document.createElement("input");
             str_qty.setAttribute("type", "text");
-            str_qty_in = vm_type_qty + item_num;
-            str_sub_out = vm_type_sub + item_num;
+            str_qty_in = vm_type_qty + vm_num + item_num;
+            str_sub_out = vm_type_sub + vm_num + item_num;
             cell.appendChild(str_qty);
             cell.setAttribute("colspan", "1");
             str_qty.id = str_qty_in;
@@ -531,22 +528,21 @@ function addProduct(id)
             cell.appendChild(blanknode);
             
             var str_units = document.createElement("select");
-            str_units.setAttribute("name", "str-units" + item_num);
+            str_units.setAttribute("name", "str-units" + vm_num + item_num);
             str_units.setAttribute("value", "TB");
             str_units.setAttribute("title", "Choose the units");
-            str_units.setAttribute("num", item_num);
-            str_units.id = "str-units" + service_num;
-            
+            str_units.setAttribute("num", vm_num);
+            str_units.setAttribute("item_num", item_num)
+            str_units.id = "str-units" + vm_num + item_num;           
             /* add all unit options */
             option = new Option("TB", "TB", false, false);
-            option.id = "TB2" + item_num;
+            option.id = "TB" + vm_num + item_num;
             str_units.appendChild(option);
-
             option = new Option("GB", "GB", false, false);
-            option.id = "GB2" + item_num;
+            option.id = "GB" + vm_num + item_num;
             str_units.appendChild(option);
             str_units.setAttribute("vm_type_qty", vm_type_qty);
-            str_units.setAttribute("onchange", "changeUnits(this.getAttribute('vm_type_qty'), this.id, this.value, this.getAttribute('num'), 'str')");
+            str_units.setAttribute("onchange", "changeUnits(this.getAttribute('vm_type_qty'), this.id, this.value, this.getAttribute('num'), this.getAttribute('item_num'), 'str')");
             cell.appendChild(str_units);
             
             var cell = row4.insertCell(4);
@@ -582,13 +578,13 @@ function addProduct(id)
         var san_price = document.createTextNode("$" + parseFloat(price_vm[4]).toFixed(2) + "/TB");
         cell.appendChild(san_price);
         cell.setAttribute("colspan", "1");
-        cell.id = vm_type_price + (++item_num);
+        cell.id = vm_type_price + vm_num + (++item_num);
 
         var cell = row5.insertCell(3);
         var san_qty = document.createElement("input");
         san_qty.setAttribute("type", "text");
-        san_qty_in = vm_type_qty + item_num;;
-        san_sub_out = vm_type_sub + item_num;;
+        san_qty_in = vm_type_qty + vm_num + item_num;;
+        san_sub_out = vm_type_sub + vm_num + item_num;;
         cell.appendChild(san_qty);
         cell.setAttribute("colspan", "1");
         san_qty.id = san_qty_in;
@@ -604,22 +600,21 @@ function addProduct(id)
         cell.appendChild(blanknode);
         
         var san_units = document.createElement("select");
-        san_units.setAttribute("name", "san-units" + item_num);
+        san_units.setAttribute("name", "san-units" + vm_num + item_num);
         san_units.setAttribute("value", "TB");
         san_units.setAttribute("title", "Choose the units");
-        san_units.setAttribute("num", item_num);
-        san_units.id = "san-units" + service_num;
-        
+        san_units.setAttribute("num", vm_num);
+        san_units.setAttribute("item_num", item_num)
+        san_units.id = "san-units" + vm_num + item_num;
         /* add all unit options */
         option = new Option("TB", "TB", false, false);
-        option.id = "TB" + item_num;
+        option.id = "TB" + vm_num + item_num;
         san_units.appendChild(option);
-
         option = new Option("GB", "GB", false, false);
-        option.id = "GB" + item_num;
+        option.id = "GB" + vm_num + item_num;
         san_units.appendChild(option);
         san_units.setAttribute("vm_type_qty", vm_type_qty);
-        san_units.setAttribute("onchange", "changeUnits(this.getAttribute('vm_type_qty'), this.id, this.value, this.getAttribute('num'), 'san')");
+        san_units.setAttribute("onchange", "changeUnits(this.getAttribute('vm_type_qty'), this.id, this.value, this.getAttribute('num'), this.getAttribute('item_num'), 'san')");
         cell.appendChild(san_units);
 
         var cell = row5.insertCell(4);
@@ -645,7 +640,7 @@ function addProduct(id)
         var extrasnap_price = document.createTextNode("$" + parseFloat(price_vm[5]).toFixed(2));
         cell.appendChild(extrasnap_price);
         cell.setAttribute("colspan", "1");
-        cell.id = vm_type_price + (++item_num);        
+        cell.id = vm_type_price + vm_num + (++item_num);        
 
         var cell = row.insertCell(3);
         var extrasnap = document.createElement("select");
@@ -946,12 +941,10 @@ function addProduct(id)
         cl_units.setAttribute("title", "Choose the units");
         cl_units.setAttribute("num", cl_str_vm_num);
         cl_units.id = "cl-units" + cl_str_vm_num;
-        
         /* add all unit options */
         option = new Option("TB", "TB", false, false);
         option.id = "TB" + cl_str_vm_num;
         cl_units.appendChild(option);
-
         option = new Option("GB", "GB", false, false);
         option.id = "GB" + cl_str_vm_num;
         cl_units.appendChild(option);
@@ -2619,13 +2612,13 @@ function addProduct(id)
         }
                 cell.appendChild(cl_compute_price);
                 cell.setAttribute("colspan", "1");
-        cell.id = "cl-compute-price" + item_num;    
+        cell.id = "cl-compute-price" + vm_num + item_num;    
         
                 var cell = row.insertCell(3);
                 var cl_compute_instances = document.createElement("input");
                 cl_compute_instances.setAttribute("type", "text");
-                cl_compute_instances_in = "cl-compute-instances" + item_num;
-                cl_compute_sub_out = "cl-compute-sub" + item_num;
+                cl_compute_instances_in = "cl-compute-instances" + vm_num + item_num;
+                cl_compute_sub_out = "cl-compute-sub" + vm_num + item_num;
                 cell.appendChild(cl_compute_instances);
                 cell.setAttribute("colspan", "1");
                 cl_compute_instances.id = cl_compute_instances_in;
@@ -2656,7 +2649,7 @@ function addProduct(id)
                 cl_compute_sub.setAttribute("name", cl_compute_sub.id);
                 cl_compute_sub.setAttribute("size", 20);
                 document.getElementById(cl_compute_sub_out).setAttribute("readonly", "readonly");
-                cl_compute_sub.className = "sub cl-compute-sub vm-sub" + item_num;
+                cl_compute_sub.className = "sub cl-compute-sub vm-sub" + vm_num + item_num;
                 sub('cl-compute-sub');
                 sub('sub');
 
@@ -2664,7 +2657,7 @@ function addProduct(id)
         var cell1 = row.insertCell(0);
                 cell1.setAttribute("colspan", "1"); 
         var cell2 = row.insertCell(1);
-        cell2.id = "flavor-specifications" + item_num;
+        cell2.id = "flavor-specifications" + vm_num + item_num;
         if (i<10) {
             var cpu = document.createTextNode("\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0" + vcpu[i] + "vCPU, " + memcount[i] + "Memory");
             cell2.appendChild(cpu);
@@ -2682,7 +2675,7 @@ function addProduct(id)
         }
                 var cl_compute_hours = document.createElement("input");
                 cl_compute_hours.setAttribute("type", "text");
-                cl_compute_hours_in = "cl-compute-hours" + item_num;
+                cl_compute_hours_in = "cl-compute-hours" + vm_num + item_num;
                 cell4.appendChild(cl_compute_hours);
                 cell4.setAttribute("colspan", "1");
                 cl_compute_hours.id = cl_compute_hours_in;
@@ -2709,7 +2702,7 @@ function addProduct(id)
  * Parameters:  affiliation - either UC or external to change specific pricings
         price - array of prices per flavor/item
  */
-function changePrices(affiliation, id)
+function changePrices(affiliation, id, num)
 {
 
     if (affiliation == "UC") {
@@ -2780,43 +2773,43 @@ function changePrices(affiliation, id)
     switch (id) {
             case 'ST_VM': 
                 for (n=0, item_num=1; n < price_vm.length; n++, item_num++) {
-                    document.getElementById("st-vm-price" + item_num).setAttribute("st-vm-price"+item_num, parseFloat(price_vm[n]).toFixed(2));
-                    if (item_num!=6)document.getElementById("st-vm-qty" + item_num).setAttribute("st-vm-price" + item_num, parseFloat(price_vm[n]).toFixed(2));
+                    document.getElementById("st-vm-price" + num + item_num).setAttribute("st-vm-price" + num + item_num, parseFloat(price_vm[n]).toFixed(2));
+                    if (item_num!=6)document.getElementById("st-vm-qty" + num + item_num).setAttribute("st-vm-price" + num + item_num, parseFloat(price_vm[n]).toFixed(2));
                     switch (n) {
                         case 0:
-                            document.getElementById("st-vm-price" + item_num).innerHTML = "$" + parseFloat(price_vm[n]).toFixed(2) + "/CPU";
-                            document.getElementById("st-vm-sub1").value = "$" + parseFloat(price_vm[n]).toFixed(2);
-                            getEstimate('cpu', "st-vm-qty" + item_num, price_vm[n], "st-vm-sub" + item_num, st_vm_num, 'ST_VM');
+                            document.getElementById("st-vm-price" + num + item_num).innerHTML = "$" + parseFloat(price_vm[n]).toFixed(2) + "/CPU";
+                            document.getElementById("st-vm-sub" + num + item_num).value = "$" + parseFloat(price_vm[n]).toFixed(2);
+                            getEstimate('cpu', "st-vm-qty" + num + item_num, price_vm[n], "st-vm-sub" + num + item_num, num, 'ST_VM');
                             break;
                         case 1:
-                            document.getElementById("st-vm-qty" + item_num).setAttribute("cpu-price", parseFloat(price_vm[n]).toFixed(2));
-                            document.getElementById("st-vm-price" + item_num).innerHTML = "$" + parseFloat(price_vm[n]).toFixed(2) + "/CPU";
-                            getEstimate('cpu', "st-vm-qty" + item_num, price_vm[n], "st-vm-sub" + item_num, st_vm_num, 'ST_VM');
+                            document.getElementById("st-vm-qty" + num + item_num).setAttribute("cpu-price", parseFloat(price_vm[n]).toFixed(2));
+                            document.getElementById("st-vm-price" + num + item_num).innerHTML = "$" + parseFloat(price_vm[n]).toFixed(2) + "/CPU";
+                            getEstimate('cpu', "st-vm-qty" + num + item_num, price_vm[n], "st-vm-sub" + num + item_num, num, 'ST_VM');
                             break;
                         case 2:
-                            document.getElementById("st-vm-qty" + item_num).setAttribute("mem-price", parseFloat(price_vm[n]).toFixed(2));
-                            document.getElementById("st-vm-price" + item_num).innerHTML = "$" + parseFloat(price_vm[n]).toFixed(2) + "/GB";
-                            getEstimate('mem', "st-vm-qty" + item_num, price_vm[n], "st-vm-sub" + item_num, st_vm_num, 'ST_VM');
+                            document.getElementById("st-vm-qty" + num + item_num).setAttribute("mem-price", parseFloat(price_vm[n]).toFixed(2));
+                            document.getElementById("st-vm-price" + num + item_num).innerHTML = "$" + parseFloat(price_vm[n]).toFixed(2) + "/GB";
+                            getEstimate('mem', "st-vm-qty" + num + item_num, price_vm[n], "st-vm-sub" + num + item_num, num, 'ST_VM');
                             break;
                         case 3:
-                            document.getElementById("st-vm-price" + item_num).innerHTML = "$" + parseFloat(price_vm[n]).toFixed(2) + "/TB";
-                            document.getElementById("st-vm-qty" + item_num).setAttribute("str-price",price_vm[n]);
-                            getEstimate('silver', "st-vm-qty" + item_num, price_vm[n], "st-vm-sub" + item_num, st_vm_num, 'ST_VM');
-                            document.getElementById("str-units" + st_vm_num).setAttribute("value", "TB");
-                            document.getElementById("GB2" + item_num).removeAttribute("selected");
-                            document.getElementById("TB2" + item_num).setAttribute("selected", "selected");
+                            document.getElementById("st-vm-price" + num + item_num).innerHTML = "$" + parseFloat(price_vm[n]).toFixed(2) + "/TB";
+                            document.getElementById("st-vm-qty" + num + item_num).setAttribute("str-price",price_vm[n]);
+                            getEstimate('silver', "st-vm-qty" + num + item_num, price_vm[n], "st-vm-sub" + num + item_num, num, 'ST_VM');
+                            document.getElementById("str-units" + num + item_num).setAttribute("value", "TB");
+                            document.getElementById("GB" + num + item_num).removeAttribute("selected");
+                            document.getElementById("TB" + num + item_num).setAttribute("selected", "selected");
                             break;
                         case 4:
-                            document.getElementById("st-vm-price" + item_num).innerHTML = "$" + parseFloat(price_vm[n]).toFixed(2) + "/TB";
-                            document.getElementById("st-vm-qty" + item_num).setAttribute("san-price",price_vm[n]);
-                            getEstimate('gold', "st-vm-qty" + item_num, price_vm[n], "st-vm-sub" + item_num, st_vm_num, 'ST_VM');
-                            document.getElementById("san-units" + st_vm_num).setAttribute("value", "TB");
-                            document.getElementById("GB" + item_num).removeAttribute("selected");
-                            document.getElementById("TB" + item_num).setAttribute("selected", "selected");
+                            document.getElementById("st-vm-price" + num + item_num).innerHTML = "$" + parseFloat(price_vm[n]).toFixed(2) + "/TB";
+                            document.getElementById("st-vm-qty" + num + item_num).setAttribute("san-price",price_vm[n]);
+                            getEstimate('gold', "st-vm-qty" + num + item_num, price_vm[n], "st-vm-sub" + num + item_num, num, 'ST_VM');
+                            document.getElementById("san-units" + num + item_num).setAttribute("value", "TB");
+                            document.getElementById("GB" + num + item_num).removeAttribute("selected");
+                            document.getElementById("TB" + num + item_num).setAttribute("selected", "selected");
                             break;
                         case 5:
-                            document.getElementById("st-vm-price" + item_num).innerHTML = "$" + parseFloat(price_vm[n]).toFixed(2);
-                            if (document.getElementById("extrasnap" + st_vm_num).value == "Yes") extraSnaps(st_vm_num);
+                            document.getElementById("st-vm-price" + num + item_num).innerHTML = "$" + parseFloat(price_vm[n]).toFixed(2);
+                            if (document.getElementById("extrasnap" + num).value == "Yes") extraSnaps(num);
                             break;
                     }
                 }
@@ -2824,38 +2817,38 @@ function changePrices(affiliation, id)
             break;
             case 'HS_VM':
                 for (n=0, item_num=1; n < price_vm.length; n++, item_num++) {
-                    document.getElementById("hs-vm-price" + item_num).setAttribute("hs-vm-price"+item_num, parseFloat(price_vm[n]).toFixed(2));
-                    if (item_num!=5)document.getElementById("hs-vm-qty" + item_num).setAttribute("hs-vm-price" + item_num, parseFloat(price_vm[n]).toFixed(2));
+                    document.getElementById("hs-vm-price" + num + item_num).setAttribute("hs-vm-price"+item_num, parseFloat(price_vm[n]).toFixed(2));
+                    if (item_num!=5)document.getElementById("hs-vm-qty" + num + item_num).setAttribute("hs-vm-price" + num + item_num, parseFloat(price_vm[n]).toFixed(2));
                     switch (n) {
                         case 0:
-                            document.getElementById("hs-vm-price" + item_num).innerHTML = "$" + parseFloat(price_vm[n]).toFixed(2) + "/CPU";
-                            document.getElementById("hs-vm-sub1").value = "$" + parseFloat(price_vm[n]).toFixed(2);
-                            getEstimate('cpu', "hs-vm-qty" + item_num, price_vm[n], "hs-vm-sub" + item_num, hs_vm_num, 'HS_VM');
+                            document.getElementById("hs-vm-price" + num + item_num).innerHTML = "$" + parseFloat(price_vm[n]).toFixed(2) + "/CPU";
+                            document.getElementById("hs-vm-sub" + num + item_num).value = "$" + parseFloat(price_vm[n]).toFixed(2);
+                            getEstimate('cpu', "hs-vm-qty" + num + item_num, price_vm[n], "hs-vm-sub" + num + item_num, num, 'HS_VM');
                             break;
                         case 1:
-                            document.getElementById("hs-vm-qty" + item_num).setAttribute("cpu-price", parseFloat(price_vm[n]).toFixed(2));
-                            document.getElementById("hs-vm-price" + item_num).innerHTML = "$" + parseFloat(price_vm[n]).toFixed(2) + "/CPU";
-                            getEstimate('cpu', "hs-vm-qty" + item_num, price_vm[n], "hs-vm-sub" + item_num, hs_vm_num, 'HS_VM');
+                            document.getElementById("hs-vm-qty" + num + item_num).setAttribute("cpu-price", parseFloat(price_vm[n]).toFixed(2));
+                            document.getElementById("hs-vm-price" + num + item_num).innerHTML = "$" + parseFloat(price_vm[n]).toFixed(2) + "/CPU";
+                            getEstimate('cpu', "hs-vm-qty" + num + item_num, price_vm[n], "hs-vm-sub" + num + item_num, num, 'HS_VM');
                             break;
                         case 2:
-                            document.getElementById("hs-vm-qty" + item_num).setAttribute("mem-price", parseFloat(price_vm[n]).toFixed(2));
-                            document.getElementById("hs-vm-price" + item_num).innerHTML = "$" + parseFloat(price_vm[n]).toFixed(2) + "/GB";
-                            getEstimate('mem', "hs-vm-qty" + item_num, price_vm[n], "hs-vm-sub" + item_num, hs_vm_num, 'HS_VM');
+                            document.getElementById("hs-vm-qty" + num + item_num).setAttribute("mem-price", parseFloat(price_vm[n]).toFixed(2));
+                            document.getElementById("hs-vm-price" + num + item_num).innerHTML = "$" + parseFloat(price_vm[n]).toFixed(2) + "/GB";
+                            getEstimate('mem', "hs-vm-qty" + num + item_num, price_vm[n], "hs-vm-sub" + num + item_num, num, 'HS_VM');
                             break;
                         case 3:
                             item_num--;
                             break;
                         case 4:
-                            document.getElementById("hs-vm-price" + item_num).innerHTML = "$" + parseFloat(price_vm[n]).toFixed(2) + "/TB";
-                            document.getElementById("hs-vm-qty" + item_num).setAttribute("san-price",price_vm[n]);
-                            getEstimate('gold', "hs-vm-qty" + item_num, price_vm[n], "hs-vm-sub" + item_num, hs_vm_num, 'HS_VM');
-                            document.getElementById("san-units" + hs_vm_num).setAttribute("value", "TB");
-                            document.getElementById("GB" + item_num).removeAttribute("selected");
-                            document.getElementById("TB" + item_num).setAttribute("selected", "selected");
+                            document.getElementById("hs-vm-price" + num + item_num).innerHTML = "$" + parseFloat(price_vm[n]).toFixed(2) + "/TB";
+                            document.getElementById("hs-vm-qty" + num + item_num).setAttribute("san-price",price_vm[n]);
+                            getEstimate('gold', "hs-vm-qty" + num + item_num, price_vm[n], "hs-vm-sub" + num + item_num, num, 'HS_VM');
+                            document.getElementById("san-units" + num + item_num).setAttribute("value", "TB");
+                            document.getElementById("GB" + num + item_num).removeAttribute("selected");
+                            document.getElementById("TB" + num + item_num).setAttribute("selected", "selected");
                             break;
                         case 5:
-                            document.getElementById("hs-vm-price" + item_num).innerHTML = "$" + parseFloat(price_vm[n]).toFixed(2);
-                            if (document.getElementById("extrasnap" + hs_vm_num).value == "Yes") extraSnaps(hs_vm_num);
+                            document.getElementById("hs-vm-price" + num + item_num).innerHTML = "$" + parseFloat(price_vm[n]).toFixed(2);
+                            if (document.getElementById("extrasnap" + num).value == "Yes") extraSnaps(num);
                             break;
                     }
                 }
@@ -2927,14 +2920,14 @@ function changePrices(affiliation, id)
             case 'CL_COMPUTE':
                 for (n=0, item_num=1; n < price.length; n++, item_num++) {
                 if (n<10){
-                            document.getElementById("cl-compute-price" + item_num).innerHTML = "$" + price[n] + "/hr/instance";
+                            document.getElementById("cl-compute-price" + num + item_num).innerHTML = "$" + price[n] + "/hr/instance";
                 }
                 else {
-                    document.getElementById("cl-compute-price" + item_num).innerHTML = "$" + price[n] + "/GB/instance";
+                    document.getElementById("cl-compute-price" + num + item_num).innerHTML = "$" + price[n] + "/GB/instance";
                 }
-                document.getElementById("cl-compute-instances" + item_num).setAttribute("cl-compute-price", price[n]);
-                document.getElementById("cl-compute-hours" + item_num).setAttribute("cl-compute-price",  price[n]);
-                getEstimate('cl-compute', 'cl-compute-hours' + item_num, price[n], document.getElementById("cl-compute-hours" + item_num).getAttribute('dest'), item_num,'CL_COMPUTE'); 
+                document.getElementById("cl-compute-instances" + num + item_num).setAttribute("cl-compute-price", price[n]);
+                document.getElementById("cl-compute-hours" + num + item_num).setAttribute("cl-compute-price",  price[n]);
+                getEstimate('cl-compute', 'cl-compute-hours' + num + item_num, price[n], document.getElementById("cl-compute-hours" + num + item_num).getAttribute('dest'), item_num,'CL_COMPUTE'); 
                 }
                 break;
 
@@ -3109,7 +3102,7 @@ function validate(type, id, dest, num)
             break;
         
         case "silver":
-            if (document.getElementById('str-units' + st_vm_num).getAttribute("value") == 'GB') {
+            if (document.getElementById('str-units' + num + "4").getAttribute("value") == 'GB') {
                 if (v < 1 || v > 30000) {
                     d.setAttribute("value", "Invalid input");
                     d.style.color = "#ff0000";
@@ -3125,7 +3118,9 @@ function validate(type, id, dest, num)
             break;
         
         case "gold":
-            if (document.getElementById('san-units' + num).getAttribute("value") == 'GB') {
+            if (document.getElementById('san-units' + num + "5")) var i = 5;
+            else var i = 4;
+            if (document.getElementById('san-units' + num + i).getAttribute("value") == 'GB') {
                 if (v < 1 || v > 4900) {
                     d.setAttribute("value", "Invalid input");
                     d.style.color = "#ff0000";
@@ -3473,63 +3468,50 @@ function changeValue(id, value, num)
     calculateBackup(num);
 }
 
-function changeUnits(vm_qty, id, value, num, category)
+function changeUnits(vm_qty, id, value, num, item_num, category)
 {
     var currentprice;
     document.getElementById(id).setAttribute("value", value);
     
     if (value == 'TB') {
-        
-        if (category == 'str') {
-            document.getElementById("GB2" + num).removeAttribute("selected");
-            document.getElementById("TB2" + num).setAttribute("selected", "selected");
-            
-        } else {
-            document.getElementById("GB" + num).removeAttribute("selected");
-            document.getElementById("TB" + num).setAttribute("selected", "selected");
-        }
-        
+        document.getElementById("GB" + num + item_num).removeAttribute("selected");
+        document.getElementById("TB" + num + item_num).setAttribute("selected", "selected");         
     } else {
-        if (category == 'str') {
-            document.getElementById("TB2" + num).removeAttribute("selected");
-            document.getElementById("GB2" + num).setAttribute("selected", "selected");
-        } else {
-            document.getElementById("TB" + num).removeAttribute("selected");
-            document.getElementById("GB" + num).setAttribute("selected", "selected");
-        }
+        document.getElementById("TB" + num + item_num).removeAttribute("selected");
+        document.getElementById("GB" + num + item_num).setAttribute("selected", "selected");
     }
     switch (category) {
         case 'str': 
             if (value == 'TB') {
-                currentprice = document.getElementById(vm_qty + num).getAttribute("str-price");
+                currentprice = document.getElementById(vm_qty + num + item_num).getAttribute("str-price");
                 currentprice *= 1000;
 
-                document.getElementById(vm_qty + num).setAttribute("str-price", currentprice);
+                document.getElementById(vm_qty + num + item_num).setAttribute("str-price", currentprice);
                 
             } else {
-                currentprice = document.getElementById(vm_qty + num).getAttribute("str-price");
+                currentprice = document.getElementById(vm_qty + num + item_num).getAttribute("str-price");
                 
                 currentprice /= 1000;
                 
-                document.getElementById(vm_qty + num).setAttribute("str-price", currentprice);
+                document.getElementById(vm_qty + num + item_num).setAttribute("str-price", currentprice);
                 
             }
             
-            var element = document.getElementById(vm_qty + num);
+            var element = document.getElementById(vm_qty + num + item_num);
             getEstimate('silver', element.id, element.getAttribute('str-price'), element.getAttribute('dest'), element.getAttribute('num'), 'ST_VM');
             break;
         
         case 'san': 
             if (value == 'TB') {
-                currentprice = document.getElementById(vm_qty + num).getAttribute("san-price");
+                currentprice = document.getElementById(vm_qty + num + item_num).getAttribute("san-price");
                 currentprice *= 1000;
-                document.getElementById(vm_qty + num).setAttribute("san-price", currentprice);
+                document.getElementById(vm_qty + num + item_num).setAttribute("san-price", currentprice);
             } else {
-                currentprice = document.getElementById(vm_qty + num).getAttribute("san-price");
+                currentprice = document.getElementById(vm_qty + num + item_num).getAttribute("san-price");
                 currentprice /= 1000;
-                document.getElementById(vm_qty + num).setAttribute("san-price", currentprice);
+                document.getElementById(vm_qty + num + item_num).setAttribute("san-price", currentprice);
             }
-            var element = document.getElementById(vm_qty + num);
+            var element = document.getElementById(vm_qty + num + item_num);
             getEstimate('gold', element.id, element.getAttribute('san-price'), element.getAttribute('dest'), element.getAttribute('num'), 'ST_VM');
             break;
         
