@@ -120,7 +120,6 @@ var service_num = 0; //number of Services added to grid
 var vm_num = 0; //number of VM's ordered, st and hs
 var numProducts = 0; // number of products on table currently
 var item_num = 0; //for item and price id within each service
-var cl_str_vm_num = 0;
 var pr_str_vm_num = 0;
 var pr_con_vm_num = 0;
 var sys_man_vm_num = 0;
@@ -506,7 +505,7 @@ function addProduct(id)
             var str_price = document.createTextNode("$" + price_vm[3] + "/TB");
             cell.appendChild(str_price);
             cell.setAttribute("colspan", "1");
-        cell.id = vm_type_price + vm_num + (++item_num);
+            cell.id = vm_type_price + vm_num + (++item_num);
 
             var cell = row4.insertCell(3);
             var str_qty = document.createElement("input");
@@ -736,12 +735,14 @@ function addProduct(id)
     /* THIS CODE IS FOR CLOUD STORAGE */
     else if (id == 'CL_STR') {
         ++vm_num;
-        cl_str_vm_num = vm_num;
         var cl_str_price_val = PRICE_CLOUD_STORAGE_UC;
         var cl_str_price_val_double = PRICE_DUAL_SITE_CLOUD_STORAGE_UC;
+        vm_type_sub = "cl-str-sub"; //for sub id
+        vm_type_price = "cl-str-price"; //for each price id
+        vm_type_qty = "cl-str-qty";
         
         row1 = table.insertRow(rowCount);
-        row1.id = "row" + cl_str_vm_num;
+        row1.id = "row" + vm_num;
         var cell = row1.insertCell(0);
         var remove = document.createElement("button");
         var remove_text = document.createTextNode("-");
@@ -749,7 +750,7 @@ function addProduct(id)
         cell.appendChild(remove);
         remove.className = "remove-button";
         remove.setAttribute("value", "-");
-        remove.setAttribute("rownumber", "row" + cl_str_vm_num);
+        remove.setAttribute("rownumber", "row" + vm_num);
         remove.setAttribute("title", "Remove Service");
         remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), ROWS_CLOUD_STORAGE, 'CL_STR')");
         
@@ -762,15 +763,15 @@ function addProduct(id)
         cell = row1.insertCell(2);
         var description_box = document.createElement("textarea");
         description_box.setAttribute("colspan", "3");
-        description_box.id = "description" + cl_str_vm_num;
-        description_box.setAttribute("num", cl_str_vm_num);
+        description_box.id = "description" + vm_num;
+        description_box.setAttribute("num", vm_num);
         description_box.setAttribute("name", " ");
         description_box.setAttribute("onchange", "changeDescription(this.getAttribute('num'), this.value)");
         description_box.setAttribute("rows", "5");
         description_box.setAttribute("cols", "30");
         cell.appendChild(description_box);
         cell.setAttribute("colspan", "3");
-        document.getElementById("description" + cl_str_vm_num).innerHTML = "Enter a description here";
+        document.getElementById("description" + vm_num).innerHTML = "Enter a description here";
         
         var row = table.insertRow(++rowCount);
         var cell = row.insertCell(0);
@@ -783,7 +784,7 @@ function addProduct(id)
         cell.setAttribute("colspan", "1");
         
         var row2 = table.insertRow(++rowCount);
-        row2.id = "row" + cl_str_vm_num;
+        row2.id = "row" + vm_num;
         var cell = row2.insertCell(0);
         
         var cell = row2.insertCell(1);
@@ -793,28 +794,28 @@ function addProduct(id)
         
         var cell = row2.insertCell(2);
         var dualoptions = document.createElement("select");
-        dualoptions.id = "dualoptions" + cl_str_vm_num;
-        dualoptions.setAttribute("num", cl_str_vm_num);
+        dualoptions.id = "dualoptions" + vm_num;
+        dualoptions.setAttribute("num", vm_num);
         dualoptions.setAttribute("original", cl_str_price_val);
         dualoptions.setAttribute("double", cl_str_price_val_double);
         dualoptions.setAttribute("name", dualoptions.id);
         dualoptions.setAttribute("title", "Dual site redundancy doubles the cost");
         dualoptions.setAttribute("onchange", "changePrice(this.getAttribute('num'), this.getAttribute('original'), this.getAttribute('double'))");
         var options = new Option("No", "No", false, false);
-        options.id = "No" + cl_str_vm_num;
-        options.setAttribute("num", cl_str_vm_num);
+        options.id = "No" + vm_num;
+        options.setAttribute("num", vm_num);
         dualoptions.appendChild(options);
         dualoptions.setAttribute("value", "No");
         
         options = new Option("Yes", "Yes", false, false);
-        options.id = "Yes" + cl_str_vm_num;
-        options.setAttribute("num", cl_str_vm_num);
+        options.id = "Yes" + vm_num;
+        options.setAttribute("num", vm_num);
         dualoptions.appendChild(options);
         cell.appendChild(dualoptions);
         
         if (dualoptions.value == 'No') {
             var row3 = table.insertRow(++rowCount);
-            row3.id = "row" + cl_str_vm_num;
+            row3.id = "row" + vm_num;
             var cell = row3.insertCell(0);
             
             var cell = row3.insertCell(1);
@@ -823,19 +824,19 @@ function addProduct(id)
 
             var cell = row3.insertCell(2);
             var siteoptions = document.createElement("select");
-            siteoptions.id = "siteoptions" + cl_str_vm_num;
-            siteoptions.setAttribute("num", cl_str_vm_num);
+            siteoptions.id = "siteoptions" + vm_num;
+            siteoptions.setAttribute("num", vm_num);
             siteoptions.setAttribute("name", siteoptions.id);
             siteoptions.setAttribute("title", "Choose a site");
             var options = new Option("San Diego", "San Diego", false, false);
-            options.id = "SD" + cl_str_vm_num;
-            options.setAttribute("num", cl_str_vm_num);
+            options.id = "SD" + vm_num;
+            options.setAttribute("num", vm_num);
             siteoptions.appendChild(options);
             siteoptions.setAttribute("value", "San Diego");
 
             options = new Option("Oakland", "Oakland", false, false);
-            options.id = "Oakland" + cl_str_vm_num;
-            siteoptions.setAttribute("num", cl_str_vm_num);
+            options.id = "Oakland" + vm_num;
+            siteoptions.setAttribute("num", vm_num);
             siteoptions.appendChild(options);
             siteoptions.setAttribute("onchange", "changeSite(this.getAttribute('num'))");
             cell.appendChild(siteoptions);
@@ -855,7 +856,8 @@ function addProduct(id)
         os.setAttribute("name", "affiliation");
         os.setAttribute("title", "Choose client location");
         os.setAttribute("value", "UC");
-        os.setAttribute("onchange", "changePrices(this.value, 'CL_STR')");
+        os.setAttribute("num", vm_num);
+        os.setAttribute("onchange", "changePrices(this.value, 'CL_STR', this.getAttribute('num'))");
 
         option = new Option("UC", "UC", false, false);
         option.id = "UC" + service_num;
@@ -910,7 +912,8 @@ function addProduct(id)
         cell = row.insertCell(2);
         cell.setAttribute("style", "border-bottom: black 1px solid");
         var cl_str_price = document.createTextNode("$" + cl_str_price_val + "/TB");
-        cell.id = "cl-str-price" + cl_str_vm_num;
+        cell.id = vm_type_price + vm_num + (++item_num);
+        console.log(item_num);
         cell.setAttribute("value",cl_str_price_val);
         cell.setAttribute("name", cell.id);
         cell.appendChild(cl_str_price);
@@ -919,15 +922,15 @@ function addProduct(id)
         cell.setAttribute("style", "border-bottom: black 1px solid");
         var cl_str_qty = document.createElement("input");
         cl_str_qty.setAttribute("type", "text");
-        cl_str_qty_in = "cl-str-qty" + cl_str_vm_num;
-        cl_str_sub_out = "cl-str-sub" + cl_str_vm_num;
+        cl_str_qty_in = vm_type_qty + vm_num + item_num;
+        cl_str_sub_out = vm_type_sub+ vm_num + item_num;
         cell.appendChild(cl_str_qty);
         cell.setAttribute("colspan", "1");
         cl_str_qty.id = cl_str_qty_in;
         cl_str_qty.className += " cl_str_qty userinput";
         cl_str_qty.setAttribute("dest", "" + cl_str_sub_out);
-        cl_str_qty.setAttribute("num", cl_str_vm_num);
-        cl_str_qty.setAttribute("cl-str-price", cl_str_price_val);
+        cl_str_qty.setAttribute("num", vm_num);
+        cl_str_qty.setAttribute(vm_type_price, cl_str_price_val);
         cl_str_qty.setAttribute("name", cl_str_qty.id);
         cl_str_qty.setAttribute("title", "Min value 0.100TB (100GB)");
         cl_str_qty.setAttribute("size", 5);
@@ -936,19 +939,21 @@ function addProduct(id)
         cell.appendChild(blanknode);
         
         var cl_units = document.createElement("select");
-        cl_units.setAttribute("name", "cl-units" + cl_str_vm_num);
+        cl_units.setAttribute("name", "cl-units" + vm_num + item_num);
         cl_units.setAttribute("value", "TB");
         cl_units.setAttribute("title", "Choose the units");
-        cl_units.setAttribute("num", cl_str_vm_num);
-        cl_units.id = "cl-units" + cl_str_vm_num;
+        cl_units.setAttribute("num", vm_num);
+        cl_units.id = "cl-units" + vm_num + item_num;
+        cl_units.setAttribute("item_num", item_num)
+        cl_units.setAttribute("vm_type_qty", vm_type_qty);
         /* add all unit options */
         option = new Option("TB", "TB", false, false);
-        option.id = "TB" + cl_str_vm_num;
+        option.id = "TB" + vm_num + item_num;
         cl_units.appendChild(option);
         option = new Option("GB", "GB", false, false);
-        option.id = "GB" + cl_str_vm_num;
+        option.id = "GB" + vm_num + item_num;
         cl_units.appendChild(option);
-        cl_units.setAttribute("onchange", "changeUnits(vm_type_qty, this.id, this.value, this.getAttribute('num'), 'cl')");
+        cl_units.setAttribute("onchange", "changeUnits(this.getAttribute('vm_type_qty'), this.id, this.value, this.getAttribute('num'), this.getAttribute('item_num'), 'cl')");
         cell.appendChild(cl_units);
 
         var cell = row.insertCell(4);
@@ -959,7 +964,7 @@ function addProduct(id)
         cell.setAttribute("colspan", "1");
         cl_str_sub.id = cl_str_sub_out;
         document.getElementById(cl_str_sub_out).setAttribute("readonly", "readonly");
-        cl_str_sub.className = "str-sub";
+        cl_str_sub.className = "str-sub" + item_num;
         cl_str_sub.setAttribute("name", cl_str_sub.id);
         cl_str_sub.setAttribute("size", 20);
     
@@ -2854,17 +2859,18 @@ function changePrices(affiliation, id, num)
                 }
                 break;
             case 'CL_STR':
-                document.getElementById("cl-str-price" + cl_str_vm_num).value = parseFloat(price_cl_str).toFixed(2);
-                document.getElementById("cl-str-qty" + cl_str_vm_num).setAttribute("cl-str-price", price_cl_str);
-                document.getElementById("cl-str-price" + cl_str_vm_num).innerHTML = "$" + parseFloat(price_cl_str).toFixed(2) + "/TB";
-                document.getElementById("cl-units" + cl_str_vm_num).setAttribute("value", "TB");
-                document.getElementById("GB" + cl_str_vm_num).removeAttribute("selected");
-                document.getElementById("TB" + cl_str_vm_num).setAttribute("selected", "selected");
-                document.getElementById("dualoptions" + cl_str_vm_num).setAttribute("original", original);
-                document.getElementById("dualoptions" + cl_str_vm_num).setAttribute("double", dual);
-                document.getElementById("onchange", "changePrice(cl_str_vm_num, document.getElementById('dualoptions' + cl_str_vm_num).getAttribute('original'), document.getElementById('dualoptions' + cl_str_vm_num).getAttribute('double'))");
-                if (document.getElementById("dualoptions" + cl_str_vm_num).value == "Yes") changePrice(cl_str_vm_num, document.getElementById('dualoptions' + cl_str_vm_num).getAttribute('original'), document.getElementById('dualoptions' + cl_str_vm_num).getAttribute('double'));
-                getEstimate("cl-str", "cl-str-qty" + cl_str_vm_num, document.getElementById("cl-str-price" + cl_str_vm_num).value, "cl-str-sub" + cl_str_vm_num, cl_str_vm_num, "CL_STR");
+                item_num = 1;
+                document.getElementById("cl-str-price" + num + item_num).value = parseFloat(price_cl_str).toFixed(2);
+                document.getElementById("cl-str-qty" + num + item_num).setAttribute("cl-str-price", price_cl_str);
+                document.getElementById("cl-str-price" + num + item_num).innerHTML = "$" + parseFloat(price_cl_str).toFixed(2) + "/TB";
+                document.getElementById("cl-units" + num + item_num).setAttribute("value", "TB");
+                document.getElementById("GB" + num + item_num).removeAttribute("selected");
+                document.getElementById("TB" + num + item_num).setAttribute("selected", "selected");
+                document.getElementById("dualoptions" + num).setAttribute("original", original);
+                document.getElementById("dualoptions" + num).setAttribute("double", dual);
+                document.getElementById("onchange", "changePrice(num, document.getElementById('dualoptions' + num).getAttribute('original'), document.getElementById('dualoptions' + num).getAttribute('double'))");
+                if (document.getElementById("dualoptions" + num).value == "Yes") changePrice(num, document.getElementById('dualoptions' + num).getAttribute('original'), document.getElementById('dualoptions' + num).getAttribute('double'));
+                getEstimate("cl-str", "cl-str-qty" + num + item_num, document.getElementById("cl-str-price" + num + item_num).value, "cl-str-sub" + num + item_num, num, "CL_STR");
                 break;
             case 'PR_STR':
                 document.getElementById("cl-str-price" + pr_str_vm_num).value = parseFloat(price_pr_str).toFixed(2);
@@ -3136,7 +3142,7 @@ function validate(type, id, dest, num)
             break;
         
         case "cl-str":
-            if (document.getElementById('cl-units' + num).getAttribute("value") == 'GB') {
+            if (document.getElementById('cl-units' + num + "1").getAttribute("value") == 'GB') {
                 if (v < 100) {
                     d.setAttribute("value", "Invalid input");
                     d.style.color = "#ff0000";
@@ -3332,27 +3338,27 @@ function processOS(id, o, system, manager, num) {
 function changePrice(num, originalval, doubleval)
 {
     var val = document.getElementById('dualoptions' + num).value;
-    var currentprice = document.getElementById('cl-str-qty' + num).getAttribute('cl-str-price');
+    var currentprice = document.getElementById('cl-str-qty' + num + "1").getAttribute('cl-str-price');
     document.getElementById("No" + num).removeAttribute("selected");
     document.getElementById("Yes" + num).removeAttribute("selected");
     if (val == 'Yes') {
-        document.getElementById('cl-str-price' + num).value = doubleval;
-        document.getElementById('cl-str-price' + num).setAttribute("value", doubleval);
-        document.getElementById('cl-str-price' + num).innerHTML = '$' + doubleval + '/TB';
+        document.getElementById('cl-str-price' + num + "1").value = doubleval;
+        document.getElementById('cl-str-price' + num + "1").setAttribute("value", doubleval);
+        document.getElementById('cl-str-price' + num + "1").innerHTML = '$' + doubleval + '/TB';
         document.getElementById('Yes' + num).setAttribute("selected", "selected");
-        document.getElementById("cl-str-qty" + num).setAttribute("cl-str-price", currentprice * 2);
-        document.getElementById("cl-str-price" + num).setAttribute("value", "$" + (currentprice * 2) + "/TB");
-        getEstimate('cl-str', 'cl-str-qty' + num, document.getElementById('cl-str-qty' + num).getAttribute('cl-str-price'), 'cl-str-sub' + num, num, 'CL_STR');
+        document.getElementById("cl-str-qty" + num + "1").setAttribute("cl-str-price", currentprice * 2);
+        document.getElementById("cl-str-price" + num + "1").setAttribute("value", "$" + (currentprice * 2) + "/TB");
+        getEstimate('cl-str', 'cl-str-qty' + num + "1", document.getElementById('cl-str-qty' + num + "1").getAttribute('cl-str-price'), 'cl-str-sub' + num + "1", num, 'CL_STR');
         document.getElementById("siteoptions" + num).setAttribute("value", "N/A");
         document.getElementById("siteoptions" + num).setAttribute("disabled", "disabled");
     } else if (val == 'No') {
-        document.getElementById('cl-str-price' + num).value = originalval;
-        document.getElementById('cl-str-price' + num).setAttribute("value", originalval);
-        document.getElementById('cl-str-price' + num).innerHTML = '$' + originalval + '/TB';
+        document.getElementById('cl-str-price' + num + "1").value = originalval;
+        document.getElementById('cl-str-price' + num + "1").setAttribute("value", originalval);
+        document.getElementById('cl-str-price' + num + "1").innerHTML = '$' + originalval + '/TB';
         document.getElementById('No' + num).setAttribute("selected", "selected");
-        document.getElementById("cl-str-qty" + num).setAttribute("cl-str-price", currentprice / 2);
-        document.getElementById("cl-str-price" + num).setAttribute("value", "$" +  (currentprice / 2) + "/TB");
-        getEstimate('cl-str', 'cl-str-qty' + num, document.getElementById('cl-str-qty' + num).getAttribute('cl-str-price'), 'cl-str-sub' + num, num, 'CL_STR');
+        document.getElementById("cl-str-qty" + num + "1").setAttribute("cl-str-price", currentprice / 2);
+        document.getElementById("cl-str-price" + num + "1").setAttribute("value", "$" +  (currentprice / 2) + "/TB");
+        getEstimate('cl-str', 'cl-str-qty' + num + "1", document.getElementById('cl-str-qty' + num + "1").getAttribute('cl-str-price'), 'cl-str-sub' + num + "1", num, 'CL_STR');
         document.getElementById("siteoptions" + num).removeAttribute("readonly");
         document.getElementById("SD" + num).removeAttribute("selected");
         document.getElementById("Oakland" + num).removeAttribute("selected");
@@ -3517,15 +3523,15 @@ function changeUnits(vm_qty, id, value, num, item_num, category)
         
         case 'cl': 
             if (value == 'TB') {
-                currentprice = document.getElementById("cl-str-qty" + num).getAttribute("cl-str-price");
+                currentprice = document.getElementById("cl-str-qty" + num + item_num).getAttribute("cl-str-price");
                 currentprice *= 1000;
-                document.getElementById("cl-str-qty" + num).setAttribute("cl-str-price", currentprice);
+                document.getElementById("cl-str-qty" + num + item_num).setAttribute("cl-str-price", currentprice);
             } else {
-                currentprice = document.getElementById("cl-str-qty" + num).getAttribute("cl-str-price");
+                currentprice = document.getElementById("cl-str-qty" + num + item_num).getAttribute("cl-str-price");
                 currentprice /= 1000;
-                document.getElementById("cl-str-qty" + num).setAttribute("cl-str-price", currentprice);
+                document.getElementById("cl-str-qty" + num + item_num).setAttribute("cl-str-price", currentprice);
             }
-            var element = document.getElementById('cl-str-qty' + num);
+            var element = document.getElementById('cl-str-qty' + num + item_num);
             getEstimate('cl-str', element.id, element.getAttribute('cl-str-price'), element.getAttribute('dest'), element.getAttribute('num'), 'CL_STR');
             break;
         
