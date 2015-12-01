@@ -120,7 +120,6 @@ var service_num = 0; //number of Services added to grid
 var vm_num = 0; //number of VM's ordered, st and hs
 var numProducts = 0; // number of products on table currently
 var item_num = 0; //for item and price id within each service
-var pr_str_vm_num = 0;
 var pr_con_vm_num = 0;
 var sys_man_vm_num = 0;
 
@@ -142,7 +141,6 @@ var option;
 function addProduct(id)
 {
     item_num = 0; //reset item_num after adding a new product
-    ++service_num;
     // switch statement necessary to determine which table to add the product to
     switch (id) {
         case 'ST_VM':
@@ -215,7 +213,7 @@ function addProduct(id)
         }
         
         row1 = table.insertRow(rowCount);
-        row1.id = "row" + service_num;
+        row1.id = "row" + vm_num;
         var cell = row1.insertCell(0);
         var remove = document.createElement("button");
         var remove_text = document.createTextNode("-");
@@ -224,7 +222,7 @@ function addProduct(id)
         cell.setAttribute("colspan", "1");
         remove.className = "remove-button";
         remove.setAttribute("value", "-");
-        remove.setAttribute("rownumber", "row" + service_num);
+        remove.setAttribute("rownumber", "row" + vm_num);
         remove.setAttribute("title", "Remove Service");
         if (id == 'ST_VM') {
             remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), ROWS_STANDARD_VM, 'ST_VM')");
@@ -241,14 +239,14 @@ function addProduct(id)
         cell = row1.insertCell(2);
         var description_box = document.createElement("textarea");
         description_box.setAttribute("colspan", "3");
-        description_box.id = "description" + service_num;
+        description_box.id = "description" + vm_num;
         description_box.setAttribute("num", service_num);
         description_box.setAttribute("name", " ");
         description_box.setAttribute("onchange", "changeDescription(this.getAttribute('num'), this.value)");
         description_box.setAttribute("rows", "5");
         description_box.setAttribute("cols", "30");
         cell.appendChild(description_box);
-        document.getElementById("description" + service_num).innerHTML = "Enter a description here";
+        document.getElementById("description" + vm_num).innerHTML = "Enter a description here";
         cell.setAttribute("colspan", 2);
         
         var row = table.insertRow(++rowCount);
@@ -281,14 +279,14 @@ function addProduct(id)
         else os.setAttribute("onchange", "changePrices(this.value, 'HS_VM', this.getAttribute('num'))");
 
         option = new Option("UC", "UC", false, false);
-        option.id = "UC" + service_num;
+        option.id = "UC" + vm_num;
         os.appendChild(option);
         option = new Option("External", "External", false, false);
-        option.id = "External" + service_num;
+        option.id = "External" + vm_num;
         os.appendChild(option);
         cell.appendChild(os);
         cell.setAttribute("colspan", "2");
-        os.id = "os" + service_num;
+        os.id = "os" + vm_num;
        
         var row = table.insertRow(++rowCount);
         var cell = row.insertCell(0);
@@ -300,31 +298,31 @@ function addProduct(id)
         
         var cell = row.insertCell(2);
         var os = document.createElement("select"); 
-        os.setAttribute("name", "os" + service_num);
+        os.setAttribute("name", "os" + vm_num);
         os.setAttribute("value", "Windows");
         os.setAttribute("title", "Choose an operating system for your VM");
 
         option = new Option("Windows", "Windows", false, false);
-        option.id = "Windows" + service_num;
+        option.id = "Windows" + vm_num;
         os.appendChild(option);
         option = new Option("Red Hat 6 64-bit", "Red Hat 6 64-bit", false, false);
-        option.id = "RedHat" + service_num;
+        option.id = "RedHat" + vm_num;
         os.appendChild(option);
         option = new Option("CentOS", "CentOS", false, false);
-        option.id = "CentOS" + service_num;
+        option.id = "CentOS" + vm_num;
         os.appendChild(option);
         option = new Option("Ubuntu", "Ubuntu", false, false);
-        option.id = "Ubuntu" + service_num;
+        option.id = "Ubuntu" + vm_num;
         os.appendChild(option);
         option = new Option("Other", "Other", false, false);
-        option.id = "Other" + service_num;
+        option.id = "Other" + vm_num;
         os.appendChild(option);
         cell.appendChild(os);
         cell.setAttribute("colspan", "2");
-        os.id = "os" + service_num;
+        os.id = "os" + vm_num;
         os.setAttribute("optionval", service_num);
-        os.setAttribute("sys", "sys" + service_num);
-        os.setAttribute("manager", "manager" + service_num);
+        os.setAttribute("sys", "sys" + vm_num);
+        os.setAttribute("manager", "manager" + vm_num);
         os.setAttribute("vm-type", id);
         os.setAttribute("onchange", "processOS(this.getAttribute('vm-type'), document.getElementById(this.id).value, this.getAttribute('sys'), this.getAttribute('manager'), this.getAttribute('optionval'))");
         os.setAttribute("readonly", "readonly");
@@ -628,7 +626,7 @@ function addProduct(id)
         san_sub.className = "vm-sub vm-sub" + vm_num;
         
         var row = table.insertRow(++rowCount);
-        row.id = "row" + service_num;
+        row.id = "row" + vm_num;
         var cell = row.insertCell(0);
         
         var cell = row.insertCell(1);
@@ -860,16 +858,16 @@ function addProduct(id)
         os.setAttribute("onchange", "changePrices(this.value, 'CL_STR', this.getAttribute('num'))");
 
         option = new Option("UC", "UC", false, false);
-        option.id = "UC" + service_num;
+        option.id = "UC" + vm_num;
         os.appendChild(option);
 
         option = new Option("External", "External", false, false);
-        option.id = "External" + service_num;
+        option.id = "External" + vm_num;
         os.appendChild(option);
 
         cell.appendChild(os);
         cell.setAttribute("colspan", "2");
-        os.id = "os" + service_num;
+        os.id = "os" + vm_num;
 
         var row = table.insertRow(++rowCount);
         var cell = row.insertCell(0);
@@ -913,7 +911,6 @@ function addProduct(id)
         cell.setAttribute("style", "border-bottom: black 1px solid");
         var cl_str_price = document.createTextNode("$" + cl_str_price_val + "/TB");
         cell.id = vm_type_price + vm_num + (++item_num);
-        console.log(item_num);
         cell.setAttribute("value",cl_str_price_val);
         cell.setAttribute("name", cell.id);
         cell.appendChild(cl_str_price);
@@ -974,18 +971,19 @@ function addProduct(id)
     /* BEGIN PROJECT STORAGE AND PROJECT CONDO CODE */
     else if (id == 'PR_STR' || id == 'PR_CON') {
         ++vm_num;
+        vm_type_sub = "cl-str-sub"; //for sub id
+        vm_type_price = "cl-str-price"; //for each price id
+        vm_type_qty = "cl-str-qty";
         if(id == 'PR_STR') {
             var cl_str_price_val = PRICE_PROJECT_STORAGE_UC;
             var cl_str_price_string = "$" + cl_str_price_val + "/TB";
             var prod_name = "Project Storage";
             var numRowsRemove = ROWS_PROJECT_STORAGE;
-            pr_str_vm_num = vm_num;
         } else {
             var cl_str_price_val = PRICE_PROJECT_CONDO_UC;
             var cl_str_price_string = "$" + cl_str_price_val + "/unit";
             var prod_name = "Project Condo";
             var numRowsRemove = ROWS_PROJECT_CONDO;
-            pr_con_vm_num = vm_num;
         }
         row1 = table.insertRow(rowCount);
         row1.id = "row" + vm_num;
@@ -1044,20 +1042,21 @@ function addProduct(id)
         os.setAttribute("name", "affiliation");
         os.setAttribute("title", "Choose client location");
         os.setAttribute("value", "UC");
-        if (id == 'PR_STR') os.setAttribute("onchange", "changePrices(this.value, 'PR_STR')");
-        else os.setAttribute("onchange", "changePrices(this.value, 'PR_CON')");
+        os.setAttribute("num", vm_num);
+        if (id == 'PR_STR') os.setAttribute("onchange", "changePrices(this.value, 'PR_STR', this.getAttribute('num'))");
+        else os.setAttribute("onchange", "changePrices(this.value, 'PR_CON', this.getAttribute('num'))");
 
         option = new Option("UC", "UC", false, false);
-        option.id = "UC" + service_num;
+        option.id = "UC" + vm_num;
         os.appendChild(option);
 
         option = new Option("External", "External", false, false);
-        option.id = "External" + service_num;
+        option.id = "External" + vm_num;
         os.appendChild(option);
 
         cell.appendChild(os);
         cell.setAttribute("colspan", "2");
-        os.id = "os" + service_num;
+        os.id = "os" + vm_num;
 
         var row = table.insertRow(++rowCount);
         cell = row.insertCell(0);
@@ -1095,15 +1094,15 @@ function addProduct(id)
         cell.appendChild(cl_str_price);
         cell.setAttribute("colspan", "1");
         cell.setAttribute("style", "border-bottom: 1px solid black");
-        cell.id = "cl-str-price" + vm_num;
+        cell.id = vm_type_price + vm_num + (++item_num);
         cell.value = cl_str_price_val;
         
         var cell = row.insertCell(3);
         cell.setAttribute("style", "border-bottom: 1px solid black");
         var cl_str_qty = document.createElement("input");
         cl_str_qty.setAttribute("type", "text");
-        cl_str_qty_in = "cl-str-qty" + vm_num;
-        cl_str_sub_out = "cl-str-sub" + vm_num;
+        cl_str_qty_in = vm_type_qty + vm_num + item_num;
+        cl_str_sub_out = vm_type_sub + vm_num + item_num;
         cell.appendChild(cl_str_qty);
         cell.setAttribute("colspan", "1");
         cl_str_qty.id = cl_str_qty_in;
@@ -1122,22 +1121,23 @@ function addProduct(id)
         
         if (id == 'PR_STR') {
             var pr_units = document.createElement("select");
-            pr_units.setAttribute("name", "pr-units" + vm_num);
+            pr_units.setAttribute("name", "pr-units" + vm_num + item_num);
             pr_units.setAttribute("value", "TB");
             pr_units.setAttribute("title", "Choose the units");
             pr_units.setAttribute("num", vm_num);
-            pr_units.id = "pr-units" + vm_num;
+            pr_units.id = "pr-units" + vm_num + item_num;
             
             /* add all unit options */
             option = new Option("TB", "TB", false, false);
-            option.id = "TB" + vm_num;
+            option.id = "TB" + vm_num + item_num;
             pr_units.appendChild(option);
 
             option = new Option("GB", "GB", false, false);
-            option.id = "GB" + vm_num;
+            option.id = "GB" + vm_num + item_num;
             pr_units.appendChild(option);
-            pr_units.setAttribute("vm_type_qty", 'cl-str-qty' + vm_num);
-            pr_units.setAttribute("onchange", "changeUnits(this.getAttribute('vm_type_qty'), this.id, this.value, this.getAttribute('num'), 'pr')");
+            pr_units.setAttribute("vm_type_qty", vm_type_qty + vm_num);
+            pr_units.setAttribute("item_num", item_num)
+            pr_units.setAttribute("onchange", "changeUnits(this.getAttribute('vm_type_qty'), this.id, this.value, this.getAttribute('num'), this.getAttribute('item_num'), 'pr')");
             cell.appendChild(pr_units);
         } else {
             cell.appendChild(document.createTextNode("\u00a0\u00a0unit(s)"));
@@ -1613,16 +1613,16 @@ function addProduct(id)
         os.setAttribute("onchange", "changePrices(this.value, 'SYS_MAN')");
 
         option = new Option("UC", "UC", false, false);
-        option.id = "UC" + service_num;
+        option.id = "UC" + vm_num;
         os.appendChild(option);
 
         option = new Option("External", "External", false, false);
-        option.id = "External" + service_num;
+        option.id = "External" + vm_num;
         os.appendChild(option);
 
         cell.appendChild(os);
         cell.setAttribute("colspan", "2");
-        os.id = "os" + service_num;
+        os.id = "os" + vm_num;
 
         var row = table.insertRow(++rowCount);
         var cell = row.insertCell(0);
@@ -2467,7 +2467,7 @@ function addProduct(id)
         prod_name = "Cloud Compute Units";
 
         row1 = table.insertRow(rowCount);
-        row1.id = "row" + service_num;
+        row1.id = "row" + vm_num;
         var cell = row1.insertCell(0);
     cell.setAttribute("colspan", "1");
         var remove = document.createElement("button");
@@ -2476,7 +2476,7 @@ function addProduct(id)
         cell.appendChild(remove);
         remove.className = "remove-button";
         remove.setAttribute("value", "-");
-        remove.setAttribute("rownumber", "row" + service_num);
+        remove.setAttribute("rownumber", "row" + vm_num);
         remove.setAttribute("title", "Remove Service");
         remove.setAttribute("numRows", ROWS_CLOUD_COMPUTE);
         remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), this.getAttribute('numRows'), 'CL_COMPUTE')");
@@ -2491,7 +2491,7 @@ function addProduct(id)
         cell = row1.insertCell(2);
         var description_box = document.createElement("textarea");
         description_box.setAttribute("colspan", "3");
-        description_box.id = "description" + service_num;
+        description_box.id = "description" + vm_num;
         description_box.setAttribute("num", service_num);
         description_box.setAttribute("name", " ");
         description_box.setAttribute("onchange", "changeDescription(this.getAttribute('num'), this.value)");
@@ -2499,7 +2499,7 @@ function addProduct(id)
         description_box.setAttribute("cols", "30");
         cell.appendChild(description_box);
         cell.setAttribute("colspan", "3");
-        document.getElementById("description" + service_num).innerHTML = "Enter a description here";
+        document.getElementById("description" + vm_num).innerHTML = "Enter a description here";
         
         var row = table.insertRow(++rowCount);
         var cell = row.insertCell(0);
@@ -2528,16 +2528,16 @@ function addProduct(id)
         os.setAttribute("onchange", "changePrices(this.value, 'CL_COMPUTE')");
 
         option = new Option("UC", "UC", false, false);
-        option.id = "UC" + service_num;
+        option.id = "UC" + vm_num;
         os.appendChild(option);
 
         option = new Option("External", "External", false, false);
-        option.id = "External" + service_num;
+        option.id = "External" + vm_num;
         os.appendChild(option);
 
         cell.appendChild(os);
         cell.setAttribute("colspan", "2");
-        os.id = "os" + service_num;
+        os.id = "os" + vm_num;
 
         var row = table.insertRow(++rowCount);
         var cell = row.insertCell(0);
@@ -2873,19 +2873,21 @@ function changePrices(affiliation, id, num)
                 getEstimate("cl-str", "cl-str-qty" + num + item_num, document.getElementById("cl-str-price" + num + item_num).value, "cl-str-sub" + num + item_num, num, "CL_STR");
                 break;
             case 'PR_STR':
-                document.getElementById("cl-str-price" + pr_str_vm_num).value = parseFloat(price_pr_str).toFixed(2);
-                document.getElementById("cl-str-qty" + pr_str_vm_num).setAttribute("cl-str-price", price_pr_str);
-                document.getElementById("cl-str-price" + pr_str_vm_num).innerHTML = "$" + parseFloat(price_pr_str).toFixed(2) + "/TB";
-                document.getElementById("pr-units" + pr_str_vm_num).setAttribute("value", "TB");
-                document.getElementById("GB" + pr_str_vm_num).removeAttribute("selected");
-                document.getElementById("TB" + pr_str_vm_num).setAttribute("selected", "selected");
-                getEstimate('pr-str', 'cl-str-qty' + pr_str_vm_num, price_pr_str, 'cl-str-sub' + pr_str_vm_num, pr_str_vm_num, 'CL_STR');
+                item_num = 1;
+                document.getElementById("cl-str-price" + num + item_num).value = parseFloat(price_pr_str).toFixed(2);
+                document.getElementById("cl-str-qty" + num + item_num).setAttribute("cl-str-price", price_pr_str);
+                document.getElementById("cl-str-price" + num + item_num).innerHTML = "$" + parseFloat(price_pr_str).toFixed(2) + "/TB";
+                document.getElementById("pr-units" + num + item_num).setAttribute("value", "TB");
+                document.getElementById("GB" + num + item_num).removeAttribute("selected");
+                document.getElementById("TB" + num + item_num).setAttribute("selected", "selected");
+                getEstimate('pr-str', 'cl-str-qty' + num + item_num, price_pr_str, 'cl-str-sub' + num + item_num, num, 'CL_STR');
                 break;
             case 'PR_CON':
-                document.getElementById("cl-str-price" + pr_con_vm_num).value = parseFloat(price_pr_con).toFixed(2);
-                document.getElementById("cl-str-qty" + pr_con_vm_num).setAttribute("cl-str-price", price_pr_con);
-                document.getElementById("cl-str-price" + pr_con_vm_num).innerHTML = "$" + parseFloat(price_pr_con).toFixed(2) + "/unit";
-                getEstimate('pr-str', 'cl-str-qty' + pr_con_vm_num, price_pr_con, 'cl-str-sub' + pr_con_vm_num, pr_con_vm_num, 'CL_STR');
+                item_num = 1;
+                document.getElementById("cl-str-price" + num + item_num).value = parseFloat(price_pr_con).toFixed(2);
+                document.getElementById("cl-str-qty" + num + item_num).setAttribute("cl-str-price", price_pr_con);
+                document.getElementById("cl-str-price" + num + item_num).innerHTML = "$" + parseFloat(price_pr_con).toFixed(2) + "/unit";
+                getEstimate('pr-str', 'cl-str-qty' + num + item_num, price_pr_con, 'cl-str-sub' + num + item_num, pr_con_vm_num, 'CL_STR');
                 break;
             case 'DESK':
             case 'SYSTEMS':
@@ -3537,15 +3539,15 @@ function changeUnits(vm_qty, id, value, num, item_num, category)
         
         case 'pr': 
             if (value == 'TB') {
-                currentprice = document.getElementById("cl-str-qty" + num).getAttribute("cl-str-price");
+                currentprice = document.getElementById("cl-str-qty" + num + item_num).getAttribute("cl-str-price");
                 currentprice *= 1000;
-                document.getElementById("cl-str-qty" + num).setAttribute("cl-str-price", currentprice);
+                document.getElementById("cl-str-qty" + num + item_num).setAttribute("cl-str-price", currentprice);
             } else {
-                currentprice = document.getElementById("cl-str-qty" + num).getAttribute("cl-str-price");
+                currentprice = document.getElementById("cl-str-qty" + num + item_num).getAttribute("cl-str-price");
                 currentprice /= 1000;
-                document.getElementById("cl-str-qty" + num).setAttribute("cl-str-price", currentprice);
+                document.getElementById("cl-str-qty" + num + item_num).setAttribute("cl-str-price", currentprice);
             }
-            var element = document.getElementById('cl-str-qty' + num);
+            var element = document.getElementById('cl-str-qty' + num + item_num);
             getEstimate('pr-str', element.id, element.getAttribute('cl-str-price'), element.getAttribute('dest'), element.getAttribute('num'), 'CL_STR');
             break;
         
