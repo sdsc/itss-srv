@@ -76,10 +76,15 @@ var PRICE_LOCAL_ADMIN_ACCESS_EXT = 49.30; //per month
 var PRICE_SYSTEM_MONITOR_SUPPORT_EXT = 205.90; //per month
 var PRICE_SYSTEM_MANAGEMENT_EXT =  [PRICE_SYSTEM_EXT, PRICE_NON_REC_HARDWARE_EXT, PRICE_HARDWARE_WO_OS_SUPPORT_EXT, PRICE_ATTACHED_STORAGE_ARRAY_EXT, PRICE_NON_OS_SOFTWARE_EXT, PRICE_LOCAL_ADMIN_ACCESS_EXT, PRICE_SYSTEM_MONITOR_SUPPORT_EXT, PRICE_SYSTEM_MANAGEMENT_EXT];
 
-// PRICES FOR COMMVAULT BACKUP
-var PRICE_RAW_BACKUP_DATA = 91.67; //per TB
-var PRICE_FULL_BACKUP = 35.17; //per TB
-var PRICE_DIFFERENTIAL_INCREMENTAL = 35.17; //per TB
+// PRICES FOR COMMVAULT BACKUP UC
+var PRICE_RAW_BACKUP_DATA_UC = 91.67; //per TB
+var PRICE_FULL_BACKUP_UC = 35.17; //per TB
+var PRICE_DIFFERENTIAL_INCREMENTAL_UC = 35.17; //per TB
+
+// PRICES FOR COMMVAULT BACKUP EXT
+var PRICE_RAW_BACKUP_DATA_EXT = 132.9215; //per TB
+var PRICE_FULL_BACKUP_EXT = 50.9965; //per TB
+var PRICE_DIFFERENTIAL_INCREMENTAL_EXT = 50.9965; //per TB
 
 // PRICES FOR CONSULTING
 var PRICE_DESKTOP_SERVICES = 80.00; //per hour
@@ -107,7 +112,7 @@ var ROWS_CLOUD_STORAGE = 8;
 var ROWS_PROJECT_STORAGE = 5;
 var ROWS_PROJECT_CONDO = 5;
 var ROWS_SYSTEM_MANAGEMENT = 16;
-var ROWS_BACKUPS = 14;
+var ROWS_BACKUPS = 15;
 var ROWS_DESKTOP_SERVICES = 3;
 var ROWS_SYSTEMS_SERVICES = 3;
 var ROWS_STORAGE_SERVICES = 3;
@@ -2032,11 +2037,14 @@ function addProduct(id)
     
     /* BEGIN COMMVAULT BACKUP */
     else if (id == 'RAW') {
-        
-        raw_price_val = PRICE_RAW_BACKUP_DATA;
-        full_price_val = PRICE_FULL_BACKUP;
-        diff_price_val = PRICE_DIFFERENTIAL_INCREMENTAL;
-        
+        ++vm_num; 
+        vm_type_sub = "comm-sub"; //for sub id
+        vm_type_price = "comm-price"; //for each price id
+        vm_type_qty = "comm-qty";      
+        raw_price_val = PRICE_RAW_BACKUP_DATA_UC;
+        full_price_val = PRICE_FULL_BACKUP_UC;
+        diff_price_val = PRICE_DIFFERENTIAL_INCREMENTAL_UC;
+
         row1 = table.insertRow(rowCount);
         row1.id = "row" + vm_num;
         var cell = row1.insertCell(0);
@@ -2111,6 +2119,35 @@ function addProduct(id)
         package.setAttribute("title", "Standard options offer full monthly backups, weekly differentials, and daily incrementals. Choose custom for custom settings");
         package.setAttribute("onchange", "processPackage(document.getElementById(this.id).value, this.getAttribute('optionval'))");
         package.setAttribute("value", "Standard 3-mo. Retention");
+
+        var row = table.insertRow(++rowCount);
+        var cell = row.insertCell(0);
+        cell.setAttribute("colspan", "1");
+        
+        var cell = row.insertCell(1);
+        cell.setAttribute("colspan", "1");
+        var os_text = document.createTextNode("\u00a0\u00a0\u00a0\u00a0Affiliation:");
+        cell.appendChild(os_text);
+
+        var cell = row.insertCell(2);
+        var os = document.createElement("select"); 
+        os.setAttribute("name", "affiliation");
+        os.setAttribute("title", "Choose client location");
+        os.setAttribute("value", "UC");
+        os.setAttribute("num", vm_num);
+        os.setAttribute("onchange", "changePrices(this.value, 'COMMVAULT', this.getAttribute('num'))");
+
+        option = new Option("UC", "UC", false, false);
+        option.id = "UC" + vm_num;
+        os.appendChild(option);
+
+        option = new Option("External", "External", false, false);
+        option.id = "External" + vm_num;
+        os.appendChild(option);
+
+        cell.appendChild(os);
+        cell.setAttribute("colspan", "2");
+        os.id = "os" + vm_num;
         
         var row = table.insertRow(++rowCount);
         var cell = row.insertCell(0);
@@ -2160,43 +2197,47 @@ function addProduct(id)
         
         var cell = row2.insertCell(2);
         var raw_price = document.createTextNode("$" + raw_price_val + "/TB");
+        cell.id = vm_type_price + vm_num + (++item_num);
+        cell.setAttribute("value", raw_price_val);
         cell.appendChild(raw_price);
         cell.setAttribute("colspan", "1");
+
         var cell = row2.insertCell(3);
         var raw_qty = document.createElement("input");
         raw_qty.setAttribute("type", "text");
-        raw_qty_in = "raw-qty" + vm_num;
-        raw_sub_out = "raw-sub" + vm_num;
+        raw_qty_in = vm_type_qty + vm_num + item_num;
+        raw_sub_out = vm_type_sub + vm_num + item_num;
         cell.appendChild(raw_qty);
         cell.setAttribute("colspan", "1");
         raw_qty.id = raw_qty_in;
         raw_qty.className += " raw_qty userinput";
         raw_qty.setAttribute("dest", "" + raw_sub_out);
         raw_qty.setAttribute("num", vm_num);
-        raw_qty.setAttribute("raw-price", raw_price_val);
+        raw_qty.setAttribute("comm-price", raw_price_val);
         raw_qty.setAttribute("name", raw_qty.id);
         raw_qty.setAttribute("size", 5);
-        raw_qty.setAttribute("onchange", "getEstimate('raw', this.id, this.getAttribute('raw-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'RAW')");
+        raw_qty.setAttribute("onchange", "getEstimate('raw', this.id, this.getAttribute('comm-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'RAW')");
         var blanknode = document.createTextNode("\u00a0");
         cell.appendChild(blanknode);
         
         
         var raw_units = document.createElement("select");
-        raw_units.setAttribute("name", "raw-units" + vm_num);
+        raw_units.setAttribute("name", "raw-units" + vm_num + item_num);
         raw_units.setAttribute("value", "TB");
         raw_units.setAttribute("title", "Choose the units");
         raw_units.setAttribute("num", vm_num);
-        raw_units.id = "raw-units" + vm_num;
+        raw_units.id = "raw-units" + vm_num + item_num;
             
         /* add all unit options */
         option = new Option("TB", "TB", false, false);
-        option.id = "TB" + vm_num;
+        option.id = "TB" + vm_num + item_num;
         raw_units.appendChild(option);
 
         option = new Option("GB", "GB", false, false);
-        option.id = "GB" + vm_num;
+        option.id = "GB" + vm_num + item_num;
         raw_units.appendChild(option);
-        raw_units.setAttribute("onchange", "changeUnits(this.id, this.value, this.getAttribute('num'), 'raw')");
+        raw_units.setAttribute("item_num", item_num);
+        raw_units.setAttribute("onchange", "changeUnits(this.id, this.value, this.getAttribute('num'), this.getAttribute('item_num'), 'raw')");
         cell.appendChild(raw_units);
         
         var cell = row2.insertCell(4);
@@ -2221,20 +2262,23 @@ function addProduct(id)
         
         var cell = row3.insertCell(2);
         var full_price = document.createTextNode("$" + full_price_val + "/TB");
+        cell.setAttribute("value", full_price_val);
+        cell.id = vm_type_price + vm_num + (++item_num);
         cell.appendChild(full_price);
         cell.setAttribute("colspan", "1");
+
         var cell = row3.insertCell(3);
         var full_qty = document.createElement("input");
         full_qty.setAttribute("type", "text");
-        full_qty_in = "full-qty" + vm_num;
-        full_sub_out = "full-sub" + vm_num;
+        full_qty_in = vm_type_qty + vm_num + item_num;
+        full_sub_out = vm_type_sub + vm_num + item_num;
         cell.appendChild(full_qty);
         cell.setAttribute("colspan", "1");
         full_qty.id = full_qty_in;
         full_qty.className += " full_qty userinput";
         full_qty.setAttribute("dest", "" + full_sub_out);
         full_qty.setAttribute("num", vm_num);
-        full_qty.setAttribute("full-price", full_price_val);
+        full_qty.setAttribute("comm-price", full_price_val);
         full_qty.setAttribute("name", full_qty.id);
         full_qty.setAttribute("size", 5);
         full_qty.setAttribute("readonly", "readonly");
@@ -2311,24 +2355,27 @@ function addProduct(id)
         
         var cell = row6.insertCell(2);
         var diff_price = document.createTextNode("$" + diff_price_val + "/TB");
+        cell.setAttribute("value", diff_price_val);
+        cell.id = vm_type_price + vm_num + (++item_num);
         cell.appendChild(diff_price);
         cell.setAttribute("colspan", "1");
+
         var cell = row6.insertCell(3);
         var diff_qty = document.createElement("input");
         diff_qty.setAttribute("type", "text");
-        diff_qty_in = "diff-qty" + vm_num;
-        diff_sub_out = "diff-sub" + vm_num;
+        diff_qty_in = vm_type_qty + vm_num + item_num;
+        diff_sub_out = vm_type_sub + vm_num + item_num;
         cell.appendChild(diff_qty);
         cell.setAttribute("colspan", "1");
         diff_qty.id = diff_qty_in;
         diff_qty.className += " diff_qty userinput";
         diff_qty.setAttribute("dest", "" + diff_sub_out);
         diff_qty.setAttribute("num", vm_num);
-        diff_qty.setAttribute("diff-price", diff_price_val);
+        diff_qty.setAttribute("comm-price", diff_price_val);
         diff_qty.setAttribute("name", diff_qty.id);
         diff_qty.setAttribute("size", 5);
         diff_qty.setAttribute("readonly", "readonly");
-        diff_qty.setAttribute("onchange", "getEstimate('diff', this.id, this.getAttribute('diff-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'RAW')");
+        diff_qty.setAttribute("onchange", "getEstimate('diff', this.id, this.getAttribute('comm-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'RAW')");
         
         cell.appendChild(document.createTextNode("\u00a0\u00a0TB"));
         
@@ -2734,6 +2781,10 @@ function changePrices(affiliation, id, num)
             case 'SUPPORT':
             case 'SYS_MAN':
                 price_sys_man = PRICE_SYSTEM_MANAGEMENT_UC;
+                break;
+            case 'COMMVAULT':
+                price_comm = [PRICE_RAW_BACKUP_DATA_UC, PRICE_FULL_BACKUP_UC, PRICE_DIFFERENTIAL_INCREMENTAL_UC];
+                break;
             case 'RAW':
             case 'CL_COMPUTE':
                 price = PRICE_CL_COMPUTE_UC; 
@@ -2766,6 +2817,9 @@ function changePrices(affiliation, id, num)
             case 'SUPPORT':
             case 'SYS_MAN':
                 price_sys_man = PRICE_SYSTEM_MANAGEMENT_EXT;
+                break;
+            case 'COMMVAULT':
+                price_comm = [PRICE_RAW_BACKUP_DATA_EXT, PRICE_FULL_BACKUP_EXT, PRICE_DIFFERENTIAL_INCREMENTAL_EXT];
                 break;
             case 'RAW':
             case 'CL_COMPUTE':
@@ -2921,6 +2975,15 @@ function changePrices(affiliation, id, num)
                 document.getElementById("sys-monitor-price" + num).innerHTML = "$" + parseFloat(price_sys_man[6]).toFixed(2);
                 document.getElementById("sys-monitor-qty" + num).setAttribute("sys-monitor-price", price_sys_man[6]);
                 getEstimate('sys_monitor', "sys-monitor-qty" + num, price_sys_man[6], "sys-monitor-sub" + num, num, 'SYS_MAN');              
+                break;
+            case 'COMMVAULT':
+                for (i = 0, item_num = 1; item_num < 4; item_num++, i++){
+                    document.getElementById("comm-price" + num + item_num).setAttribute("value", price_comm[i]);
+                    document.getElementById("comm-price" + num + item_num).innerHTML = "$" + parseFloat(price_comm[i]).toFixed(2);
+                    document.getElementById("comm-qty" + num + item_num).setAttribute("comm-price", price_comm[i]);
+                }
+                getEstimate('raw', "comm-qty" + num + "1", price_comm[0], "comm-sub" + num + "1", num, 'RAW');
+                calculateBackup(num);
                 break;
             case 'RAW':
             case 'CL_COMPUTE':
@@ -3551,30 +3614,29 @@ function changeUnits(vm_qty, id, value, num, item_num, category)
         
         case 'raw':
             if (value == 'TB') {
-                currentprice = document.getElementById("raw-qty" + num).getAttribute("raw-price");
+                currentprice = document.getElementById("raw-qty" + num).getAttribute("comm-price");
                 currentprice *= 1000;
-                document.getElementById("raw-qty" + num).setAttribute("raw-price", currentprice);
+                document.getElementById("raw-qty" + num).setAttribute("comm-price", currentprice);
             } else {
-                currentprice = document.getElementById("raw-qty" + num).getAttribute("raw-price");
+                currentprice = document.getElementById("raw-qty" + num).getAttribute("comm-price");
                 currentprice /= 1000;
-                document.getElementById("raw-qty" + num).setAttribute("raw-price", currentprice);
+                document.getElementById("raw-qty" + num).setAttribute("comm-price", currentprice);
             }
             var element = document.getElementById('raw-qty' + num);
-            getEstimate('raw', element.id, element.getAttribute('raw-price'), element.getAttribute('dest'),  element.getAttribute('num'), 'RAW');
+            getEstimate('raw', element.id, element.getAttribute('comm-price'), element.getAttribute('dest'),  element.getAttribute('num'), 'RAW');
             break;
     }
 }
 
 function calculateBackup(num)
 {
-    var input = document.getElementById("raw-qty" + num);
-    
-    if (document.getElementById("raw-qty" + num) == null) {
+    var input = document.getElementById("comm-qty" + num + "1");
+    if (document.getElementById("comm-qty" + num + "1") == null) {
     }
-    var fullbackups = document.getElementById("full-qty" + num);
+    var fullbackups = document.getElementById("comm-qty" + num + "2");
     var monthlynum = document.getElementById("monthlybackup-qty" + num);
     var durmonthly = document.getElementById("durmonthlybackup-qty" + num);
-    var differentials = document.getElementById("diff-qty" + num);
+    var differentials = document.getElementById("comm-qty" + num + "3");
     var diffwk = document.getElementById("diffwk-qty" + num);
     var incwk = document.getElementById("incwk-qty" + num);
     var durdiffinc = document.getElementById("durdiffinc-qty" + num);
@@ -3582,7 +3644,7 @@ function calculateBackup(num)
     var backupsvalue = parseFloat(input.value * monthlynum.value * durmonthly.value * 0.8).toFixed(2);
     var diffvalue = parseFloat(((diffwk.value * input.value * 0.015) + (incwk.value * input.value * 0.0075)) * (4 * durdiffinc.value * 0.8)).toFixed(2);
     
-    if (document.getElementById("raw-units" + num).getAttribute("value") == "GB") {
+    if (document.getElementById("raw-units" + num + "1").getAttribute("value") == "GB") {
         backupsvalue /= 1000;
         backupsvalue = backupsvalue.toFixed(2);
         diffvalue /= 1000;
@@ -3591,8 +3653,8 @@ function calculateBackup(num)
     fullbackups.setAttribute("value", backupsvalue);
     differentials.setAttribute("value", diffvalue);
     
-    getEstimate('full', fullbackups.id, fullbackups.getAttribute('full-price'), fullbackups.getAttribute('dest'),  fullbackups.getAttribute('num'), 'RAW');
-    getEstimate('diff', differentials.id, differentials.getAttribute('diff-price'), differentials.getAttribute('dest'),  differentials.getAttribute('num'), 'RAW');
+    getEstimate('full', fullbackups.id, fullbackups.getAttribute('comm-price'), fullbackups.getAttribute('dest'),  fullbackups.getAttribute('num'), 'RAW');
+    getEstimate('diff', differentials.id, differentials.getAttribute('comm-price'), differentials.getAttribute('dest'),  differentials.getAttribute('num'), 'RAW');
 }
 
 function changeSite(num)
