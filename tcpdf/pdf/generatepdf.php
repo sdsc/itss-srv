@@ -114,5 +114,5 @@
             </tr>
         </table>';
     $pdf->writeHTML($html, true, false, true, false, '');
-    $pdf->Output('SDSC_SLA.pdf', 'I');
+    $pdf->Output("SDSC\x20Exhibit\x20A.pdf", 'I');
 ?>
