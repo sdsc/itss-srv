@@ -132,7 +132,6 @@ var ROWS_SHAREPOINT_SITES = 9;
 var ROWS_CLOUD_COMPUTE = 29;
 
 /**** END NUMBER OF ROWS CONSTANTS ****/
-var service_num = 0; //number of Services added to grid
 var vm_num = 0; //number of VM's ordered, st and hs
 var numProducts = 0; // number of products on table currently
 var item_num = 0; //for item and price id within each service
@@ -254,7 +253,7 @@ function addProduct(id)
         var description_box = document.createElement("textarea");
         description_box.setAttribute("colspan", "3");
         description_box.id = "description" + vm_num;
-        description_box.setAttribute("num", service_num);
+        description_box.setAttribute("num", vm_num);
         description_box.setAttribute("name", " ");
         description_box.setAttribute("onchange", "changeDescription(this.getAttribute('num'), this.value)");
         description_box.setAttribute("rows", "5");
@@ -334,7 +333,7 @@ function addProduct(id)
         cell.appendChild(os);
         cell.setAttribute("colspan", "2");
         os.id = "os" + vm_num;
-        os.setAttribute("optionval", service_num);
+        os.setAttribute("optionval", vm_num);
         os.setAttribute("sys", "sys" + vm_num);
         os.setAttribute("manager", "manager" + vm_num);
         os.setAttribute("vm-type", id);
@@ -444,7 +443,7 @@ function addProduct(id)
         cpu_qty.setAttribute("title", "Enter a whole number 0 to 11");
         cpu_qty.className += " cpu_qty userinput";
         cpu_qty.setAttribute("dest", "" + cpu_sub_out);
-        cpu_qty.setAttribute("num", service_num);
+        cpu_qty.setAttribute("num", vm_num);
         cpu_qty.setAttribute(vm_type_price + vm_num + item_num, price_vm[1]);
         cpu_qty.setAttribute("cpu-price", price_vm[1])
         cpu_qty.setAttribute("size", 5);
@@ -487,7 +486,7 @@ function addProduct(id)
         mem_qty.setAttribute("title", "Enter a whole number 0 to 190");
         mem_qty.className += " userinput";
         mem_qty.setAttribute("dest", mem_sub_out);
-        mem_qty.setAttribute("num", service_num);
+        mem_qty.setAttribute("num", vm_num);
         mem_qty.setAttribute("mem-price", price_vm[2]);
         mem_qty.setAttribute("size", 5);
         mem_qty.setAttribute("onchange", "getEstimate('mem', this.id, this.getAttribute('mem-price'), this.getAttribute('dest'), this.getAttribute('num'), 'ST_VM')");
@@ -531,7 +530,7 @@ function addProduct(id)
             str_qty.setAttribute("title", "Minimum value 0.001TB (1GB). Max value 30TB (30000GB)");
             str_qty.className += " userinput";
             str_qty.setAttribute("dest", str_sub_out);
-            str_qty.setAttribute("num", service_num);
+            str_qty.setAttribute("num", vm_num);
             str_qty.setAttribute("str-price", price_vm[3]);
             str_qty.setAttribute("size", 5);
             str_qty.setAttribute("onchange", "getEstimate('silver', this.id, this.getAttribute('str-price'), this.getAttribute('dest'), this.getAttribute('num'), 'ST_VM')");
@@ -603,7 +602,7 @@ function addProduct(id)
         san_qty.setAttribute("title", "Min value 0.001TB (1GB). Max value 4.9TB (4900GB)");
         san_qty.className += " userinput";
         san_qty.setAttribute("dest", san_sub_out);
-        san_qty.setAttribute("num", service_num);
+        san_qty.setAttribute("num", vm_num);
         san_qty.setAttribute("san-price", price_vm[4]);
         san_qty.setAttribute("size", 5);
         san_qty.setAttribute("onchange", "getEstimate('gold', this.id, this.getAttribute('san-price'), this.getAttribute('dest'), this.getAttribute('num'), 'ST_VM')");
@@ -2608,12 +2607,12 @@ function addProduct(id)
     
     /* BEGIN CLOUD COMPUTING SERVICES */
     else if (id == 'CL_COMPUTE') {
+        ++vm_num;
         prod_name = "Cloud Compute Units";
-
         row1 = table.insertRow(rowCount);
         row1.id = "row" + vm_num;
         var cell = row1.insertCell(0);
-    cell.setAttribute("colspan", "1");
+        cell.setAttribute("colspan", "1");
         var remove = document.createElement("button");
         var remove_text = document.createTextNode("-");
         remove.appendChild(remove_text);
@@ -2636,7 +2635,7 @@ function addProduct(id)
         var description_box = document.createElement("textarea");
         description_box.setAttribute("colspan", "3");
         description_box.id = "description" + vm_num;
-        description_box.setAttribute("num", service_num);
+        description_box.setAttribute("num", vm_num);
         description_box.setAttribute("name", " ");
         description_box.setAttribute("onchange", "changeDescription(this.getAttribute('num'), this.value)");
         description_box.setAttribute("rows", "5");
@@ -2669,7 +2668,8 @@ function addProduct(id)
         os.setAttribute("name", "affiliation");
         os.setAttribute("title", "Choose client location");
         os.setAttribute("value", "UC");
-        os.setAttribute("onchange", "changePrices(this.value, 'CL_COMPUTE')");
+        os.setAttribute("vm_num", vm_num);
+        os.setAttribute("onchange", "changePrices(this.value, 'CL_COMPUTE', this.getAttribute('vm_num'))");
 
         option = new Option("UC", "UC", false, false);
         option.id = "UC" + vm_num;
@@ -3209,13 +3209,15 @@ function getEstimate(type, id, price, dest, num, category)
                 calculateBackup(num);
             }
             if (category == 'CL_COMPUTE') {
-                document.getElementById(dest).setAttribute("value", "$" + (parseFloat(document.getElementById("cl-compute-hours" + num).value) * parseFloat(document.getElementById("cl-compute-instances" + num).value) * price).toFixed(2));
+                var indices = id.slice(-2);
+                document.getElementById(dest).setAttribute("value", "$" + (parseFloat(document.getElementById("cl-compute-hours" + indices).value) * parseFloat(document.getElementById("cl-compute-instances" + indices).value) * price).toFixed(2));
                 if (document.getElementById(dest).getAttribute("value") == "$NaN") {
                 document.getElementById(dest).setAttribute("value", "Missing input");
                 document.getElementById(dest).style.color = "#ff0000";
             }
             else {
-                document.getElementById("flavor-specifications"+num).setAttribute("style", "visibility:hidden");
+                var indices = id.slice(-2);
+                document.getElementById("flavor-specifications" + indices).setAttribute("style", "visibility:hidden");
             }
         }
         else {
