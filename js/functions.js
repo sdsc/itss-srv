@@ -86,11 +86,17 @@ var PRICE_RAW_BACKUP_DATA_EXT = 132.9215; //per TB
 var PRICE_FULL_BACKUP_EXT = 50.9965; //per TB
 var PRICE_DIFFERENTIAL_INCREMENTAL_EXT = 50.9965; //per TB
 
-// PRICES FOR CONSULTING
-var PRICE_DESKTOP_SERVICES = 80.00; //per hour
-var PRICE_SYSTEMS_SERVICES = 96.00; //per hour
-var PRICE_STORAGE_SERVICES = 98.83; //per hour
-var PRICE_RECURRING_CONSULTING_SERVICES = 96.00; //per hour
+// PRICES FOR CONSULTING UC
+var PRICE_DESKTOP_SERVICES_UC = 80.00; //per hour
+var PRICE_SYSTEMS_SERVICES_UC = 96.00; //per hour
+var PRICE_STORAGE_SERVICES_UC = 98.83; //per hour
+var PRICE_RECURRING_CONSULTING_SERVICES_UC = 96.00; //per hour
+
+// PRICES FOR CONSULTING EXT
+var PRICE_DESKTOP_SERVICES_EXT = 116.00; //per hour
+var PRICE_SYSTEMS_SERVICES_EXT = 139.20; //per hour
+var PRICE_STORAGE_SERVICES_EXT = 143.3035; //per hour
+var PRICE_RECURRING_CONSULTING_SERVICES_EXT = 139.20; //per hour
 
 // PRICES FOR SHAREPOINT
 var PRICE_SHAREPOINT_SITES = 333.33; //per month
@@ -113,10 +119,10 @@ var ROWS_PROJECT_STORAGE = 5;
 var ROWS_PROJECT_CONDO = 5;
 var ROWS_SYSTEM_MANAGEMENT = 16;
 var ROWS_BACKUPS = 15;
-var ROWS_DESKTOP_SERVICES = 3;
-var ROWS_SYSTEMS_SERVICES = 3;
-var ROWS_STORAGE_SERVICES = 3;
-var ROWS_RECURRING_CONSULTING_SERVICES = 3;
+var ROWS_DESKTOP_SERVICES = 5;
+var ROWS_SYSTEMS_SERVICES = 5;
+var ROWS_STORAGE_SERVICES = 5;
+var ROWS_RECURRING_CONSULTING_SERVICES = 5;
 var ROWS_SHAREPOINT_SITES = 7;
 var ROWS_CLOUD_COMPUTE = 29;
 
@@ -1164,23 +1170,27 @@ function addProduct(id)
     
     /* BEGIN CONSULTING SERVICES */
     else if (id == 'DESK' || id == 'SYSTEMS' || id == 'STORAGE' || id == 'RECUR') {
+        ++vm_num;
+        vm_type_sub = "consult-sub"; //for sub id
+        vm_type_price = "consult-price"; //for each price id
+        vm_type_qty = "consult-qty"; //for each input qty id        
         var consult_price_val;
         var prod_name;
         var numRowsRemove;
         if (id == 'DESK') {
-            consult_price_val = PRICE_DESKTOP_SERVICES;
+            consult_price_val = PRICE_DESKTOP_SERVICES_UC;
             prod_name = "Consulting Services - Desktop";
             numRowsRemove = ROWS_DESKTOP_SERVICES;
         } else if (id == 'SYSTEMS') {
-            consult_price_val = PRICE_SYSTEMS_SERVICES;
+            consult_price_val = PRICE_SYSTEMS_SERVICES_UC;
             prod_name = " Consulting Services - Systems";
             numRowsRemove = ROWS_SYSTEMS_SERVICES;
         } else if (id == 'STORAGE') {
-            consult_price_val = PRICE_STORAGE_SERVICES;
+            consult_price_val = PRICE_STORAGE_SERVICES_UC;
             prod_name = "Consulting Services - Storage";
             numRowsRemove = ROWS_STORAGE_SERVICES;
         } else if (id == 'RECUR') {
-            consult_price_val = PRICE_RECURRING_CONSULTING_SERVICES;
+            consult_price_val = PRICE_RECURRING_CONSULTING_SERVICES_UC;
             prod_name = "Recurring Consulting Services - Systems";
             numRowsRemove = ROWS_RECURRING_CONSULTING_SERVICES;
         }
@@ -1218,7 +1228,43 @@ function addProduct(id)
         cell.appendChild(description_box);
         cell.setAttribute("colspan", "3");
         document.getElementById("description" + vm_num).innerHTML = "Enter a description here";
+
+        var row = table.insertRow(++rowCount);
+        var cell = row.insertCell(0);
+        cell.setAttribute("colspan", "1");
         
+        var cell = row.insertCell(1);
+        cell.setAttribute("style", "font-weight: bold");
+        var options_text = document.createTextNode("Options");
+        cell.appendChild(options_text);
+        cell.setAttribute("colspan", "1");
+        var row = table.insertRow(++rowCount);
+        var cell = row.insertCell(0);
+        cell.setAttribute("colspan", "1");
+        
+        var cell = row.insertCell(1);
+        cell.setAttribute("colspan", "1");
+        var os_text = document.createTextNode("\u00a0\u00a0\u00a0\u00a0Affiliation:");
+        cell.appendChild(os_text);
+
+        var cell = row.insertCell(2);
+        var os = document.createElement("select"); 
+        os.setAttribute("name", "affiliation");
+        os.setAttribute("num", vm_num);
+        os.setAttribute("title", "Choose client location");
+        os.setAttribute("value", "UC");
+        os.setAttribute("service", id);
+        os.setAttribute("onchange", "changePrices(this.value, this.getAttribute('service'), this.getAttribute('num'))");
+
+        option = new Option("UC", "UC", false, false);
+        option.id = "UC" + vm_num;
+        os.appendChild(option);
+        option = new Option("External", "External", false, false);
+        option.id = "External" + vm_num;
+        os.appendChild(option);
+        cell.appendChild(os);
+        cell.setAttribute("colspan", "2");
+        os.id = "os" + vm_num;       
         
         var row = table.insertRow(++rowCount);
         cell = row.insertCell(0);
@@ -1252,6 +1298,8 @@ function addProduct(id)
         
         var cell = row.insertCell(2);
         var consult_price = document.createTextNode("$" + consult_price_val + "/hr");
+        cell.setAttribute("value", consult_price_val);
+        cell.id = vm_type_price + vm_num + (++item_num);
         cell.appendChild(consult_price);
         cell.setAttribute("colspan", "1");
         cell.setAttribute("style", "border-bottom: 1px black solid");
@@ -1259,8 +1307,8 @@ function addProduct(id)
         var cell = row.insertCell(3);
         var consult_qty = document.createElement("input");
         consult_qty.setAttribute("type", "text");
-        consult_qty_in = "consult-qty" + vm_num;
-        consult_sub_out = "consult-sub" + vm_num;
+        consult_qty_in = vm_type_qty + vm_num + item_num;
+        consult_sub_out = vm_type_sub + vm_num + item_num;
         cell.appendChild(consult_qty);
         cell.setAttribute("colspan", "1");
         consult_qty.id = consult_qty_in;
@@ -2775,9 +2823,17 @@ function changePrices(affiliation, id, num)
                 price_pr_con = PRICE_PROJECT_CONDO_UC;
                 break;
             case 'DESK':
+                price_consult = PRICE_DESKTOP_SERVICES_UC;
+                break;
             case 'SYSTEMS':
+                price_consult = PRICE_SYSTEMS_SERVICES_UC;
+                break;
             case 'STORAGE':
-            case 'SITE':
+                price_consult = PRICE_STORAGE_SERVICES_UC;
+                break;
+            case 'RECUR':
+                price_consult = PRICE_RECURRING_CONSULTING_SERVICES_UC;
+                break;
             case 'SUPPORT':
             case 'SYS_MAN':
                 price_sys_man = PRICE_SYSTEM_MANAGEMENT_UC;
@@ -2811,9 +2867,17 @@ function changePrices(affiliation, id, num)
                 price_pr_con = PRICE_PROJECT_CONDO_EXT;
                 break;
             case 'DESK':
+                price_consult = PRICE_DESKTOP_SERVICES_EXT;
+                break;
             case 'SYSTEMS':
+                price_consult = PRICE_SYSTEMS_SERVICES_EXT;
+                break;
             case 'STORAGE':
-            case 'SITE':
+                price_consult = PRICE_STORAGE_SERVICES_EXT;
+                break;
+            case 'RECUR':
+                price_consult = PRICE_RECURRING_CONSULTING_SERVICES_EXT;
+                break;
             case 'SUPPORT':
             case 'SYS_MAN':
                 price_sys_man = PRICE_SYSTEM_MANAGEMENT_EXT;
@@ -2944,7 +3008,13 @@ function changePrices(affiliation, id, num)
             case 'DESK':
             case 'SYSTEMS':
             case 'STORAGE':
-            case 'SITE':
+            case 'RECUR':
+                item_num = 1;
+                document.getElementById("consult-price" + num + item_num).value = parseFloat(price_consult).toFixed(2);
+                document.getElementById("consult-price" + num + item_num).innerHTML = "$" + parseFloat(price_consult).toFixed(2) + "/hr";
+                document.getElementById("consult-qty" + num + item_num).setAttribute("consult-price" + num + item_num, price_consult);
+                getEstimate('consult', "consult-qty" + num + item_num, price_consult, "consult-sub" + num + item_num, num, 'DESK');
+                break;
             case 'SUPPORT':
             case 'SYS_MAN':
                 document.getElementById("system-price" + num).value = "$" + parseFloat(price_sys_man[0]).toFixed(2);
