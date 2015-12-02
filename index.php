@@ -85,7 +85,7 @@
                         Project Storage
                         </span>
                         <span class="service-price">
-                        $45.74
+                        $45.75
                         </span>
                     </div>
                     <button class="add-button" title="Add Service" onclick="addProduct('PR_CON');">+
@@ -95,7 +95,7 @@
                         Project Condo
                         </span>
                         <span class="service-price">
-                        $782.11
+                        $782.08
                         </span>
                     </div>
                     <button class="add-button" title="Add Service" onclick="addProduct('SYS_MAN');">+
@@ -122,7 +122,7 @@
     </button>
                     <div class="vm-services">
                         <span class="service-name" title=""> 
-                        Tier I Consulting Services - Desktop
+                        Consulting Services - Desktop
                         </span>
                         <span class="service-price">
                         $80.00
@@ -132,7 +132,7 @@
     </button>
                     <div class="vm-services">
                         <span class="service-name" title=""> 
-                        Tier II Consulting Services - Systems
+                        Consulting Services - Systems
                         </span>
                         <span class="service-price">
                         $96.00
@@ -142,10 +142,10 @@
     </button>
                     <div class="vm-services">
                         <span class="service-name" title=""> 
-                        Tier I Consulting Services - Storage
+                        Consulting Services - Storage
                         </span>
                         <span class="service-price">
-                        $80.00
+                        $98.83
                         </span>
                     </div>
                     
@@ -153,7 +153,7 @@
     </button>
                     <div class="vm-services">
                         <span class="service-name" title=""> 
-                        Recurring Consulting Services
+                        Recurring Consulting Services - Systems
                         </span>
                         <span class="service-price">
                         $96.00

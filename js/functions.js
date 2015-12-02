@@ -89,7 +89,7 @@ var PRICE_DIFFERENTIAL_INCREMENTAL_EXT = 50.9965; //per TB
 // PRICES FOR CONSULTING
 var PRICE_DESKTOP_SERVICES = 80.00; //per hour
 var PRICE_SYSTEMS_SERVICES = 96.00; //per hour
-var PRICE_STORAGE_SERVICES = 80.00; //per hour
+var PRICE_STORAGE_SERVICES = 98.83; //per hour
 var PRICE_RECURRING_CONSULTING_SERVICES = 96.00; //per hour
 
 // PRICES FOR SHAREPOINT
@@ -1169,19 +1169,19 @@ function addProduct(id)
         var numRowsRemove;
         if (id == 'DESK') {
             consult_price_val = PRICE_DESKTOP_SERVICES;
-            prod_name = "Tier I Consulting Services - Desktop";
+            prod_name = "Consulting Services - Desktop";
             numRowsRemove = ROWS_DESKTOP_SERVICES;
         } else if (id == 'SYSTEMS') {
             consult_price_val = PRICE_SYSTEMS_SERVICES;
-            prod_name = "Tier II Consulting Services - Systems";
+            prod_name = " Consulting Services - Systems";
             numRowsRemove = ROWS_SYSTEMS_SERVICES;
         } else if (id == 'STORAGE') {
             consult_price_val = PRICE_STORAGE_SERVICES;
-            prod_name = "Tier I Consulting Services - Storage";
+            prod_name = "Consulting Services - Storage";
             numRowsRemove = ROWS_STORAGE_SERVICES;
         } else if (id == 'RECUR') {
             consult_price_val = PRICE_RECURRING_CONSULTING_SERVICES;
-            prod_name = "Recurring Consulting Services";
+            prod_name = "Recurring Consulting Services - Systems";
             numRowsRemove = ROWS_RECURRING_CONSULTING_SERVICES;
         }
         
