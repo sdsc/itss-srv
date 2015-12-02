@@ -98,10 +98,15 @@ var PRICE_SYSTEMS_SERVICES_EXT = 139.20; //per hour
 var PRICE_STORAGE_SERVICES_EXT = 143.3035; //per hour
 var PRICE_RECURRING_CONSULTING_SERVICES_EXT = 139.20; //per hour
 
-// PRICES FOR SHAREPOINT
-var PRICE_SHAREPOINT_SITES = 333.33; //per month
-var PRICE_ADD_DA_STORAGE = 10.00; //per month
-var PRICE_CONSULTATION_SUPPORT = 96.00; //per hour
+// PRICES FOR SHAREPOINT UC
+var PRICE_SHAREPOINT_SITES_UC = 333.33; //per month
+var PRICE_ADD_DA_STORAGE_UC = 10.00; //per month
+var PRICE_CONSULTATION_SUPPORT_UC = 96.00; //per hour
+
+// PRICES FOR SHAREPOINT EXT
+var PRICE_SHAREPOINT_SITES_EXT = 483.3285; //per month
+var PRICE_ADD_DA_STORAGE_EXT = 14.50; //per month
+var PRICE_CONSULTATION_SUPPORT_EXT = 139.20; //per hour
 
 // PRICES FOR CLOUD COMPUTE
 var PRICE_CL_COMPUTE_UC = [0.08, 0.16, 0.32, 0.64, 0.13, 0.26, 0.52, 0.22, 0.44, 0.88, 0.000063, 0.000063];
@@ -123,7 +128,7 @@ var ROWS_DESKTOP_SERVICES = 5;
 var ROWS_SYSTEMS_SERVICES = 5;
 var ROWS_STORAGE_SERVICES = 5;
 var ROWS_RECURRING_CONSULTING_SERVICES = 5;
-var ROWS_SHAREPOINT_SITES = 7;
+var ROWS_SHAREPOINT_SITES = 9;
 var ROWS_CLOUD_COMPUTE = 29;
 
 /**** END NUMBER OF ROWS CONSTANTS ****/
@@ -1349,7 +1354,11 @@ function addProduct(id)
     
     /* BEGIN SHAREPOINT SERVICES */
     else if (id == 'SITE') {
-        var sp_price_val = PRICE_SHAREPOINT_SITES;
+        ++vm_num;
+        vm_type_sub = "share-sub"; //for sub id
+        vm_type_price = "share-price"; //for each price id
+        vm_type_qty = "share-qty"; //for each input qty id  
+        var share_price = [PRICE_SHAREPOINT_SITES_UC, PRICE_ADD_DA_STORAGE_UC, PRICE_CONSULTATION_SUPPORT_UC];
         var prod_name = "SharePoint Site";
         var unit = "/month";
         var numRows = ROWS_SHAREPOINT_SITES; 
@@ -1385,7 +1394,44 @@ function addProduct(id)
         description_box.setAttribute("cols", "30");
         cell.appendChild(description_box);
         document.getElementById("description" + vm_num).innerHTML = "Enter a description here";
+
+        var row = table.insertRow(++rowCount);
+        var cell = row.insertCell(0);
+        cell.setAttribute("colspan", "1");
         
+        var cell = row.insertCell(1);
+        cell.setAttribute("style", "font-weight: bold");
+        var options_text = document.createTextNode("Options");
+        cell.appendChild(options_text);
+        cell.setAttribute("colspan", "1");
+        var row = table.insertRow(++rowCount);
+        var cell = row.insertCell(0);
+        cell.setAttribute("colspan", "1");
+        
+        var cell = row.insertCell(1);
+        cell.setAttribute("colspan", "1");
+        var os_text = document.createTextNode("\u00a0\u00a0\u00a0\u00a0Affiliation:");
+        cell.appendChild(os_text);
+
+        var cell = row.insertCell(2);
+        var os = document.createElement("select"); 
+        os.setAttribute("name", "affiliation");
+        os.setAttribute("num", vm_num);
+        os.setAttribute("title", "Choose client location");
+        os.setAttribute("value", "UC");
+        os.setAttribute("service", id);
+        os.setAttribute("onchange", "changePrices(this.value, this.getAttribute('service'), this.getAttribute('num'))");
+
+        option = new Option("UC", "UC", false, false);
+        option.id = "UC" + vm_num;
+        os.appendChild(option);
+        option = new Option("External", "External", false, false);
+        option.id = "External" + vm_num;
+        os.appendChild(option);
+        cell.appendChild(os);
+        cell.setAttribute("colspan", "2");
+        os.id = "os" + vm_num;   
+       
         var row = table.insertRow(++rowCount);
         var cell = row.insertCell(0);
         cell.setAttribute("colspan", "1");
@@ -1423,7 +1469,9 @@ function addProduct(id)
         cell.appendChild(document.createTextNode("\u00a0\u00a0\u00a0\u00a0Sites"));
         
         var cell = row.insertCell(2);
-        var sp_price = document.createTextNode("$" + sp_price_val + unit);
+        var sp_price = document.createTextNode("$" + share_price[0] + unit);
+        cell.id = vm_type_price + vm_num + (++item_num);
+        cell.setAttribute("share_price", share_price);
         cell.appendChild(sp_price);
         cell.setAttribute("colspan", "1");
         
@@ -1431,19 +1479,19 @@ function addProduct(id)
         
         var sp_qty = document.createElement("input");
         sp_qty.setAttribute("type", "text");
-        sp_qty_in = "sp-qty" + vm_num;
-        sp_sub_out = "sp-sub" + vm_num;
+        sp_qty_in = vm_type_qty + vm_num + item_num;
+        sp_sub_out = vm_type_sub + vm_num + item_num;
         cell.appendChild(sp_qty);
         cell.setAttribute("colspan", "1");
         sp_qty.id = sp_qty_in;
         sp_qty.className += " sp_qty userinput";
         sp_qty.setAttribute("dest", "" + sp_sub_out);
         sp_qty.setAttribute("num", vm_num);
-        sp_qty.setAttribute("sp-price", sp_price_val);
+        sp_qty.setAttribute("share_price", share_price[0]);
         sp_qty.setAttribute("name", sp_qty.id);
         sp_qty.setAttribute("title", "Whole numbers only");
         sp_qty.setAttribute("size", 5);
-        sp_qty.setAttribute("onchange", "getEstimate('sp', this.id, this.getAttribute('sp-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'SITE')");
+        sp_qty.setAttribute("onchange", "getEstimate('sp', this.id, this.getAttribute('share_price'), this.getAttribute('dest'),  this.getAttribute('num'), 'SITE')");
         
         var cell = row.insertCell(4);
         var sp_sub = document.createElement("input");
@@ -1457,7 +1505,6 @@ function addProduct(id)
         sp_sub.setAttribute("name", sp_sub.id);
         sp_sub.setAttribute("size", 20);
         
-        additional_price_val = PRICE_ADD_DA_STORAGE;
         var row2 = table.insertRow(++rowCount);    
         var cell = row2.insertCell(0);
         cell.setAttribute("colspan", "1");
@@ -1469,25 +1516,27 @@ function addProduct(id)
         cell.setAttribute("colspan", "1");
 
         var cell = row2.insertCell(2);
-        var additional_price = document.createTextNode("$" + additional_price_val + "/month");
+        var additional_price = document.createTextNode("$" + share_price[1] + "/month");
+        cell.id = vm_type_price + vm_num + (++item_num);
+        cell.setAttribute("share_price", share_price[1]);
         cell.appendChild(additional_price);
         cell.setAttribute("colspan", "1");
 
         var cell = row2.insertCell(3);
         var additional_qty = document.createElement("input");
         additional_qty.setAttribute("type", "text");
-        additional_qty_in = "additional-qty" + vm_num;
-        additional_sub_out = "additional-sub" + vm_num;
+        additional_qty_in = vm_type_qty + vm_num + item_num;
+        additional_sub_out = vm_type_sub + vm_num + item_num;
         cell.appendChild(additional_qty);
         cell.setAttribute("colspan", "1");
         additional_qty.id = additional_qty_in;
         additional_qty.className += " additional_qty userinput";
         additional_qty.setAttribute("dest", "" + additional_sub_out);
         additional_qty.setAttribute("num", vm_num);
-        additional_qty.setAttribute("additional-price", additional_price_val);
+        additional_qty.setAttribute("share_price", share_price[1]);
         additional_qty.setAttribute("name", additional_qty.id);
         additional_qty.setAttribute("size", 5);
-        additional_qty.setAttribute("onchange", "getEstimate('additional-sp', this.id, this.getAttribute('additional-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'SITE')");
+        additional_qty.setAttribute("onchange", "getEstimate('additional-sp', this.id, this.getAttribute('share_price'), this.getAttribute('dest'),  this.getAttribute('num'), 'SITE')");
             
         additional_qty.setAttribute("title", "Whole numbers only");
         //cell.appendChild(document.createTextNode("\u00a0\u00a0chunk(s)"));
@@ -1514,7 +1563,9 @@ function addProduct(id)
         cell.setAttribute("colspan", "1");
         
         var cell = row3.insertCell(2);
-        var consultation_price = document.createTextNode("$" + PRICE_CONSULTATION_SUPPORT);
+        var consultation_price = document.createTextNode("$" + share_price[2]);
+        cell.id = vm_type_price + vm_num + (++item_num);
+        cell.setAttribute("share_price", share_price[2])
         cell.appendChild(consultation_price);
         cell.setAttribute("colspan", "1");
         
@@ -1522,19 +1573,19 @@ function addProduct(id)
         
         var consultation_qty = document.createElement("input");
         consultation_qty.setAttribute("type", "text");
-        consultation_qty_in = "consultation-qty" + vm_num;
-        consultation_sub_out = "consultation-sub" + vm_num;
+        consultation_qty_in = vm_type_qty + vm_num + item_num;
+        consultation_sub_out = vm_type_sub + vm_num + item_num;
         cell.appendChild(consultation_qty);
         cell.setAttribute("colspan", "1");
         consultation_qty.id = consultation_qty_in;
         consultation_qty.className += " consultation_qty userinput";
         consultation_qty.setAttribute("dest", "" + consultation_sub_out);
         consultation_qty.setAttribute("num", vm_num);
-        consultation_qty.setAttribute("consultation-price", PRICE_CONSULTATION_SUPPORT);
+        consultation_qty.setAttribute("share_price", share_price[2]);
         consultation_qty.setAttribute("name", consultation_qty.id);
         consultation_qty.setAttribute("title", "Number of hours in tenths increments");
         consultation_qty.setAttribute("size", 5);
-        consultation_qty.setAttribute("onchange", "getEstimate('sp-consult', this.id, this.getAttribute('consultation-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'SITE')");
+        consultation_qty.setAttribute("onchange", "getEstimate('sp-consult', this.id, this.getAttribute('share_price'), this.getAttribute('dest'),  this.getAttribute('num'), 'SITE')");
         
         var cell = row3.insertCell(4);
         var consultation_sub = document.createElement("input");
@@ -2834,6 +2885,9 @@ function changePrices(affiliation, id, num)
             case 'RECUR':
                 price_consult = PRICE_RECURRING_CONSULTING_SERVICES_UC;
                 break;
+            case 'SITE':
+                price_share = [PRICE_SHAREPOINT_SITES_UC, PRICE_ADD_DA_STORAGE_UC, PRICE_CONSULTATION_SUPPORT_UC];
+                break;
             case 'SUPPORT':
             case 'SYS_MAN':
                 price_sys_man = PRICE_SYSTEM_MANAGEMENT_UC;
@@ -2877,6 +2931,9 @@ function changePrices(affiliation, id, num)
                 break;
             case 'RECUR':
                 price_consult = PRICE_RECURRING_CONSULTING_SERVICES_EXT;
+                break;
+            case 'SITE':
+                price_share = [PRICE_SHAREPOINT_SITES_EXT, PRICE_ADD_DA_STORAGE_EXT, PRICE_CONSULTATION_SUPPORT_EXT];
                 break;
             case 'SUPPORT':
             case 'SYS_MAN':
@@ -3014,6 +3071,25 @@ function changePrices(affiliation, id, num)
                 document.getElementById("consult-price" + num + item_num).innerHTML = "$" + parseFloat(price_consult).toFixed(2) + "/hr";
                 document.getElementById("consult-qty" + num + item_num).setAttribute("consult-price" + num + item_num, price_consult);
                 getEstimate('consult', "consult-qty" + num + item_num, price_consult, "consult-sub" + num + item_num, num, 'DESK');
+                break;
+            case 'SITE':
+                for (item_num = 1, n = 0; item_num < 4; n++, item_num++) {
+                    document.getElementById("share-price" + num + item_num).value = parseFloat(price_share[n]).toFixed(2);
+                    if (i<2)document.getElementById("share-price" + num + item_num).innerHTML = "$" + parseFloat(price_share[n]).toFixed(2) + "/month";
+                    else document.getElementById("share-price" + num + item_num).innerHTML = "$" + parseFloat(price_share[n]).toFixed(2);
+                    document.getElementById("share-qty" + num + item_num).setAttribute("share_price", price_share[n]);
+                    switch (item_num) {
+                        case (1): 
+                            getEstimate('sp', "share-qty" + num + item_num, price_share[n], "share-sub" + num + item_num, num, 'SITE'); 
+                            break;
+                        case (2):
+                            getEstimate('additional-sp', "share-qty" + num + item_num, price_share[n], "share-sub" + num + item_num, num, 'SITE'); 
+                            break;
+                        case(3):
+                            getEstimate('sp-consult', "share-qty" + num + item_num, price_share[n], "share-sub" + num + item_num, num, 'SITE'); 
+                            break;
+                    }
+                }
                 break;
             case 'SUPPORT':
             case 'SYS_MAN':
