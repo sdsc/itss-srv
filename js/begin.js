@@ -6,7 +6,7 @@ $(document).ready(function() {
     
     var valid = true; 
     
-    sub('sub');
+    //sub('sub');
     
     /* Create PDF from the content */
 
@@ -30,7 +30,7 @@ $(document).ready(function() {
     });
     
     document.getElementById('vm-table').setAttribute("hidden", "hidden");
-    document.getElementById('vm-table-totals').setAttribute("hidden", "hidden");
+    // document.getElementById('vm-table-totals').setAttribute("hidden", "hidden");
     document.getElementById('pa-table').setAttribute("hidden", "hidden");
     document.getElementById('pa-table-totals').setAttribute("hidden", "hidden");
     document.getElementById('str-table').setAttribute("hidden", "hidden");
@@ -61,10 +61,10 @@ function validateForm() {
         
         oldCode = $('#quote-content').clone();
         var child = document.getElementById('vm-table');
-        var child2 = document.getElementById('vm-table-totals');
+        // var child2 = document.getElementById('vm-table-totals');
         if (child.rows.length - 1 === 0) {
             child.parentNode.removeChild(child);
-            child2.parentNode.removeChild(child2);
+            // child2.parentNode.removeChild(child2);
         }
         child.setAttribute("colspan", "4");
         

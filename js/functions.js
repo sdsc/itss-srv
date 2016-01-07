@@ -136,7 +136,7 @@ var vm_num = 0; //number of VM's ordered, st and hs
 var numProducts = 0; // number of products on table currently
 var item_num = 0; //for item and price id within each service
 
-var row1, cell, rowCount;
+var row1, cell, rowCount, rowTotals;
 
 /* list of variables for input/output */
 var cpu_qty_in, cpu_sub_out, mem_qty_in, mem_sub_out, str_qty_in, str_sub_out, san_qty_in, san_sub_out, cl_str_qty_in, cl_str_sub_out;
@@ -159,7 +159,7 @@ function addProduct(id)
         case 'ST_VM':
         case 'HS_VM':
             var table = document.getElementById('vm-table');
-            var totals = document.getElementById('vm-table-totals');
+            // var totals = document.getElementById('vm-table-totals');
             break;
         case 'CL_STR':
         case 'PR_STR':
@@ -192,14 +192,57 @@ function addProduct(id)
             var totals = document.getElementById('cl-compute-table-totals');
             break;
     }
-    
+    //insert totals table
+    totals = document.getElementById("totals");
+    rowTotals = totals.rows.length;
+
+    row1 = totals.insertRow(rowTotals);
+    row1.id = "row" + vm_num;
+    var cell = row1.insertCell(0);
+    cell.setAttribute("colspan", "1");
+    // cell.setAttribute("width", "654");
+    cell.setAttribute("style", "text-align: right; font-weight: bold");
+    var monthly = document.createTextNode("Monthly Total: ")
+    cell.appendChild(monthly);
+    cell = row1.insertCell(1);
+    var subtotal = document.createElement("input");
+    subtotal.setAttribute("type", "text");
+    cell.appendChild(subtotal);
+    cell.setAttribute("colspan", "1");
+    subtotal.id = "sub-total";
+    subtotal.setAttribute("name", subtotal.id);
+    subtotal.setAttribute("size", 20);
+    document.getElementById(subtotal.id).setAttribute("readonly", "readonly");
+
+    row = totals.insertRow(++rowTotals);
+    cell = row.insertCell(0);
+    cell.setAttribute("colspan", "1");
+    // cell.setAttribute("width", "654");   
+    cell.setAttribute("style", "text-align: right; font-weight: bold");
+    var onetime = document.createTextNode("One-time Fees: ")
+    cell.appendChild(onetime);
+    cell = row.insertCell(1);
+    var fees = document.createElement("input");
+    fees.setAttribute("type", "text");
+    cell.appendChild(fees);
+    cell.setAttribute("colspan", "1");
+    fees.id = "onetime-total";
+    fees.setAttribute("name", fees.id);
+    fees.setAttribute("size", 20);
+    document.getElementById(fees.id).setAttribute("readonly", "readonly");
+
+
     rowCount = table.rows.length; // current number of rows in table
 
     // If there is only one row in the table (the totals row), then hide the whole table
     if (rowCount - 1 === 0) {
         table.removeAttribute("hidden");
-        totals.removeAttribute("hidden");
+        // totals.removeAttribute("hidden");
     }
+
+    // if (document.getElementById("vm-sub-total-row")) {
+    //     document.getElementById("vm-sub-total-row").setAttribute("style", "display:none;");
+    // }
     
 
     if (numProducts++ === 0) {
@@ -233,6 +276,7 @@ function addProduct(id)
         remove.appendChild(remove_text);
         cell.appendChild(remove);
         cell.setAttribute("colspan", "1");
+        cell.setAttribute("width", "20");
         remove.className = "remove-button";
         remove.setAttribute("value", "-");
         remove.setAttribute("rownumber", "row" + vm_num);
@@ -247,6 +291,7 @@ function addProduct(id)
         var name = document.createTextNode(slice_text);                      
         cell.appendChild(name);
         cell.setAttribute("colspan", "1");
+        cell.setAttribute("width", "220");
         cell.className = "service-title";
             
         cell = row1.insertCell(2);
@@ -308,6 +353,7 @@ function addProduct(id)
         var cell = row.insertCell(1);
         var os_text = document.createTextNode("\u00a0\u00a0\u00a0\u00a0Operating System:");
         cell.appendChild(os_text);
+        cell.setAttribute("colspan", "1");
         
         var cell = row.insertCell(2);
         var os = document.createElement("select"); 
@@ -677,6 +723,8 @@ function addProduct(id)
         var extra_sub = document.createElement("input");
         extra_sub.setAttribute("type", "text");
         cell.appendChild(extra_sub);
+            cell.setAttribute("class", "pad-bottom");
+        
         cell.setAttribute("colspan", "1");
         extra_sub.id = "extra-sub-out" + vm_num;
         extra_sub.setAttribute("name", extrasnap.id);
@@ -699,6 +747,7 @@ function addProduct(id)
             sysmanagement_text.setAttribute("type", "text");
             cell.appendChild(sysmanagement_text);
             cell.setAttribute("colspan", "3");
+            cell.setAttribute("class", "pad-bottom");
 
             sysmanagement_text.id = "sys" + vm_num;
             sysmanagement_text.setAttribute("name", sysmanagement_text.id);
@@ -716,28 +765,56 @@ function addProduct(id)
 
         var row8 = table.insertRow(++rowCount);
         var cell = row8.insertCell(0);
-        cell.setAttribute("colspan", "1");
-        cell.setAttribute("style", "border-bottom: 1px solid black;");
-        
-        var cell = row8.insertCell(1);
-        var subtext = document.createTextNode("Subtotal");
-        cell.appendChild(subtext);
         cell.setAttribute("colspan", "3");
-        cell.className += " pad-bottom";
-        cell.setAttribute("style", "border-bottom: 1px solid black; font-weight: bold");
+        // cell.setAttribute("style", "border-bottom: 1px solid #d3d3d3;");
+        var cell = row8.insertCell(1);
+        var subtext = document.createTextNode("Subtotal:\u00a0\u00a0");
+        cell.appendChild(subtext);
+        cell.setAttribute("colspan", "1");
+        cell.className += " ";
+        cell.setAttribute("style", "text-align: right;");
+
 
         var cell = row8.insertCell(2);
         var vmsubtotal = document.createElement("input");
         vmsubtotal.setAttribute("type", "text");
         vmsubtotal.setAttribute("size", 20);
         cell.appendChild(vmsubtotal);
+        // cell.setAttribute("style", "border-bottom: 1px solid #d3d3d3;")
         cell.setAttribute("colspan", "1");
+        vmsubtotal.setAttribute("style", "");
         vmsubtotal.id = "vm-sub" + vm_num + "-total"
         vmsubtotal.setAttribute("name", vmsubtotal.id);
-        //vmsubtotal.className = "sub";
+
+        if (document.getElementById("vm-sub-total-row") != null) {
+            var elem  = document.getElementById("vm-sub-total-row");
+            elem.parentNode.removeChild(elem);
+            --rowTotals;
+        }
+
+            row1 = totals.insertRow(0);
+            row1.id = "vm-sub-total-row";
+            var cell = row1.insertCell(0);
+            cell.setAttribute("colspan", "1");
+            var name = document.createTextNode("VM Services Total:");
+            cell.setAttribute("style", "font-weight: bold; text-align: right;")
+            cell.appendChild(name);
+            var cell = row1.insertCell(1);
+            cell.setAttribute("colspan", "1");
+            var subtotal = document.createElement("input");
+            subtotal.setAttribute("style", "font-weight: bold")
+            subtotal.setAttribute("type", "text");
+            subtotal.setAttribute("size", 20);
+            subtotal.id = "vm-sub-total";
+            subtotal.className = "sub";
+            subtotal.name = "vm-sub-total";
+            subtotal.setAttribute("readonly", "readonly");
+            cell.appendChild(subtotal);
+
+
+
         document.getElementById(vmsubtotal.id).setAttribute("readonly", "readonly");
         document.getElementById(vmsubtotal.id).setAttribute("value", "$" + price_vm[0]);
-        cell.setAttribute("style", "border-bottom: 1px solid black;");
         sub('vm-sub');
         sub('sub');
             

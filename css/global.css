@@ -42,7 +42,7 @@ body
 .service-title
 {
     font-weight: bold;
-    padding-left: 0px;
+    text-decoration: underline;
 }
 .add-button
 {
@@ -76,8 +76,8 @@ input[type="text"].system-name
 
 input[type="text"], .cpu_qty
 {
-    width: 60px;
-    margin: 0 auto;
+/*    width: 60px;
+    margin: 0 auto;*/
 }
 
 .sub
@@ -94,17 +94,17 @@ input[readonly].varprice
 
 input[readonly]
 {
-    width: 60%;
+    /*width: 60%;*/
     border: 0px;
 }
 
-strong
+/*strong
 {
     text-decoration: underline;
     margin-bottom: 10px;
     display: block;
     background-color: #fff;
-}
+}*/
 
 .alert
 {
@@ -119,26 +119,35 @@ strong
     font-size: 18px;
 }
 
-#vm-table td, #str-table td, #pa-table td, #backup-table td, #consult-table td, #sp-table td, #totals td, #cl-compute-table td
+#vm-table td, #str-table td, #pa-table td, #backup-table td, #consult-table td, #sp-table td, #totals td, #cl-compute-table td, #vm-table-totals td
 {
     /*padding: 0 14px;*/
     font-size: 14px;
 }
 
-#vm-table, #str-table, #pa-table, #backup-table, #consult-table, #sp-table, #cl-compute-table
+#vm-table, #str-table, #pa-table, #backup-table, #consult-table, #sp-table, #cl-compute-table, #vm-table-totals
 {
     background-color: #fff;
     width: 900px;
+/*    border-left: 1px solid #d3d3d3;
+    border-right: 1px solid #d3d3d3;*/
+    border-bottom: 1px solid #d3d3d3;
+}
+
+.total-table {
+    width:900px;
 }
 
 #vm-table tr:first-child > td, #str-table tr:first-child > td, #backup-table tr:first-child > td, #consult-table tr:first-child > td, #sp-table tr:first-child > td, #pa-table tr:first-child > td, #cl-compute-table tr:first-child > td
 {
-    background-color: #ccc; 
+    /*background-color: #ccc; */
     font-weight: bold;
-    font-size: 15px;
-    padding-bottom: 10px;
-    line-height: 20px;
+    font-size: 16px;
+    /*text-decoration: underline;*/
+/*    padding-top: 15px;
+    padding-bottom: 15px;*/
 }
+
 
 td.pad-bottom
 {
@@ -184,7 +193,7 @@ table td
 
 #totals td:first-child
 {
-    width: 650px;
+    /*width: 650px;*/
 }
 
 .userinput input

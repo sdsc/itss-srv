@@ -190,33 +190,20 @@
                 <!--<strong id="table-title">Your SDSC Cost Estimate </strong>-->
                 <form name="quote" id="quote" action="./tcpdf/pdf/generatepdf.php" method="post" target="_blank">
                     <br/><br/>
-                    <table class="tables" id="vm-table" colspan="5" cellspacing="0" style="font-size: 11px">
-                        <tr style="font-size: 11px; background-color: #ccc; font-weight: bold; ">
-                            <td colspan="1" width="20">&nbsp;</td>
-                            <td colspan="1" width="170">
-                                Virtualization (VM) Services
-                            </td>
-                            <td colspan="1" width="152">
-                                Price/Unit
-                            </td>
-                            <td colspan="1" width="63">
-                                Quantity
-                            </td>
-                            <td colspan="1" width="135">
-                                Subtotal
-                            </td>
-                        </tr>
-                    </table>
-                    <table class="total-table" id="vm-table-totals" colspan="5" width="810">
+                    <table class="tables" id="vm-table" colspan="5" cellspacing="0" style="border-bottom: 1px solid #d3d3d3">
                         <tr>
-                            <td colspan="4" width="405" height="40" valign="bottom">
-                                <b>VM Total: </b>
-                            </td>
-                            <td colspan="1" width="135">
-                                <input type="text" id="vm-sub-total" class="sub" name="vm-sub-total" size="20" readonly>
-                            </td>
+                            <td colspan="5" style="text-align:center; background-color: #d3d3d3;">Virtualization (VM) Services</td>
                         </tr>
+                        
                     </table>
+<!--                     <table class="tables" id="vm-table-totals" colspan="5" cellspacing="0" style="border-left: 1px solid #d3d3d3; border-right:1px solid #d3d3d3;border-bottom:1px solid #d3d3d3;">
+                        <tr>
+                            <td colspan="1" width="20"></td>
+                            <td colspan="1" width="200">VM Services Subtotal:</td>
+                            <td colspan="1" width="340"></td>
+                            <td colspan="1"><input type="text" id="vm-sub-total" class="sub" name="vm-sub-total" size="20" readonly></td>
+                        </tr>
+                    </table> -->
                     
                     <table class="tables" id="str-table" colspan="5" cellspacing="0" style="font-size: 11px">
                         <tr style="font-size: 11px; background-color: #ccc; font-weight: bold;">
@@ -386,7 +373,7 @@
                         </tr>
                     </table>
                     
-                    <table class="total-table" id="totals" width="810">
+<!--                     <table class="total-table" id="totals" width="810">
                         <tr style="font-size: 12px">
                             <td colspan="4" width="405" height="40" valign="bottom">
                                 <strong>Monthly Total: </strong>
@@ -403,8 +390,26 @@
                                 <input type="text" id="onetime-total" size="20" name = "onetime-totals" value="$0.00" readonly>
                             </td>
                         </tr>
-                    </table>
+                    </table> -->
                     
+                    <table class="total-table tables" id="totals"  colspan="5" cellspacing="0" >
+<!--                         <tr>
+                            <td style="text-align: right;">
+                                <b>Monthly Total: </b>
+                            </td>
+                            <td>
+                                <input type="text" id="sub-total" name="sub-total" size="20" readonly>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: right;">
+                                <b>One-time Fees: </b>
+                            </td>
+                            <td>
+                                <input type="text" id="onetime-total" size="20" name = "onetime-totals" value="$0.00" readonly>
+                            </td>
+                        </tr> -->
+                    </table>
                     <input id="formcode" name="formcode" type="hidden">
                 </form>
             </div>
