@@ -154,6 +154,7 @@ var option;
 function addProduct(id)
 {
     item_num = 0; //reset item_num after adding a new product
+    // numProducts++;
     // switch statement necessary to determine which table to add the product to
     switch (id) {
         case 'ST_VM':
@@ -192,44 +193,49 @@ function addProduct(id)
             var totals = document.getElementById('cl-compute-table-totals');
             break;
     }
-    //insert totals table
+
+    if (numProducts++ === 0) {
+        document.getElementById('totals').removeAttribute("hidden");
+    }
     totals = document.getElementById("totals");
     rowTotals = totals.rows.length;
+    //insert totals table
+    if (numProducts === 1) {
+        row1 = totals.insertRow(rowTotals);
+        row1.id = "row" + vm_num;
+        var cell = row1.insertCell(0);
+        cell.setAttribute("colspan", "1");
+        // cell.setAttribute("width", "654");
+        cell.setAttribute("style", "text-align: right; font-weight: bold");
+        var monthly = document.createTextNode("Monthly Total: ")
+        cell.appendChild(monthly);
+        cell = row1.insertCell(1);
+        var subtotal = document.createElement("input");
+        subtotal.setAttribute("type", "text");
+        cell.appendChild(subtotal);
+        cell.setAttribute("colspan", "1");
+        subtotal.id = "sub-total";
+        subtotal.setAttribute("name", subtotal.id);
+        subtotal.setAttribute("size", 20);
+        document.getElementById(subtotal.id).setAttribute("readonly", "readonly");
 
-    row1 = totals.insertRow(rowTotals);
-    row1.id = "row" + vm_num;
-    var cell = row1.insertCell(0);
-    cell.setAttribute("colspan", "1");
-    // cell.setAttribute("width", "654");
-    cell.setAttribute("style", "text-align: right; font-weight: bold");
-    var monthly = document.createTextNode("Monthly Total: ")
-    cell.appendChild(monthly);
-    cell = row1.insertCell(1);
-    var subtotal = document.createElement("input");
-    subtotal.setAttribute("type", "text");
-    cell.appendChild(subtotal);
-    cell.setAttribute("colspan", "1");
-    subtotal.id = "sub-total";
-    subtotal.setAttribute("name", subtotal.id);
-    subtotal.setAttribute("size", 20);
-    document.getElementById(subtotal.id).setAttribute("readonly", "readonly");
-
-    row = totals.insertRow(++rowTotals);
-    cell = row.insertCell(0);
-    cell.setAttribute("colspan", "1");
-    // cell.setAttribute("width", "654");   
-    cell.setAttribute("style", "text-align: right; font-weight: bold");
-    var onetime = document.createTextNode("One-time Fees: ")
-    cell.appendChild(onetime);
-    cell = row.insertCell(1);
-    var fees = document.createElement("input");
-    fees.setAttribute("type", "text");
-    cell.appendChild(fees);
-    cell.setAttribute("colspan", "1");
-    fees.id = "onetime-total";
-    fees.setAttribute("name", fees.id);
-    fees.setAttribute("size", 20);
-    document.getElementById(fees.id).setAttribute("readonly", "readonly");
+        row = totals.insertRow(++rowTotals);
+        cell = row.insertCell(0);
+        cell.setAttribute("colspan", "1");
+        // cell.setAttribute("width", "654");   
+        cell.setAttribute("style", "text-align: right; font-weight: bold");
+        var onetime = document.createTextNode("One-time Fees: ")
+        cell.appendChild(onetime);
+        cell = row.insertCell(1);
+        var fees = document.createElement("input");
+        fees.setAttribute("type", "text");
+        cell.appendChild(fees);
+        cell.setAttribute("colspan", "1");
+        fees.id = "onetime-total";
+        fees.setAttribute("name", fees.id);
+        fees.setAttribute("size", 20);
+        document.getElementById(fees.id).setAttribute("readonly", "readonly");
+    }
 
 
     rowCount = table.rows.length; // current number of rows in table
@@ -238,16 +244,11 @@ function addProduct(id)
     if (rowCount - 1 === 0) {
         table.removeAttribute("hidden");
         // totals.removeAttribute("hidden");
-    }
+    }    
 
-    // if (document.getElementById("vm-sub-total-row")) {
-    //     document.getElementById("vm-sub-total-row").setAttribute("style", "display:none;");
+    // if (numProducts++ === 0) {
+    //     document.getElementById('totals').removeAttribute("hidden");
     // }
-    
-
-    if (numProducts++ === 0) {
-        document.getElementById('totals').removeAttribute("hidden");
-    }
     
     /* ALL OF THIS IS FOR VM'S!!! */
     if (id == 'ST_VM' || id == 'HS_VM') {
@@ -3515,7 +3516,7 @@ function removeProduct(rowNum, deleteNum, category)
         case 'ST_VM':
         case 'HS_VM':
             var table = document.getElementById('vm-table');
-            var totals = "vm-table-totals";
+            var totals = "vm-table";
             var theclass = "vm-sub";
             break;
         case 'CL_STR':
