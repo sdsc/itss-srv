@@ -32,17 +32,17 @@ $(document).ready(function() {
     document.getElementById('vm-table').setAttribute("hidden", "hidden");
     // document.getElementById('vm-table-totals').setAttribute("hidden", "hidden");
     document.getElementById('pa-table').setAttribute("hidden", "hidden");
-    document.getElementById('pa-table-totals').setAttribute("hidden", "hidden");
+    // document.getElementById('pa-table-totals').setAttribute("hidden", "hidden");
     document.getElementById('str-table').setAttribute("hidden", "hidden");
-    document.getElementById('str-table-totals').setAttribute("hidden", "hidden");
+    // document.getElementById('str-table-totals').setAttribute("hidden", "hidden");
     document.getElementById('backup-table').setAttribute("hidden", "hidden");
-    document.getElementById('backup-table-totals').setAttribute("hidden", "hidden");
+    // document.getElementById('backup-table-totals').setAttribute("hidden", "hidden");
     document.getElementById('consult-table').setAttribute("hidden", "hidden");
-    document.getElementById('consult-table-totals').setAttribute("hidden", "hidden");
+    // document.getElementById('consult-table-totals').setAttribute("hidden", "hidden");
     document.getElementById('sp-table').setAttribute("hidden", "hidden");
-    document.getElementById('sp-table-totals').setAttribute("hidden", "hidden");
+    // document.getElementById('sp-table-totals').setAttribute("hidden", "hidden");
     document.getElementById('cl-compute-table').setAttribute("hidden", "hidden");
-    document.getElementById('cl-compute-table-totals').setAttribute("hidden", "hidden");
+    // document.getElementById('cl-compute-table-totals').setAttribute("hidden", "hidden");
     document.getElementById('totals').setAttribute("hidden", "hidden");
     
 });
@@ -69,10 +69,10 @@ function validateForm() {
         child.setAttribute("colspan", "4");
         
         var child = document.getElementById('str-table');
-        var child2 = document.getElementById('str-table-totals');
+        // var child2 = document.getElementById('str-table-totals');
         if (child.rows.length - 1 === 0) {
             child.parentNode.removeChild(child);
-            child2.parentNode.removeChild(child2);
+            // child2.parentNode.removeChild(child2);
         }
         child.setAttribute("colspan", "4");
         
@@ -80,39 +80,39 @@ function validateForm() {
         var child2 = document.getElementById('pa-table-totals');
         if (child.rows.length - 1 === 0) {
             child.parentNode.removeChild(child);
-            child2.parentNode.removeChild(child2);
+            // child2.parentNode.removeChild(child2);
         }
         child.setAttribute("colspan", "4");
         
         var child = document.getElementById('backup-table');
-        var child2 = document.getElementById('backup-table-totals');
+        // var child2 = document.getElementById('backup-table-totals');
         if (child.rows.length - 1 === 0) {
             child.parentNode.removeChild(child);
-            child2.parentNode.removeChild(child2);
+            // child2.parentNode.removeChild(child2);
         }
         child.setAttribute("colspan", "4");
         
         var child = document.getElementById('consult-table');
-        var child2 = document.getElementById('consult-table-totals');
+        // var child2 = document.getElementById('consult-table-totals');
         if (child.rows.length - 1 === 0) {
             child.parentNode.removeChild(child);
-            child2.parentNode.removeChild(child2);
+            // child2.parentNode.removeChild(child2);
         }
         child.setAttribute("colspan", "4");
         
         var child = document.getElementById('sp-table');
-        var child2 = document.getElementById('sp-table-totals');
+        // var child2 = document.getElementById('sp-table-totals');
         if (child.rows.length - 1 === 0) {
             child.parentNode.removeChild(child);
-            child2.parentNode.removeChild(child2);
+            // child2.parentNode.removeChild(child2);
         }
         child.setAttribute("colspan", "4");
         
         var child = document.getElementById('cl-compute-table');
-        var child2 = document.getElementById('cl-compute-table-totals');
+        // var child2 = document.getElementById('cl-compute-table-totals');
         if (child.rows.length - 1 === 0) {
             child.parentNode.removeChild(child);
-            child2.parentNode.removeChild(child2);
+            // child2.parentNode.removeChild(child2);
         }
         child.setAttribute("colspan", "4");
         

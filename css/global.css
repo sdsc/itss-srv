@@ -136,6 +136,7 @@ input[readonly]
 
 .total-table {
     width:900px;
+    /*margin-top: 10px;*/
 }
 
 #vm-table tr:first-child > td, #str-table tr:first-child > td, #backup-table tr:first-child > td, #consult-table tr:first-child > td, #sp-table tr:first-child > td, #pa-table tr:first-child > td, #cl-compute-table tr:first-child > td

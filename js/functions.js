@@ -90,13 +90,17 @@ var PRICE_DIFFERENTIAL_INCREMENTAL_EXT = 50.9965; //per TB
 var PRICE_DESKTOP_SERVICES_UC = 80.00; //per hour
 var PRICE_SYSTEMS_SERVICES_UC = 96.00; //per hour
 var PRICE_STORAGE_SERVICES_UC = 98.83; //per hour
-var PRICE_RECURRING_CONSULTING_SERVICES_UC = 96.00; //per hour
+var PRICE_RECUR_DESKTOP_UC = 80.00; //per hour
+var PRICE_RECUR_SYSTEMS_UC = 96.00; //per hour
+var PRICE_RECUR_STORAGE_UC = 98.83; //per hour
 
 // PRICES FOR CONSULTING EXT
 var PRICE_DESKTOP_SERVICES_EXT = 116.00; //per hour
 var PRICE_SYSTEMS_SERVICES_EXT = 139.20; //per hour
 var PRICE_STORAGE_SERVICES_EXT = 143.3035; //per hour
-var PRICE_RECURRING_CONSULTING_SERVICES_EXT = 139.20; //per hour
+var PRICE_RECUR_DESKTOP_EXT = 116.00; //per hour
+var PRICE_RECUR_SYSTEMS_EXT = 139.20; //per hour
+var PRICE_RECUR_STORAGE_EXT = 143.3035; //per hour
 
 // PRICES FOR SHAREPOINT UC
 var PRICE_SHAREPOINT_SITES_UC = 333.33; //per month
@@ -153,44 +157,40 @@ var option;
  */
 function addProduct(id)
 {
-    item_num = 0; //reset item_num after adding a new product
-    // numProducts++;
+    item_num = 0; //reset item_num, specific index referring to "Items" under "Specifications"
     // switch statement necessary to determine which table to add the product to
     switch (id) {
         case 'ST_VM':
         case 'HS_VM':
             var table = document.getElementById('vm-table');
-            // var totals = document.getElementById('vm-table-totals');
+            // var order = 1; //keep track of ordering in the totals table
             break;
         case 'CL_STR':
         case 'PR_STR':
         case 'PR_CON':
             var table = document.getElementById('str-table');
-            var totals = document.getElementById('str-table-totals');
+            // var totals = document.getElementById('str-table-totals');
             break;
         case 'DESK':
         case 'SYSTEMS':
         case 'STORAGE':
-        case 'RECUR':
+        case 'RECUR_DESK':
+        case 'RECUR_SYSTEMS':
+        case 'RECUR_STORAGE':
             var table = document.getElementById('consult-table');
-            var totals = document.getElementById('consult-table-totals');
             break;
         case 'SITE':
         case 'SUPPORT':
             var table = document.getElementById('sp-table');
-            var totals = document.getElementById('sp-table-totals');
             break;
         case 'SYS_MAN':
             var table = document.getElementById('pa-table');
-            var totals = document.getElementById('pa-table-totals');
             break;
         case 'RAW':
             var table = document.getElementById('backup-table');
-            var totals = document.getElementById('backup-table-totals');
             break;
         case 'CL_COMPUTE':
             var table = document.getElementById('cl-compute-table');
-            var totals = document.getElementById('cl-compute-table-totals');
             break;
     }
 
@@ -201,18 +201,22 @@ function addProduct(id)
     rowTotals = totals.rows.length;
     //insert totals table
     if (numProducts === 1) {
+        // row1 = totals.insertRow(rowTotals);
+        // var cell = row1.insertCell(0);
+        // cell.setAttribute("colspan", "5");
         row1 = totals.insertRow(rowTotals);
         row1.id = "row" + vm_num;
         var cell = row1.insertCell(0);
         cell.setAttribute("colspan", "1");
         // cell.setAttribute("width", "654");
-        cell.setAttribute("style", "text-align: right; font-weight: bold");
-        var monthly = document.createTextNode("Monthly Total: ")
+        cell.setAttribute("style", "text-align: right; font-weight: bold; padding-left: 340px");
+        var monthly = document.createTextNode("\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0Monthly Total:")
         cell.appendChild(monthly);
         cell = row1.insertCell(1);
         var subtotal = document.createElement("input");
         subtotal.setAttribute("type", "text");
         cell.appendChild(subtotal);
+        cell.setAttribute("style", "font-weight: bold");
         cell.setAttribute("colspan", "1");
         subtotal.id = "sub-total";
         subtotal.setAttribute("name", subtotal.id);
@@ -224,12 +228,13 @@ function addProduct(id)
         cell.setAttribute("colspan", "1");
         // cell.setAttribute("width", "654");   
         cell.setAttribute("style", "text-align: right; font-weight: bold");
-        var onetime = document.createTextNode("One-time Fees: ")
+        var onetime = document.createTextNode("\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0One-time Fees:")
         cell.appendChild(onetime);
         cell = row.insertCell(1);
         var fees = document.createElement("input");
         fees.setAttribute("type", "text");
         cell.appendChild(fees);
+        cell.setAttribute("style", "font-weight: bold");
         cell.setAttribute("colspan", "1");
         fees.id = "onetime-total";
         fees.setAttribute("name", fees.id);
@@ -724,7 +729,7 @@ function addProduct(id)
         var extra_sub = document.createElement("input");
         extra_sub.setAttribute("type", "text");
         cell.appendChild(extra_sub);
-            cell.setAttribute("class", "pad-bottom");
+            // cell.setAttribute("class", "pad-bottom");
         
         cell.setAttribute("colspan", "1");
         extra_sub.id = "extra-sub-out" + vm_num;
@@ -766,14 +771,14 @@ function addProduct(id)
 
         var row8 = table.insertRow(++rowCount);
         var cell = row8.insertCell(0);
-        cell.setAttribute("colspan", "3");
+        cell.setAttribute("colspan", "1");
         // cell.setAttribute("style", "border-bottom: 1px solid #d3d3d3;");
         var cell = row8.insertCell(1);
         var subtext = document.createTextNode("Subtotal:\u00a0\u00a0");
         cell.appendChild(subtext);
-        cell.setAttribute("colspan", "1");
+        cell.setAttribute("colspan", "3");
         cell.className += " ";
-        cell.setAttribute("style", "text-align: right;");
+        cell.setAttribute("style", "text-align: left;");
 
 
         var cell = row8.insertCell(2);
@@ -787,33 +792,32 @@ function addProduct(id)
         vmsubtotal.id = "vm-sub" + vm_num + "-total"
         vmsubtotal.setAttribute("name", vmsubtotal.id);
 
+        //remove duplicate of sub total row when there are two VM's
         if (document.getElementById("vm-sub-total-row") != null) {
             var elem  = document.getElementById("vm-sub-total-row");
             elem.parentNode.removeChild(elem);
             --rowTotals;
         }
 
-            row1 = totals.insertRow(0);
-            row1.id = "vm-sub-total-row";
-            var cell = row1.insertCell(0);
-            cell.setAttribute("colspan", "1");
-            var name = document.createTextNode("VM Services Total:");
-            cell.setAttribute("style", "font-weight: bold; text-align: right;")
-            cell.appendChild(name);
-            var cell = row1.insertCell(1);
-            cell.setAttribute("colspan", "1");
-            var subtotal = document.createElement("input");
-            subtotal.setAttribute("style", "font-weight: bold")
-            subtotal.setAttribute("type", "text");
-            subtotal.setAttribute("size", 20);
-            subtotal.id = "vm-sub-total";
-            subtotal.className = "sub";
-            subtotal.name = "vm-sub-total";
-            subtotal.setAttribute("readonly", "readonly");
-            cell.appendChild(subtotal);
+        //create VM Services Total at the top of totals table
 
-
-
+        row1 = totals.insertRow(0);
+        row1.id = "vm-sub-total-row";
+        var cell = row1.insertCell(0);
+        cell.setAttribute("colspan", "1");
+        var name = document.createTextNode("\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0VM Services Total:");
+        cell.setAttribute("style", "text-align: right;")
+        cell.appendChild(name);
+        var cell = row1.insertCell(1);
+        cell.setAttribute("colspan", "1");
+        var subtotal = document.createElement("input");
+        subtotal.setAttribute("type", "text");
+        subtotal.setAttribute("size", 20);
+        subtotal.id = "vm-sub-total";
+        subtotal.className = "sub";
+        subtotal.name = "vm-sub-total";
+        subtotal.setAttribute("readonly", "readonly");
+        cell.appendChild(subtotal);
         document.getElementById(vmsubtotal.id).setAttribute("readonly", "readonly");
         document.getElementById(vmsubtotal.id).setAttribute("value", "$" + price_vm[0]);
         sub('vm-sub');
@@ -833,6 +837,7 @@ function addProduct(id)
         row1 = table.insertRow(rowCount);
         row1.id = "row" + vm_num;
         var cell = row1.insertCell(0);
+        cell.setAttribute("width", "20");
         var remove = document.createElement("button");
         var remove_text = document.createTextNode("-");
         remove.appendChild(remove_text);
@@ -846,6 +851,7 @@ function addProduct(id)
         var cell = row1.insertCell(1);
         var name = document.createTextNode("Cloud Storage");                      
         cell.appendChild(name);
+        cell.setAttribute("width", "220");
         cell.setAttribute("colspan", "1");
         cell.className = "service-title";
         
@@ -992,14 +998,14 @@ function addProduct(id)
         row = table.insertRow(++rowCount);
         cell = row.insertCell(0);
         cell.setAttribute("colspan", "1");
-        cell.setAttribute("style", "border-bottom: black 1px solid");
+        cell.setAttribute("style", "border-bottom: #d3d3d3 1px solid");
         
         cell = row.insertCell(1);
         cell.appendChild(document.createTextNode("\u00a0\u00a0\u00a0\u00a0Storage"));
-        cell.setAttribute("style", "border-bottom: black 1px solid");        
+        cell.setAttribute("style", "border-bottom: #d3d3d3 1px solid");        
         
         cell = row.insertCell(2);
-        cell.setAttribute("style", "border-bottom: black 1px solid");
+        cell.setAttribute("style", "border-bottom: #d3d3d3 1px solid");
         var cl_str_price = document.createTextNode("$" + cl_str_price_val + "/TB");
         cell.id = vm_type_price + vm_num + (++item_num);
         cell.setAttribute("value",cl_str_price_val);
@@ -1007,7 +1013,7 @@ function addProduct(id)
         cell.appendChild(cl_str_price);
         
         var cell = row.insertCell(3);
-        cell.setAttribute("style", "border-bottom: black 1px solid");
+        cell.setAttribute("style", "border-bottom: #d3d3d3 1px solid");
         var cl_str_qty = document.createElement("input");
         cl_str_qty.setAttribute("type", "text");
         cl_str_qty_in = vm_type_qty + vm_num + item_num;
@@ -1045,18 +1051,46 @@ function addProduct(id)
         cell.appendChild(cl_units);
 
         var cell = row.insertCell(4);
-        cell.setAttribute("style", "border-bottom: black 1px solid");
+        cell.setAttribute("style", "border-bottom: #d3d3d3 1px solid");
         var cl_str_sub = document.createElement("input");
         cl_str_sub.setAttribute("type", "text");
         cell.appendChild(cl_str_sub);
         cell.setAttribute("colspan", "1");
         cl_str_sub.id = cl_str_sub_out;
         document.getElementById(cl_str_sub_out).setAttribute("readonly", "readonly");
-        cl_str_sub.className = "str-sub" + item_num;
+        cl_str_sub.className = "str-sub";
         cl_str_sub.setAttribute("name", cl_str_sub.id);
         cl_str_sub.setAttribute("size", 20);
     
-        sub('vm-sub');
+        //remove duplicate of sub total row when there are multiple storage items
+        if (document.getElementById("str-sub-total-row") != null) {
+            var elem  = document.getElementById("str-sub-total-row");
+            elem.parentNode.removeChild(elem);
+            --rowTotals;
+        }
+
+        //create Storage Total at the top of totals table
+        row1 = totals.insertRow(0);
+        row1.id = "str-sub-total-row";
+        var cell = row1.insertCell(0);
+        cell.setAttribute("colspan", "1");
+        var name = document.createTextNode("\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0Storage Total:");
+        cell.setAttribute("style", "text-align: right;")
+        cell.appendChild(name);
+        var cell = row1.insertCell(1);
+        cell.setAttribute("colspan", "1");
+        var subtotal = document.createElement("input");
+        subtotal.setAttribute("type", "text");
+        subtotal.setAttribute("size", 20);
+        subtotal.id = "str-sub-total";
+        subtotal.className = "sub";
+        subtotal.name = "str-sub-total";
+        subtotal.setAttribute("readonly", "readonly");
+        
+        cell.appendChild(subtotal);
+
+        sub('str-sub');
+        sub('sub');
     } /* END CLOUD STORAGE CODE */
     
     /* BEGIN PROJECT STORAGE AND PROJECT CONDO CODE */
@@ -1079,6 +1113,7 @@ function addProduct(id)
         row1 = table.insertRow(rowCount);
         row1.id = "row" + vm_num;
         var cell = row1.insertCell(0);
+        cell.setAttribute("width", "20");
         var remove = document.createElement("button");
         var remove_text = document.createTextNode("-");
         remove.appendChild(remove_text);
@@ -1091,6 +1126,7 @@ function addProduct(id)
         remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), this.getAttribute('numRows'), 'CL_STR')");
         
         var cell = row1.insertCell(1);
+        cell.setAttribute("width", "220");
         var name = document.createTextNode(prod_name);                      
         cell.appendChild(name);
         cell.className = "service-title";
@@ -1173,23 +1209,23 @@ function addProduct(id)
         var row = table.insertRow(++rowCount);
         cell = row.insertCell(0);
         cell.setAttribute("colspan", "1");
-        cell.setAttribute("style", "border-bottom: 1px solid black");
+        cell.setAttribute("style", "border-bottom: 1px solid #d3d3d3");
         
         cell = row.insertCell(1);
         cell.appendChild(document.createTextNode("Storage"));
         cell.setAttribute("colspan", "1");
-        cell.setAttribute("style", "border-bottom: 1px solid black");
+        cell.setAttribute("style", "border-bottom: 1px solid #d3d3d3");
         
         var cell = row.insertCell(2);
         var cl_str_price = document.createTextNode(cl_str_price_string);
         cell.appendChild(cl_str_price);
         cell.setAttribute("colspan", "1");
-        cell.setAttribute("style", "border-bottom: 1px solid black");
+        cell.setAttribute("style", "border-bottom: 1px solid #d3d3d3");
         cell.id = vm_type_price + vm_num + (++item_num);
         cell.value = cl_str_price_val;
         
         var cell = row.insertCell(3);
-        cell.setAttribute("style", "border-bottom: 1px solid black");
+        cell.setAttribute("style", "border-bottom: 1px solid #d3d3d3");
         var cl_str_qty = document.createElement("input");
         cl_str_qty.setAttribute("type", "text");
         cl_str_qty_in = vm_type_qty + vm_num + item_num;
@@ -1235,7 +1271,7 @@ function addProduct(id)
         }
 
         var cell = row.insertCell(4);
-        cell.setAttribute("style", "border-bottom: 1px solid black");
+        cell.setAttribute("style", "border-bottom: 1px solid #d3d3d3");
         var cl_str_sub = document.createElement("input");
         cl_str_sub.setAttribute("type", "text");
         cell.appendChild(cl_str_sub);
@@ -1245,13 +1281,41 @@ function addProduct(id)
         cl_str_sub.setAttribute("size", 20);
         document.getElementById(cl_str_sub_out).setAttribute("readonly", "readonly");
         cl_str_sub.className = "str-sub";
+
+        //remove duplicate of sub total row when there are multiple storage items
+        if (document.getElementById("str-sub-total-row") != null) {
+            var elem  = document.getElementById("str-sub-total-row");
+            elem.parentNode.removeChild(elem);
+            --rowTotals;
+        }
+
+        //create Storage Total at the top of totals table
+        row1 = totals.insertRow(0);
+        row1.id = "str-sub-total-row";
+        var cell = row1.insertCell(0);
+        cell.setAttribute("colspan", "1");
+        var name = document.createTextNode("\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0Storage Total:");
+        cell.setAttribute("style", "text-align: right;")
+        cell.appendChild(name);
+        var cell = row1.insertCell(1);
+        cell.setAttribute("colspan", "1");
+        var subtotal = document.createElement("input");
+        subtotal.setAttribute("type", "text");
+        subtotal.setAttribute("size", 20);
+        subtotal.id = "str-sub-total";
+        subtotal.className = "sub";
+        subtotal.name = "str-sub-total";
+        subtotal.setAttribute("readonly", "readonly");
+        
+        cell.appendChild(subtotal);
+
         sub('str-sub');
         sub('sub');
         
     } /* END PROJECT STORAGE AND PROJECT CONDO CODE */
     
     /* BEGIN CONSULTING SERVICES */
-    else if (id == 'DESK' || id == 'SYSTEMS' || id == 'STORAGE' || id == 'RECUR') {
+    else if (id == 'DESK' || id == 'SYSTEMS' || id == 'STORAGE' || id == 'RECUR_DESK' || id == 'RECUR_SYSTEMS' || id == 'RECUR_STORAGE') {
         ++vm_num;
         vm_type_sub = "consult-sub"; //for sub id
         vm_type_price = "consult-price"; //for each price id
@@ -1271,9 +1335,17 @@ function addProduct(id)
             consult_price_val = PRICE_STORAGE_SERVICES_UC;
             prod_name = "Consulting Services - Storage";
             numRowsRemove = ROWS_STORAGE_SERVICES;
-        } else if (id == 'RECUR') {
-            consult_price_val = PRICE_RECURRING_CONSULTING_SERVICES_UC;
+        } else if (id == 'RECUR_DESK') {
+            consult_price_val = PRICE_RECUR_DESKTOP_UC;
+            prod_name = "Recurring Consulting Services - Desktop";
+            numRowsRemove = ROWS_RECURRING_CONSULTING_SERVICES;
+        } else if (id == 'RECUR_SYSTEMS') {
+            consult_price_val = PRICE_RECUR_SYSTEMS_UC;
             prod_name = "Recurring Consulting Services - Systems";
+            numRowsRemove = ROWS_RECURRING_CONSULTING_SERVICES;
+        } else if (id == 'RECUR_STORAGE') {
+            consult_price_val = PRICE_RECUR_STORAGE_UC;
+            prod_name = "Recurring Consulting Services - Storage";
             numRowsRemove = ROWS_RECURRING_CONSULTING_SERVICES;
         }
         
@@ -1284,6 +1356,7 @@ function addProduct(id)
         var remove_text = document.createTextNode("-");
         remove.appendChild(remove_text);
         cell.appendChild(remove);
+        cell.setAttribute("width", "20");
         remove.className = "remove-button";
         remove.setAttribute("value", "-");
         remove.setAttribute("rownumber", "row" + vm_num);
@@ -1292,6 +1365,7 @@ function addProduct(id)
         remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), this.getAttribute('numRows'), 'DESK')");
         
         var cell = row1.insertCell(1);
+        cell.setAttribute("width", "220");
         var name = document.createTextNode(prod_name);  
         cell.appendChild(name);
         cell.setAttribute("colspan", "1");
@@ -1372,11 +1446,11 @@ function addProduct(id)
         var row = table.insertRow(++rowCount);
         cell = row.insertCell(0);
         cell.setAttribute("colspan", "1");
-        cell.setAttribute("style", "border-bottom: 1px black solid");
+        cell.setAttribute("style", "border-bottom: 1px #d3d3d3 solid");
         
         cell = row.insertCell(1);
         cell.appendChild(document.createTextNode(prod_name));
-        cell.setAttribute("style", "border-bottom: 1px black solid");
+        cell.setAttribute("style", "border-bottom: 1px #d3d3d3 solid");
         
         var cell = row.insertCell(2);
         var consult_price = document.createTextNode("$" + consult_price_val + "/hr");
@@ -1384,7 +1458,7 @@ function addProduct(id)
         cell.id = vm_type_price + vm_num + (++item_num);
         cell.appendChild(consult_price);
         cell.setAttribute("colspan", "1");
-        cell.setAttribute("style", "border-bottom: 1px black solid");
+        cell.setAttribute("style", "border-bottom: 1px #d3d3d3 solid");
         
         var cell = row.insertCell(3);
         var consult_qty = document.createElement("input");
@@ -1399,34 +1473,68 @@ function addProduct(id)
         consult_qty.setAttribute("num", vm_num);
         consult_qty.setAttribute("consult-price", consult_price_val);
         consult_qty.setAttribute("name", consult_qty.id);
-        if (id == 'RECUR') {
+        if (id == 'RECUR_DESK' || id == 'RECUR_SYSTEMS' || id == "RECUR_STORAGE") {
             consult_qty.setAttribute("title", "Number of hours in multiples of tenths (monthly consulting fee)");
+            consult_qty.setAttribute("onchange", "getEstimate('recur', this.id, this.getAttribute('consult-price'), this.getAttribute('dest'), this.getAttribute('num'), 'DESK')");
         } else {
             consult_qty.setAttribute("title", "Number of hours in multiples of tenths (One-time consulting fee)");
+            consult_qty.setAttribute("onchange", "getEstimate('consult', this.id, this.getAttribute('consult-price'), this.getAttribute('dest'), this.getAttribute('num'), 'DESK')");
         }
-        cell.setAttribute("style", "border-bottom: 1px black solid");
+        cell.setAttribute("style", "border-bottom: 1px #d3d3d3 solid");
         consult_qty.setAttribute("size", 5);
-        consult_qty.setAttribute("onchange", "getEstimate('consult', this.id, this.getAttribute('consult-price'), this.getAttribute('dest'), this.getAttribute('num'), 'DESK')");
         cell.appendChild(document.createTextNode("\u00a0\u00a0hr(s)"));
         var cell = row.insertCell(4);
         var consult_sub = document.createElement("input");
-        cell.setAttribute("style", "border-bottom: 1px black solid");
+        cell.setAttribute("style", "border-bottom: 1px #d3d3d3 solid");
         consult_sub.setAttribute("type", "text");
         cell.appendChild(consult_sub);
         cell.setAttribute("colspan", "1");
         consult_sub.id = consult_sub_out;
         document.getElementById(consult_sub_out).setAttribute("readonly", "readonly");
-        if (id == 'RECUR') {
+        if (id == 'RECUR_DESK' || id == 'RECUR_SYSTEMS' || id == "RECUR_STORAGE") {
             consult_sub.className = "consult-sub sub vm-sub" + vm_num;
         } else {
-            consult_sub.className = "consult-sub onetime vm-sub" + vm_num;
+            consult_sub.className = " onetime vm-sub" + vm_num;
         }
         
         consult_sub.setAttribute("name", consult_sub.id);
         consult_sub.setAttribute("size", 20);
+
+        //remove duplicate of sub total row when there are multiple storage items
+        if (document.getElementById("consult-sub-total-row") != null) {
+            var elem  = document.getElementById("consult-sub-total-row");
+            elem.parentNode.removeChild(elem);
+            --rowTotals;
+        }
+
+        //create Storage Total at the top of totals table
+        row1 = totals.insertRow(0);
+        row1.id = "consult-sub-total-row";
+        var cell = row1.insertCell(0);
+        cell.setAttribute("colspan", "1");
+        var name = document.createTextNode("\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0Consulting Total:");
+        cell.setAttribute("style", "text-align: right;")
+        cell.appendChild(name);
+        var cell = row1.insertCell(1);
+        cell.setAttribute("colspan", "1");
+        var subtotal = document.createElement("input");
+        subtotal.setAttribute("type", "text");
+        subtotal.setAttribute("size", 20);
+        subtotal.id = "consult-sub-total";
+        if (id != 'RECUR_DESK' && id != 'RECUR_SYSTEMS' && id != "RECUR_STORAGE") {
+            subtotal.className = "sub";
+        }
+        subtotal.name = "consult-sub-total";
+        subtotal.setAttribute("readonly", "readonly");
+        
+        cell.appendChild(subtotal);
+
+        if (id == 'RECUR_DESK' || id == 'RECUR_SYSTEMS' || id == "RECUR_STORAGE") {
+            sub('sub');
+        }
         sub('consult-sub');
-        sub('sub');
-            
+
+
     } /* END CONSULTING SERVICES */
     
     /* BEGIN SHAREPOINT SERVICES */
@@ -1443,6 +1551,7 @@ function addProduct(id)
         row1 = table.insertRow(rowCount);
         row1.id = "row" + vm_num;
         var cell = row1.insertCell(0);
+        cell.setAttribute("width", "20");
         var remove = document.createElement("button");
         var remove_text = document.createTextNode("-");
         remove.appendChild(remove_text);
@@ -1455,6 +1564,7 @@ function addProduct(id)
         remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), this.getAttribute('numRows'), 'SUPPORT')");
         
         var cell = row1.insertCell(1);
+        cell.setAttribute("width", "220");
         var name = document.createTextNode(prod_name);
         cell.appendChild(name);
         cell.setAttribute("colspan", "1");
@@ -1679,18 +1789,18 @@ function addProduct(id)
         var row4 = table.insertRow(++rowCount);
         
         var cell = row4.insertCell(0);
-        cell.setAttribute("style", "border-bottom: 1px solid black;");
+        cell.setAttribute("style", "border-bottom: 1px solid #d3d3d3;");
         cell.setAttribute("colspan", "1");
         
         var cell = row4.insertCell(1);
-        cell.setAttribute("style", "border-bottom: 1px solid black; font-weight: bold;");
+        cell.setAttribute("style", "border-bottom: 1px solid #d3d3d3; font-weight: bold;");
         var subtext = document.createTextNode("Subtotal:");
         cell.appendChild(subtext);
         cell.setAttribute("colspan", "3");
         cell.className += " pad-bottom";
             
         var cell = row4.insertCell(2);
-        cell.setAttribute("style", "border-bottom: 1px solid black;");
+        cell.setAttribute("style", "border-bottom: 1px solid #d3d3d3;");
         var spsubtotal = document.createElement("input");
         spsubtotal.setAttribute("type", "text");
         cell.appendChild(spsubtotal);
@@ -1700,8 +1810,27 @@ function addProduct(id)
         spsubtotal.setAttribute("name", spsubtotal.id);
         spsubtotal.setAttribute("size", 20);
         document.getElementById(spsubtotal.id).setAttribute("readonly", "readonly");
+
+        //create sharepoint total at the top of totals table
+        row1 = totals.insertRow(0);
+        row1.id = "sp-sub-total-row";
+        var cell = row1.insertCell(0);
+        cell.setAttribute("colspan", "1");
+        var name = document.createTextNode("\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0Sharpoint Total:");
+        cell.setAttribute("style", "text-align: right;")
+        cell.appendChild(name);
+        var cell = row1.insertCell(1);
+        cell.setAttribute("colspan", "1");
+        var subtotal = document.createElement("input");
+        subtotal.setAttribute("type", "text");
+        subtotal.setAttribute("size", 20);
+        subtotal.id = "sp-sub-total";
+        // subtotal.className = "sub";
+        subtotal.name = "sp-sub-total";
+        subtotal.setAttribute("readonly", "readonly");
+        cell.appendChild(subtotal);
         
-        sub('vm-sub');
+        sub('sp-sub');
         sub('sub');
     } /* END SHAREPOINT SERVICES */
     
@@ -1715,6 +1844,7 @@ function addProduct(id)
         var remove_text = document.createTextNode("-");
         remove.appendChild(remove_text);
         cell.appendChild(remove);
+        cell.setAttribute("width", "20");
         remove.className = "remove-button";
         remove.setAttribute("value", "-");
         remove.setAttribute("rownumber", "row" + vm_num);
@@ -1723,6 +1853,7 @@ function addProduct(id)
         remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), this.getAttribute('numRows'), 'SYS_MAN')");
         
         var cell = row1.insertCell(1);
+        cell.setAttribute("width", "220");
         var name = document.createTextNode("System Management");                      
         cell.appendChild(name);
         cell.setAttribute("colspan", "1");
@@ -2186,18 +2317,18 @@ function addProduct(id)
         var row9 = table.insertRow(++rowCount);
 
         var cell = row9.insertCell(0);
-        cell.setAttribute("style", "border-bottom: 1px solid black;");
+        cell.setAttribute("style", "border-bottom: 1px solid #d3d3d3;");
         cell.setAttribute("colspan", "1");
         
         var cell = row9.insertCell(1);
-        cell.setAttribute("style", "border-bottom: 1px solid black; font-weight: bold;");
+        cell.setAttribute("style", "border-bottom: 1px solid #d3d3d3; font-weight: bold;");
         var subtext = document.createTextNode("Subtotal:");
         cell.appendChild(subtext);
         cell.setAttribute("colspan", "3");
         cell.className += " pad-bottom";
 
         var cell = row9.insertCell(2);
-        cell.setAttribute("style", "border-bottom: 1px solid black;");
+        cell.setAttribute("style", "border-bottom: 1px solid #d3d3d3;");
         var vmsubtotal = document.createElement("input");
         vmsubtotal.setAttribute("type", "text");
         cell.appendChild(vmsubtotal);
@@ -2207,6 +2338,26 @@ function addProduct(id)
         vmsubtotal.setAttribute("name", vmsubtotal.id);
         vmsubtotal.setAttribute("size", 20);
         document.getElementById(vmsubtotal.id).setAttribute("readonly", "readonly");
+
+        //create sys man  at the top of totals table
+        row1 = totals.insertRow(0);
+        row1.id = "pa-sub-total-row";
+        var cell = row1.insertCell(0);
+        cell.setAttribute("colspan", "1");
+        var name = document.createTextNode("\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0Physical Administration Total:");
+        cell.setAttribute("style", "text-align: right;")
+        cell.appendChild(name);
+        var cell = row1.insertCell(1);
+        cell.setAttribute("colspan", "1");
+        var subtotal = document.createElement("input");
+        subtotal.setAttribute("type", "text");
+        subtotal.setAttribute("size", 20);
+        subtotal.id = "pa-sub-total";
+        subtotal.className = "sub";
+        subtotal.name = "pa-sub-total";
+        subtotal.setAttribute("readonly", "readonly");
+        cell.appendChild(subtotal);
+
         sub('pa-sub');
         sub('sub');
     } /* END SYSTEM MANAGEMENT */
@@ -2224,6 +2375,7 @@ function addProduct(id)
         row1 = table.insertRow(rowCount);
         row1.id = "row" + vm_num;
         var cell = row1.insertCell(0);
+        cell.setAttribute("width", "20");
         var remove = document.createElement("button");
         var remove_text = document.createTextNode("-");
         remove.appendChild(remove_text);
@@ -2236,6 +2388,7 @@ function addProduct(id)
         remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), this.getAttribute('numRows'), 'RAW')");
 
         var cell = row1.insertCell(1);
+        cell.setAttribute("width", "220");
         var name = document.createTextNode("CommVault Backup");                      
         cell.appendChild(name);
         cell.setAttribute("colspan", "1");
@@ -2641,18 +2794,18 @@ function addProduct(id)
         
         var row10 = table.insertRow(++rowCount);
         var cell = row10.insertCell(0);
-        cell.setAttribute("style", "border-bottom: 1px solid black;");
+        cell.setAttribute("style", "border-bottom: 1px solid #d3d3d3;");
         cell.setAttribute("colspan", "1");
         
         var cell = row10.insertCell(1);
-        cell.setAttribute("style", "border-bottom: 1px solid black; font-weight: bold;");
+        cell.setAttribute("style", "border-bottom: 1px solid #d3d3d3; font-weight: bold;");
         var subtext = document.createTextNode("Subtotal");
         cell.appendChild(subtext);
         cell.setAttribute("colspan", "3");
         cell.className += " pad-bottom";
 
         var cell = row10.insertCell(2);
-        cell.setAttribute("style", "border-bottom: 1px solid black; font-weight: bold");
+        cell.setAttribute("style", "border-bottom: 1px solid #d3d3d3; font-weight: bold");
         var vmsubtotal = document.createElement("input");
         vmsubtotal.setAttribute("type", "text");
         cell.appendChild(vmsubtotal);
@@ -2663,8 +2816,7 @@ function addProduct(id)
         vmsubtotal.setAttribute("size", 20);
         
         document.getElementById(vmsubtotal.id).setAttribute("readonly", "readonly");
-        sub('backup-sub');
-        sub('sub');
+
         /* DEFAULT VALUES OF STANDARD 3 MONTH RETENTION */
         document.getElementById('monthlybackup-qty' + vm_num).setAttribute("value", "1");
         document.getElementById('monthlybackup-qty' + vm_num).setAttribute("readonly", "readonly");
@@ -2680,6 +2832,27 @@ function addProduct(id)
 
         document.getElementById('durdiffinc-qty' + vm_num).setAttribute("value", "3");
         document.getElementById('durdiffinc-qty' + vm_num).setAttribute("readonly", "readonly");
+
+        //create comm vault at the top of totals table
+        row1 = totals.insertRow(0);
+        row1.id = "backup-sub-total-row";
+        var cell = row1.insertCell(0);
+        cell.setAttribute("colspan", "1");
+        var name = document.createTextNode("\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0Backup Total:");
+        cell.setAttribute("style", "text-align: right;")
+        cell.appendChild(name);
+        var cell = row1.insertCell(1);
+        cell.setAttribute("colspan", "1");
+        var subtotal = document.createElement("input");
+        subtotal.setAttribute("type", "text");
+        subtotal.setAttribute("size", 20);
+        subtotal.id = "backup-sub-total";
+        subtotal.className = "sub";
+        subtotal.name = "backup-sub-total";
+        subtotal.setAttribute("readonly", "readonly");
+        cell.appendChild(subtotal);
+        sub('backup-sub');
+        sub('sub');
         
     } /* END COMMVAULT BACKUP */
     
@@ -2690,6 +2863,7 @@ function addProduct(id)
         row1 = table.insertRow(rowCount);
         row1.id = "row" + vm_num;
         var cell = row1.insertCell(0);
+        cell.setAttribute("width", "20");
         cell.setAttribute("colspan", "1");
         var remove = document.createElement("button");
         var remove_text = document.createTextNode("-");
@@ -2703,6 +2877,7 @@ function addProduct(id)
         remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), this.getAttribute('numRows'), 'CL_COMPUTE')");
 
         var cell = row1.insertCell(1);
+        cell.setAttribute("width", "220");
         var name = document.createTextNode(prod_name);                      
         cell.appendChild(name);
         cell.setAttribute("colspan", "1");
@@ -2799,129 +2974,153 @@ function addProduct(id)
         var item_text = document.createTextNode("Cost");
         cell.appendChild(item_text);
         
-    var flavor = ["m1.medium", "m1.large", "m1.xlarge", "m1.2xlarge", "c1.large", "c1.xlarge", "c1.2xlarge", "r1.large", "r1.xlarge", "r1.2xlarge", "Additional Volume", "Additional Image"];
-    var vcpu = ["1","2","4","8","2","4","8", "2", "4", "8", "0", "0"];
-    var memcount = ["4GB","8GB","16GB","32GB","4GB","8GB","16GB", "16GB", "32GB", "64GB","0", "0"];
-    price = PRICE_CL_COMPUTE_UC;
+        var flavor = ["m1.medium", "m1.large", "m1.xlarge", "m1.2xlarge", "c1.large", "c1.xlarge", "c1.2xlarge", "r1.large", "r1.xlarge", "r1.2xlarge", "Additional Volume", "Additional Image"];
+        var vcpu = ["1","2","4","8","2","4","8", "2", "4", "8", "0", "0"];
+        var memcount = ["4GB","8GB","16GB","32GB","4GB","8GB","16GB", "16GB", "32GB", "64GB","0", "0"];
+        price = PRICE_CL_COMPUTE_UC;
 
-    var flavors = [];
-    var len = flavor.length;
-    for (var i = 0; i < len; i++) {
+        var flavors = [];
+        var len = flavor.length;
+        for (var i = 0; i < len; i++) {
             flavors.push({
                 flavor: flavor[i],
                 price: price[i],
                 vcpu: vcpu[i],
                 memcount: memcount[i]
-        });
-    }
+            });
+        }
 
-    for (i=0, item_num=1; i<flavors.length; i++, item_num++){
-                var row = table.insertRow(++rowCount);
-                cell = row.insertCell(0);
-                cell.setAttribute("colspan", "1");
-        
-                cell = row.insertCell(1);
+        for (i=0, item_num=1; i<flavors.length; i++, item_num++){
+            var row = table.insertRow(++rowCount);
+            cell = row.insertCell(0);
+            cell.setAttribute("colspan", "1");
+            cell = row.insertCell(1);
+            cell.setAttribute("colspan", "1");
+            cell.appendChild(document.createTextNode("\u00a0\u00a0\u00a0\u00a0" + flavors[i].flavor));
+            if (i<10) {
+                cell.setAttribute("title", "vCPU:" + vcpu[i] + "\u00a0\u00a0\u00a0\u00a0Memory Count:" + memcount[i] + "\u00a0\u00a0\u00a0\u00a0System Disk:20GB");
+            }
+            else {
+                cell.setAttribute("title", "Enter additional storage excluding the free 20GB amount.");
+            }
+            cell.setAttribute("colspan", "1");
+            var cell = row.insertCell(2);
+            if (i<10){
+                var cl_compute_price = document.createTextNode("$" + price[i] + "/hr/instance");
+            }
+            else {
+                var cl_compute_price = document.createTextNode("$" + price[i] + "/hr/GB");
+            }
+            cell.appendChild(cl_compute_price);
+            cell.setAttribute("colspan", "1");
+            cell.id = "cl-compute-price" + vm_num + item_num;    
+            var cell = row.insertCell(3);
+            var cl_compute_instances = document.createElement("input");
+            cl_compute_instances.setAttribute("type", "text");
+            cl_compute_instances_in = "cl-compute-instances" + vm_num + item_num;
+            cl_compute_sub_out = "cl-compute-sub" + vm_num + item_num;
+            cell.appendChild(cl_compute_instances);
+            cell.setAttribute("colspan", "1");
+            cl_compute_instances.id = cl_compute_instances_in;
+            cl_compute_instances.className += " cl_compute_instances userinput";
+            cl_compute_instances.setAttribute("dest", "" + cl_compute_sub_out);
+            cl_compute_instances.setAttribute("num", item_num);
+            cl_compute_instances.setAttribute("name", cl_compute_instances.id);
+            cl_compute_instances.setAttribute("size", 5);
+            cl_compute_instances.setAttribute("cl-compute-price", price[i]);
+            cl_compute_instances.setAttribute("onchange", "getEstimate('cl-compute', this.id, this.getAttribute('cl-compute-price'), this.getAttribute('dest'), this.getAttribute('num'), 'CL_COMPUTE')");
+            var blanknode = document.createTextNode("\u00a0");
+            cell.appendChild(blanknode);
+            if (i<10){
+                cell.appendChild(document.createTextNode("inst."));
+                cl_compute_instances.setAttribute("title", "Enter number of instances");
+            }
+            else {
+                cell.appendChild(document.createTextNode("GB"));
+                cl_compute_instances.setAttribute("title", "Enter a whole number 0 to 190.");
+            }
+            var cell = row.insertCell(4);
+            var cl_compute_sub = document.createElement("input");
+            cl_compute_sub.setAttribute("type", "text");
+            cell.appendChild(cl_compute_sub);
+            cell.setAttribute("colspan", "1");
+            cl_compute_sub.id = cl_compute_sub_out;
+            cl_compute_sub.setAttribute("name", cl_compute_sub.id);
+            cl_compute_sub.setAttribute("size", 20);
+            document.getElementById(cl_compute_sub_out).setAttribute("readonly", "readonly");
+            cl_compute_sub.className = "sub cl-compute-sub vm-sub" + vm_num + item_num;
+            // sub('cl-compute-sub');
+            // sub('sub');
+
+            var row = table.insertRow(++rowCount);
+            var cell1 = row.insertCell(0);
+            cell1.setAttribute("colspan", "1"); 
+            var cell2 = row.insertCell(1);
+            cell2.id = "flavor-specifications" + vm_num + item_num;
+            if (i<10) {
+                var cpu = document.createTextNode("\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0" + vcpu[i] + "vCPU, " + memcount[i] + "Memory");
+                cell2.appendChild(cpu);
+                cell2.setAttribute("style", "color:#fff");  
+            }   
+            var cell3 = row.insertCell(2);
+            cell3.setAttribute("colspan", "1");
+            var cell4 = row.insertCell(3);
+            cell4.setAttribute("colspan", "1");
+            if (i==flavors.length-1) {
+                cell1.setAttribute("style", "border-bottom: 1px #d3d3d3 solid");
+                cell2.setAttribute("style", "border-bottom: 1px #d3d3d3 solid");
+                cell3.setAttribute("style", "border-bottom: 1px #d3d3d3 solid");
+                cell4.setAttribute("style", "border-bottom: 1px #d3d3d3 solid");
+            }
+            var cl_compute_hours = document.createElement("input");
+            cl_compute_hours.setAttribute("type", "text");
+            cl_compute_hours_in = "cl-compute-hours" + vm_num + item_num;
+            cell4.appendChild(cl_compute_hours);
+            cell4.setAttribute("colspan", "1");
+            cl_compute_hours.id = cl_compute_hours_in;
+            cl_compute_hours.className += " cl_compute_hours userinput";
+            cl_compute_hours.setAttribute("dest", "" + cl_compute_sub_out);
+            cl_compute_hours.setAttribute("num", item_num);
+            cl_compute_hours.setAttribute("name", cl_compute_hours.id);
+            cl_compute_hours.setAttribute("size", 5);
+            cl_compute_hours.setAttribute("cl-compute-price", price[i]);
+            cl_compute_hours.setAttribute("title", "Enter amount of hours per month.");
+            cl_compute_hours.setAttribute("onchange", "getEstimate('cl-compute', this.id, this.getAttribute('cl-compute-price'), this.getAttribute('dest'), this.getAttribute('num'), 'CL_COMPUTE')");
+            var blanknode = document.createTextNode("\u00a0");
+            cell4.appendChild(blanknode);
+            cell4.appendChild(document.createTextNode("hr(s)"));
+            cell4 = row.insertCell(4);
+            cell4.setAttribute("colspan", "1");
+            if (i==flavor.length-1) cell4.setAttribute("style", "border-bottom: 1px #d3d3d3 solid");  
+        } //end for loop to add all items
+    
+        //create cl compute at the top of totals table
+        row1 = totals.insertRow(0);
+        row1.id = "cl-compute-sub-total-row";
+        var cell = row1.insertCell(0);
         cell.setAttribute("colspan", "1");
-                cell.appendChild(document.createTextNode("\u00a0\u00a0\u00a0\u00a0" + flavors[i].flavor));
-        if (i<10) {
-            cell.setAttribute("title", "vCPU:" + vcpu[i] + "\u00a0\u00a0\u00a0\u00a0Memory Count:" + memcount[i] + "\u00a0\u00a0\u00a0\u00a0System Disk:20GB");
-                }
-        else {
-            cell.setAttribute("title", "Enter additional storage excluding the free 20GB amount.");
-        }
+        var name = document.createTextNode("\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0Cloud Compute Total:");
+        cell.setAttribute("style", "text-align: right;")
+        cell.appendChild(name);
+        var cell = row1.insertCell(1);
         cell.setAttribute("colspan", "1");
-        var cell = row.insertCell(2);
-        if (i<10){
-                    var cl_compute_price = document.createTextNode("$" + price[i] + "/hr/instance");
-        }
-        else {
-            var cl_compute_price = document.createTextNode("$" + price[i] + "/hr/GB");
-        }
-                cell.appendChild(cl_compute_price);
-                cell.setAttribute("colspan", "1");
-        cell.id = "cl-compute-price" + vm_num + item_num;    
-        
-                var cell = row.insertCell(3);
-                var cl_compute_instances = document.createElement("input");
-                cl_compute_instances.setAttribute("type", "text");
-                cl_compute_instances_in = "cl-compute-instances" + vm_num + item_num;
-                cl_compute_sub_out = "cl-compute-sub" + vm_num + item_num;
-                cell.appendChild(cl_compute_instances);
-                cell.setAttribute("colspan", "1");
-                cl_compute_instances.id = cl_compute_instances_in;
-                cl_compute_instances.className += " cl_compute_instances userinput";
-                cl_compute_instances.setAttribute("dest", "" + cl_compute_sub_out);
-                cl_compute_instances.setAttribute("num", item_num);
-                cl_compute_instances.setAttribute("name", cl_compute_instances.id);
-                cl_compute_instances.setAttribute("size", 5);
-                cl_compute_instances.setAttribute("cl-compute-price", price[i]);
-                cl_compute_instances.setAttribute("onchange", "getEstimate('cl-compute', this.id, this.getAttribute('cl-compute-price'), this.getAttribute('dest'), this.getAttribute('num'), 'CL_COMPUTE')");
-                var blanknode = document.createTextNode("\u00a0");
-                cell.appendChild(blanknode);
-        if (i<10){
-                    cell.appendChild(document.createTextNode("inst."));
-            cl_compute_instances.setAttribute("title", "Enter number of instances");
-        }
-        else {
-            cell.appendChild(document.createTextNode("GB"));
-            cl_compute_instances.setAttribute("title", "Enter a whole number 0 to 190.");
-        }
-
-                var cell = row.insertCell(4);
-                var cl_compute_sub = document.createElement("input");
-                cl_compute_sub.setAttribute("type", "text");
-                cell.appendChild(cl_compute_sub);
-                cell.setAttribute("colspan", "1");
-                cl_compute_sub.id = cl_compute_sub_out;
-                cl_compute_sub.setAttribute("name", cl_compute_sub.id);
-                cl_compute_sub.setAttribute("size", 20);
-                document.getElementById(cl_compute_sub_out).setAttribute("readonly", "readonly");
-                cl_compute_sub.className = "sub cl-compute-sub vm-sub" + vm_num + item_num;
-                sub('cl-compute-sub');
-                sub('sub');
-
-                var row = table.insertRow(++rowCount);
-        var cell1 = row.insertCell(0);
-                cell1.setAttribute("colspan", "1"); 
-        var cell2 = row.insertCell(1);
-        cell2.id = "flavor-specifications" + vm_num + item_num;
-        if (i<10) {
-            var cpu = document.createTextNode("\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0" + vcpu[i] + "vCPU, " + memcount[i] + "Memory");
-            cell2.appendChild(cpu);
-            cell2.setAttribute("style", "color:#fff");  
-        }   
-        var cell3 = row.insertCell(2);
-                cell3.setAttribute("colspan", "1");
-        var cell4 = row.insertCell(3);
-                cell4.setAttribute("colspan", "1");
-        if (i==flavors.length-1) {
-            cell1.setAttribute("style", "border-bottom: 1px black solid");
-            cell2.setAttribute("style", "border-bottom: 1px black solid");
-            cell3.setAttribute("style", "border-bottom: 1px black solid");
-            cell4.setAttribute("style", "border-bottom: 1px black solid");
-        }
-                var cl_compute_hours = document.createElement("input");
-                cl_compute_hours.setAttribute("type", "text");
-                cl_compute_hours_in = "cl-compute-hours" + vm_num + item_num;
-                cell4.appendChild(cl_compute_hours);
-                cell4.setAttribute("colspan", "1");
-                cl_compute_hours.id = cl_compute_hours_in;
-                cl_compute_hours.className += " cl_compute_hours userinput";
-                cl_compute_hours.setAttribute("dest", "" + cl_compute_sub_out);
-                cl_compute_hours.setAttribute("num", item_num);
-                cl_compute_hours.setAttribute("name", cl_compute_hours.id);
-                cl_compute_hours.setAttribute("size", 5);
-                cl_compute_hours.setAttribute("cl-compute-price", price[i]);
-        cl_compute_hours.setAttribute("title", "Enter amount of hours per month.");
-                cl_compute_hours.setAttribute("onchange", "getEstimate('cl-compute', this.id, this.getAttribute('cl-compute-price'), this.getAttribute('dest'), this.getAttribute('num'), 'CL_COMPUTE')");
-                var blanknode = document.createTextNode("\u00a0");
-                cell4.appendChild(blanknode);
-                cell4.appendChild(document.createTextNode("hr(s)"));
-        cell4 = row.insertCell(4);
-                cell4.setAttribute("colspan", "1");
-        if (i==flavor.length-1) cell4.setAttribute("style", "border-bottom: 1px black solid");  
+        var subtotal = document.createElement("input");
+        subtotal.setAttribute("type", "text");
+        subtotal.setAttribute("size", 20);
+        subtotal.id = "cl-compute-sub-total";
+        // subtotal.className = "sub";
+        subtotal.name = "cl-compute-sub-total";
+        subtotal.setAttribute("readonly", "readonly");
+        cell.appendChild(subtotal);
+        sub('cl-compute-sub');
+        sub('sub');        
     }
-    }
+    // console.log(numProducts);
+    // if (numProducts == 1) {
+    //     row1 = totals.insertRow(0);
+    //     var cell = row1.insertCell(0);
+    //     cell.setAttribute("colspan", "5");
+    // }
     
 } /* END ADDPRODUCT FUNCTION */
    
@@ -3287,22 +3486,23 @@ function getEstimate(type, id, price, dest, num, category)
                 calculateBackup(num);
             }
             if (category == 'CL_COMPUTE') {
-                var indices = id.slice(-2);
+                if (num < 10) var indices = id.slice(-2);
+                else var indices = id.slice(-3);
                 document.getElementById(dest).setAttribute("value", "$" + (parseFloat(document.getElementById("cl-compute-hours" + indices).value) * parseFloat(document.getElementById("cl-compute-instances" + indices).value) * price).toFixed(2));
                 if (document.getElementById(dest).getAttribute("value") == "$NaN") {
-                document.getElementById(dest).setAttribute("value", "Missing input");
-                document.getElementById(dest).style.color = "#ff0000";
+                    document.getElementById(dest).setAttribute("value", "Missing input");
+                    document.getElementById(dest).style.color = "#ff0000";
+                }
+                else {
+                    var indices = id.slice(-2);
+                    document.getElementById("flavor-specifications" + indices).setAttribute("style", "visibility:hidden");
+                }
             }
             else {
-                var indices = id.slice(-2);
-                document.getElementById("flavor-specifications" + indices).setAttribute("style", "visibility:hidden");
-            }
-        }
-        else {
                 document.getElementById(dest).setAttribute("value", "$" + (parseFloat(document.getElementById(id).value) * price).toFixed(2));
             }
-    }
-        if (type != 'cl-str' && type != 'consult' && type != 'sp-consult' && type != 'pr-str' && type != 'cl-compute') {
+        }
+        if (type != 'cl-str' && type != 'consult' && type != 'recur' && type != 'sp-consult' && type != 'pr-str' && type != 'cl-compute') {
             sub('vm-sub' + num);
             if (category == 'ST_VM' || category == 'HS_VM') {
                 if (document.getElementById("extrasnap" + num).value == 'Yes') {
@@ -3317,8 +3517,15 @@ function getEstimate(type, id, price, dest, num, category)
             document.getElementById('vm-sub' + num + '-total').setAttribute("value", 'Custom');
         }
 
-        sub(theclass);
-        sub('sub');
+        if (type == 'consult' || type == 'sp-consult') {
+            sub("onetime");
+        }
+        else {
+            sub(theclass);
+            sub('sub');
+        }
+        // sub(theclass);
+        // sub('sub');
         if (category == 'ST_VM' || category == 'HS_VM') {
                 if (document.getElementById("extrasnap" + num).value == 'Yes') {
                     var tempval = parseFloat(document.getElementById('vm-sub-total').value.replace("$", ""));
@@ -3328,9 +3535,7 @@ function getEstimate(type, id, price, dest, num, category)
                 }
         }
                     
-        if (type == 'consult' || type == 'sp-consult') {
-            sub("onetime");
-        }
+
         //sub('vm-sub');
     }
     document.getElementById(dest).setAttribute("value", document.getElementById(dest).value);

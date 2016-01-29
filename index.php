@@ -149,7 +149,18 @@
                         </span>
                     </div>
                     
-                    <button class="add-button" title="Add Service" onclick="addProduct('RECUR');">+
+                    <button class="add-button" title="Add Service" onclick="addProduct('RECUR_DESK');">+
+    </button>
+                    <div class="vm-services">
+                        <span class="service-name" title=""> 
+                        Recurring Consulting Services - Desktop
+                        </span>
+                        <span class="service-price">
+                        $80.00
+                        </span>
+                    </div>
+
+                    <button class="add-button" title="Add Service" onclick="addProduct('RECUR_SYSTEMS');">+
     </button>
                     <div class="vm-services">
                         <span class="service-name" title=""> 
@@ -157,6 +168,16 @@
                         </span>
                         <span class="service-price">
                         $96.00
+                        </span>
+                    </div>
+                    <button class="add-button" title="Add Service" onclick="addProduct('RECUR_STORAGE');">+
+    </button>
+                    <div class="vm-services">
+                        <span class="service-name" title=""> 
+                        Recurring Consulting Services - Storage
+                        </span>
+                        <span class="service-price">
+                        $98.83
                         </span>
                     </div>
                     <button class="add-button" title="Add Service" onclick="addProduct('SITE');">+
@@ -194,221 +215,40 @@
                         <tr>
                             <td colspan="5" style="text-align:center; background-color: #d3d3d3;">Virtualization (VM) Services</td>
                         </tr>
-                        
                     </table>
-<!--                     <table class="tables" id="vm-table-totals" colspan="5" cellspacing="0" style="border-left: 1px solid #d3d3d3; border-right:1px solid #d3d3d3;border-bottom:1px solid #d3d3d3;">
+                    <table class="tables" id="str-table" colspan="5" cellspacing="0" style="border-bottom: 1px solid #d3d3d3">
                         <tr>
-                            <td colspan="1" width="20"></td>
-                            <td colspan="1" width="200">VM Services Subtotal:</td>
-                            <td colspan="1" width="340"></td>
-                            <td colspan="1"><input type="text" id="vm-sub-total" class="sub" name="vm-sub-total" size="20" readonly></td>
-                        </tr>
-                    </table> -->
-                    
-                    <table class="tables" id="str-table" colspan="5" cellspacing="0" style="font-size: 11px">
-                        <tr style="font-size: 11px; background-color: #ccc; font-weight: bold;">
-                            <td colspan="1" width="20">&nbsp;</td>
-                            <td colspan="1" width="170">
-                                Storage Services
-                            </td>
-                            <td colspan="1" width="152">
-                                Price/Unit
-                            </td>
-                            <td colspan="1" width="63">
-                                Quantity
-                            </td>
-                            <td colspan="1" width="135">
-                                Subtotal
-                            </td>
+                            <td colspan="5" style="text-align:center; background-color: #d3d3d3;">Storage</td>
                         </tr>
                     </table>
-                    <table class="total-table" id="str-table-totals" colspan="5" width="810">
+                    <table class="tables" id="pa-table" colspan="5" cellspacing="0" style="border-bottom: 1px solid #d3d3d3">
                         <tr>
-                            <td colspan="4" width="405" height="40" valign="bottom">
-                                <b>Storage Total: </b>
-                            </td>
-                            <td colspan="1" width="135">
-                                <input type="text" id="str-sub-total" class="sub" name="vm-sub-total" size="20" value="$0.00" readonly>
-                            </td>
+                            <td colspan="5" style="text-align:center; background-color: #d3d3d3;">Physical Administration</td>
                         </tr>
                     </table>
-                    
-                    <table class="tables" id="pa-table" colspan="5" cellspacing="0" style="font-size: 11px">
-                        <tr style="font-size: 11px; background-color: #ccc; font-weight: bold;">
-                            <td colspan="1" width="20">&nbsp;</td>
-                            <td colspan="1" width="170">
-                                Physical Administration
-                            </td>
-                            <td colspan="1" width="152">
-                                Price/Unit
-                            </td>
-                            <td colspan="1" width="63">
-                                Quantity
-                            </td>
-                            <td colspan="1" width="135">
-                                Subtotal
-                            </td>
-                        </tr>
-                    </table>
-                    <table class="total-table" id="pa-table-totals" colspan="5" width="810">
+                    <table class="tables" id="backup-table" colspan="5" cellspacing="0" style="border-bottom: 1px solid #d3d3d3">
                         <tr>
-                            <td colspan="4" width="405" height="40" valign="bottom">
-                                <b>Physical Administration Total: </b>
-                            </td>
-                            <td colspan="1" width="135">
-                                <input type="text" id="pa-sub-total" class="sub" name="vm-sub-total" size="20" readonly>
-                            </td>
+                            <td colspan="5" style="text-align:center; background-color: #d3d3d3;">CommVault Backup</td>
                         </tr>
                     </table>
-                    
-                    <table class="tables" id="backup-table" colspan="5" cellspacing="0" style="font-size: 11px">
-                        <tr style="font-size: 11px; background-color: #ccc; font-weight: bold;">
-                            <td colspan="1" width="20">&nbsp;</td>
-                            <td colspan="1" width="170">
-                                CommVault Backup
-                            </td>
-                            <td colspan="1" width="152">
-                                Price/Unit
-                            </td>
-                            <td colspan="1" width="63">
-                                Quantity
-                            </td>
-                            <td colspan="1" width="135">
-                                Subtotal
-                            </td>
-                        </tr>
-                    </table>
-                    <table class="total-table" id="backup-table-totals" colspan="5" width="810">
+                    <table class="tables" id="consult-table" colspan="5" cellspacing="0" style="border-bottom: 1px solid #d3d3d3">
                         <tr>
-                            <td colspan="4" width="405" height="40" valign="bottom">
-                                <b>Backup Total: </b>
-                            </td>
-                            <td colspan="1" width="135">
-                                <input type="text" id="backup-sub-total" class="sub" name="vm-sub-total" size="20" readonly>
-                            </td>
+                            <td colspan="5" style="text-align:center; background-color: #d3d3d3;">Consulting</td>
                         </tr>
                     </table>
-                    
-                    <table class="tables" id="consult-table" colspan="5" cellspacing="0" style="font-size: 11px">
-                        <tr style="font-size: 11px; background-color: #ccc; font-weight: bold;">
-                            <td colspan="1" width="20">&nbsp;</td>
-                            <td colspan="1" width="170">
-                                Consulting
-                            </td>
-                            <td colspan="1" width="152">
-                                Price/Unit
-                            </td>
-                            <td colspan="1" width="63">
-                                Quantity
-                            </td>
-                            <td colspan="1" width="135">
-                                Subtotal
-                            </td>
-                        </tr>
-                    </table>
-                    <table class="total-table" id="consult-table-totals" colspan="5" width="810">
+                    <table class="tables" id="sp-table" colspan="5" cellspacing="0" style="border-bottom: 1px solid #d3d3d3">
                         <tr>
-                            <td colspan="4" width="405" height="40" valign="bottom">
-                                <b>Consulting Total: </b>
-                            </td>
-                            <td colspan="1" width="135">
-                                <input type="text" id="consult-sub-total" name="vm-sub-total" size="20" readonly>
-                            </td>
+                            <td colspan="5" style="text-align:center; background-color: #d3d3d3;">Sharepoint</td>
                         </tr>
                     </table>
-                    
-                    <table class="tables" id="sp-table" colspan="5" cellspacing="0" style="font-size: 11px">
-                        <tr style="font-size: 11px; background-color: #ccc; font-weight: bold;">
-                            <td colspan="1" width="20">&nbsp;</td>
-                               <td colspan="1" width="170">
-                                SharePoint
-                            </td>
-                            <td colspan="1" width="152">
-                                Price/Unit
-                            </td>
-                            <td colspan="1" width="63">
-                                Quantity
-                            </td>
-                            <td colspan="1" width="135">
-                                Subtotal
-                            </td>
-                        </tr>
-                    </table>
-                    <table class="total-table" id="sp-table-totals" colspan="5" width="810">
+                    <table class="tables" id="cl-compute-table" colspan="5" cellspacing="0" style="border-bottom: 1px solid #d3d3d3">
                         <tr>
-                            <td colspan="4" width="405" height="40" valign="bottom">
-                                <b>Sharepoint Total: </b>
-                            </td>
-                            <td colspan="1" width="135">
-                                <input type="text" id="sp-sub-total" name="vm-sub-total" size="20" value="$0.00" readonly>
-                            </td>
+                            <td colspan="5" style="text-align:center; background-color: #d3d3d3;">Cloud Compute Services</td>
                         </tr>
                     </table>
-                    
-                    <table class="tables" id="cl-compute-table" colspan="5" cellspacing="0" style="font-size: 11px">
-                        <tr style="font-size: 11px; background-color: #ccc; font-weight: bold;">
-                            <td colspan="1" width="20">&nbsp;</td>
-                               <td colspan="1" width="170">
-                                Cloud Compute Services
-                            </td>
-                            <td colspan="1" width="152">
-                                Price/Unit
-                            </td>
-                            <td colspan="1" width="63">
-                                Quantity
-                            </td>
-                            <td colspan="1" width="135">
-                                Subtotal
-                            </td>
-                        </tr>
-                    </table>
-                    <table class="total-table" id="cl-compute-table-totals" colspan="5" width="810">
-                        <tr>
-                            <td colspan="4" width="405" height="40" valign="bottom">
-                                <b>Cloud Compute Total: </b>
-                            </td>
-                            <td colspan="1" width="135">
-                                <input type="text" id="cl-compute-sub-total" name="vm-sub-total" size="20" value="$0.00" readonly>
-                            </td>
-                        </tr>
-                    </table>
-                    
-<!--                     <table class="total-table" id="totals" width="810">
-                        <tr style="font-size: 12px">
-                            <td colspan="4" width="405" height="40" valign="bottom">
-                                <strong>Monthly Total: </strong>
-                            </td>
-                            <td colspan="1" width="135">
-                                <input type="text" id="sub-total" name="sub-total" size="20" readonly>
-                            </td>
-                        </tr>
-                        <tr style="font-size: 12px">
-                            <td colspan="4" width="405" height="40" valign="bottom">
-                                <strong>One-time Fees: </strong>
-                            </td>
-                            <td colspan="1" width="135">
-                                <input type="text" id="onetime-total" size="20" name = "onetime-totals" value="$0.00" readonly>
-                            </td>
-                        </tr>
-                    </table> -->
-                    
-                    <table class="total-table tables" id="totals"  colspan="5" cellspacing="0" >
-<!--                         <tr>
-                            <td style="text-align: right;">
-                                <b>Monthly Total: </b>
-                            </td>
-                            <td>
-                                <input type="text" id="sub-total" name="sub-total" size="20" readonly>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: right;">
-                                <b>One-time Fees: </b>
-                            </td>
-                            <td>
-                                <input type="text" id="onetime-total" size="20" name = "onetime-totals" value="$0.00" readonly>
-                            </td>
-                        </tr> -->
+                    <!-- table of all subtotals and monthly totals -->
+                    <table class="total-table tables" id="totals"  colspan="5" cellspacing="0" style="margin-top: 10px;">
+                        <!-- <tr><td colspan="5">&nbsp;</td></tr> -->
                     </table>
                     <input id="formcode" name="formcode" type="hidden">
                 </form>
