@@ -48,6 +48,7 @@ $(document).ready(function() {
 });
 
 function validateForm() {
+        $.post("generateestimate.php", {name: "name"});
         var valid = true;
         $('.vm-sub').each(function(i, e) {
             if (e.value == "Invalid input") {
@@ -128,6 +129,9 @@ function validateForm() {
         
         var child = document.getElementById('pdfbutton');
         child.parentNode.removeChild(child);
+
+        var child = document.getElementById('estimatebutton');
+        child.parentNode.removeChild(child);
         
         var child = document.getElementById('savebutton');
         child.parentNode.removeChild(child);
@@ -194,4 +198,19 @@ function clearData()
     if (typeof(Storage) !== "undefined") {
         localStorage.clear();
     }
+}
+
+function changeForm(id)
+{
+    if(id == "estimatebutton") {
+        document.getElementById("quote").action = "./tcpdf/pdf/generateestimate.php";
+    }
+    else {
+        document.getElementById("quote").action = "./tcpdf/pdf/generatepdf.php";
+    }
+}
+
+function changePHPFileName() {
+    var name = "asdfasdf";
+    window.location.href = "generatepdf.php?name=" + name;
 }

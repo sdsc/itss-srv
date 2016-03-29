@@ -32,6 +32,7 @@
         <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
         <script src="js/begin.js"></script>
         <script src="js/functions.js"></script>
+        <script src="js/addproduct.js"></script>
         <script>
             $(function() {
                 $( document ).tooltip({ track: true });
@@ -204,12 +205,13 @@
                     </div>
            </div>
             <div id = "quote-content">
-                <button type="button" id="pdfbutton" onclick="validateForm();">Generate PDF</button>
+                <button type="button" id="pdfbutton" onclick="changeForm(id);validateForm();">Generate PDF</button>
+                <button type="button" id="estimatebutton" onclick="changeForm(id);validateForm();">Generate Estimate</button>
                 <button type="button" id="savebutton" onclick="saveForm()">Save Form</button>
                 <button type="button" id="loadbutton" onclick="loadForm()">Load Form</button>
                 <button type="button" id="cleardata" onclick="clearData()">Clear Saved Forms</button>
                 <!--<strong id="table-title">Your SDSC Cost Estimate </strong>-->
-                <form name="quote" id="quote" action="./tcpdf/pdf/generatepdf.php" method="post" target="_blank">
+                <form name="quote" id="quote" action="" method="post" target="_blank">
                     <br/><br/>
                     <table class="tables" id="vm-table" colspan="5" cellspacing="0" style="border-bottom: 1px solid #d3d3d3">
                         <tr>
@@ -251,6 +253,7 @@
                         <!-- <tr><td colspan="5">&nbsp;</td></tr> -->
                     </table>
                     <input id="formcode" name="formcode" type="hidden">
+                    <input id="name" name="name" type="hidden">
                 </form>
             </div>
        </div>
