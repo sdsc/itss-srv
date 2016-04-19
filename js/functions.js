@@ -10,7 +10,7 @@
     **** EDIT HERE TO CHANGE PRICES **** */
 
 // PRICES FOR STANDARD VM UC
-var PRICE_BASE_STANDARD_VM_UC = 69.75; //per VM
+var PRICE_BASE_STANDARD_VM_UC = "69.75"; //per VM
 var PRICE_ADD_CPU_STANDARD_VM_UC = 12.94; //per CPU
 var PRICE_ADD_RAM_STANDARD_VM_UC = 12.94; //per GB
 var PRICE_ADD_SILVER_STANDARD_VM_UC = 45.75; //per TB
@@ -37,7 +37,7 @@ var PRICE_HS_VM_UC = [PRICE_HIGH_SECURITY_VM_UC, PRICE_ADD_CPU_HIGH_SECURITY_VM_
 
 //PRICES FOR HIGH SECURITY VM EXT
 var PRICE_HIGH_SECURITY_VM_EXT = 135.9375; //per VM
-var PRICE_ADD_CPU_HIGH_SECURITY_VM_EXT = 22.6375; //per CPU
+var PRICE_ADD_CPU_HIGH_SECURITY_VM_EXT = 22.6345; //per CPU
 var PRICE_ADD_RAM_HIGH_SECURITY_VM_EXT = 22.6345; //per GB
 var PRICE_ADD_GOLD_HIGH_SECURITY_VM_EXT = 181.25; //per TB
 var PRICE_ADD_SNAPSHOT_STANDARD_VM_EXT = 34.80;
@@ -121,8 +121,8 @@ var PRICE_CL_COMPUTE_EXT = [0.116, 0.232, 0.464, 0.928, 0.1885, 0.377, 0.754, 0.
 /* NUMBER OF ROWS PER PRODUCT 
     **** EDIT THE NUMBER OF ROWS PER PRODUCT HERE **** */
 
-var ROWS_STANDARD_VM = 13;
-var ROWS_HIGH_SECURITY_VM = 14;
+var ROWS_ST_VM = 13;
+var ROWS_HS_VM = 14;
 var ROWS_CLOUD_STORAGE = 9;
 var ROWS_PROJECT_STORAGE = 7;
 var ROWS_PROJECT_CONDO = 7;
@@ -264,34 +264,34 @@ function changePrices(affiliation, id, num)
                             getEstimate('cpu', "st-vm-qty" + num + item_num, price_vm[n], "st-vm-sub" + num + item_num, num, 'ST_VM');
                             break;
                         case 1:
-                            document.getElementById("st-vm-qty" + num + item_num).setAttribute("cpu-price", parseFloat(price_vm[n]).toFixed(2));
+                            document.getElementById("st-vm-qty" + num + item_num).setAttribute("price", parseFloat(price_vm[n]).toFixed(2));
                             document.getElementById("st-vm-price" + num + item_num).innerHTML = "$" + parseFloat(price_vm[n]).toFixed(2) + "/CPU";
                             getEstimate('cpu', "st-vm-qty" + num + item_num, price_vm[n], "st-vm-sub" + num + item_num, num, 'ST_VM');
                             break;
                         case 2:
-                            document.getElementById("st-vm-qty" + num + item_num).setAttribute("mem-price", parseFloat(price_vm[n]).toFixed(2));
+                            document.getElementById("st-vm-qty" + num + item_num).setAttribute("price", parseFloat(price_vm[n]).toFixed(2));
                             document.getElementById("st-vm-price" + num + item_num).innerHTML = "$" + parseFloat(price_vm[n]).toFixed(2) + "/GB";
                             getEstimate('mem', "st-vm-qty" + num + item_num, price_vm[n], "st-vm-sub" + num + item_num, num, 'ST_VM');
                             break;
                         case 3:
                             document.getElementById("st-vm-price" + num + item_num).innerHTML = "$" + parseFloat(price_vm[n]).toFixed(2) + "/TB";
-                            document.getElementById("st-vm-qty" + num + item_num).setAttribute("str-price",price_vm[n]);
+                            document.getElementById("st-vm-qty" + num + item_num).setAttribute("price",price_vm[n]);
                             getEstimate('silver', "st-vm-qty" + num + item_num, price_vm[n], "st-vm-sub" + num + item_num, num, 'ST_VM');
-                            document.getElementById("str-units" + num + item_num).setAttribute("value", "TB");
+                            document.getElementById("units" + num + item_num).setAttribute("value", "TB");
                             document.getElementById("GB" + num + item_num).removeAttribute("selected");
                             document.getElementById("TB" + num + item_num).setAttribute("selected", "selected");
                             break;
                         case 4:
                             document.getElementById("st-vm-price" + num + item_num).innerHTML = "$" + parseFloat(price_vm[n]).toFixed(2) + "/TB";
-                            document.getElementById("st-vm-qty" + num + item_num).setAttribute("san-price",price_vm[n]);
+                            document.getElementById("st-vm-qty" + num + item_num).setAttribute("price",price_vm[n]);
                             getEstimate('gold', "st-vm-qty" + num + item_num, price_vm[n], "st-vm-sub" + num + item_num, num, 'ST_VM');
-                            document.getElementById("san-units" + num + item_num).setAttribute("value", "TB");
+                            document.getElementById("units" + num + item_num).setAttribute("value", "TB");
                             document.getElementById("GB" + num + item_num).removeAttribute("selected");
                             document.getElementById("TB" + num + item_num).setAttribute("selected", "selected");
                             break;
                         case 5:
                             document.getElementById("st-vm-price" + num + item_num).innerHTML = "$" + parseFloat(price_vm[n]).toFixed(2);
-                            if (document.getElementById("extrasnap" + num).value == "Yes") extraSnaps(num);
+                            if (document.getElementById("st-vm").value == "Yes") extraSnaps(num, item_num, "st-vm");
                             break;
                     }
                 }
@@ -324,13 +324,13 @@ function changePrices(affiliation, id, num)
                             document.getElementById("hs-vm-price" + num + item_num).innerHTML = "$" + parseFloat(price_vm[n]).toFixed(2) + "/TB";
                             document.getElementById("hs-vm-qty" + num + item_num).setAttribute("san-price",price_vm[n]);
                             getEstimate('gold', "hs-vm-qty" + num + item_num, price_vm[n], "hs-vm-sub" + num + item_num, num, 'HS_VM');
-                            document.getElementById("san-units" + num + item_num).setAttribute("value", "TB");
+                            document.getElementById("units" + num + item_num).setAttribute("value", "TB");
                             document.getElementById("GB" + num + item_num).removeAttribute("selected");
                             document.getElementById("TB" + num + item_num).setAttribute("selected", "selected");
                             break;
                         case 5:
                             document.getElementById("hs-vm-price" + num + item_num).innerHTML = "$" + parseFloat(price_vm[n]).toFixed(2);
-                            if (document.getElementById("extrasnap" + num).value == "Yes") extraSnaps(num);
+                            if (document.getElementById("hs-vm").value == "Yes") extraSnaps(num, item_num, "hs-vm");
                             break;
                     }
                 }
@@ -535,7 +535,9 @@ function getEstimate(type, id, price, dest, num, category)
         if (type != 'sp-consult') {
             sub('vm-sub' + num);
             if (category == 'ST_VM' || category == 'HS_VM') {
-                if (document.getElementById("extrasnap" + num).value == 'Yes') {
+                if (category == 'ST_VM') var snapQty = "st-vm-qty" + num + "5";
+                else var snapQty = "hs-vm-qty" + num + "4";
+                if (document.getElementById(snapQty).value == 'Yes') {
                     //var tempval = parseFloat(document.getElementById('st-vm-total').value.replace("$", ""));
                     //document.getElementById('vm-sub' + num + '-total').setAttribute("value", "$" + (eval(tempval - parseFloat(PRICE_ADD_SNAPSHOT_STANDARD_VM_UC))));
                     //document.getElementById("extra-sub-out" + num).value = "$" + document.getElementById("st-m")
@@ -557,7 +559,9 @@ function getEstimate(type, id, price, dest, num, category)
         // sub(theclass);
         // sub('sub');
         if (category == 'ST_VM' || category == 'HS_VM') {
-                if (document.getElementById("extrasnap" + num).value == 'Yes') {
+                if (category == 'ST_VM') var snapQty = "st-vm-qty" + num + "5";
+                else var snapQty = "hs-vm-qty" + num + "4";
+                if (document.getElementById(snapQty).value == 'Yes') {
                     var tempval = parseFloat(document.getElementById('vm-sub-total').value.replace("$", ""));
                     var temptotalval = parseFloat(document.getElementById('sub-total').value.replace("$", ""));
                     document.getElementById('vm-sub-total').setAttribute("value", "$" + (tempval + PRICE_ADD_SNAPSHOT_STANDARD_VM_UC));
@@ -586,6 +590,7 @@ function sub(theclass)
     for(i = 0; i < subarray.length; i++) {
         if(subarray[i].value != null || subarray[i].value != "") {
             valtext = subarray[i].value.replace("$", "");
+            
             val = parseFloat(valtext);
             
             if(!isNaN(val) && val != null) {
@@ -632,7 +637,7 @@ function validate(type, id, dest, num)
             break;
         
         case "silver":
-            if (document.getElementById('str-units' + num + "4").getAttribute("value") == 'GB') {
+            if (document.getElementById('units' + num + "4").getAttribute("value") == 'GB') {
                 if (v < 1 || v > 30000) {
                     d.setAttribute("value", "Invalid input");
                     d.style.color = "#ff0000";
@@ -648,9 +653,9 @@ function validate(type, id, dest, num)
             break;
         
         case "gold":
-            if (document.getElementById('san-units' + num + "5")) var i = 5;
+            if (document.getElementById('units' + num + "5")) var i = 5;
             else var i = 4;
-            if (document.getElementById('san-units' + num + i).getAttribute("value") == 'GB') {
+            if (document.getElementById('units' + num + i).getAttribute("value") == 'GB') {
                 if (v < 1 || v > 4900) {
                     d.setAttribute("value", "Invalid input");
                     d.style.color = "#ff0000";
@@ -1024,22 +1029,22 @@ function changeUnits(vm_qty, id, value, num, item_num, category)
     switch (category) {
         case 'str': 
             if (value == 'TB') {
-                currentprice = document.getElementById(vm_qty + num + item_num).getAttribute("str-price");
+                currentprice = document.getElementById(vm_qty + num + item_num).getAttribute("price");
                 currentprice *= 1000;
 
-                document.getElementById(vm_qty + num + item_num).setAttribute("str-price", currentprice);
+                document.getElementById(vm_qty + num + item_num).setAttribute("price", currentprice);
                 
             } else {
-                currentprice = document.getElementById(vm_qty + num + item_num).getAttribute("str-price");
+                currentprice = document.getElementById(vm_qty + num + item_num).getAttribute("price");
                 
                 currentprice /= 1000;
                 
-                document.getElementById(vm_qty + num + item_num).setAttribute("str-price", currentprice);
+                document.getElementById(vm_qty + num + item_num).setAttribute("price", currentprice);
                 
             }
             
             var element = document.getElementById(vm_qty + num + item_num);
-            getEstimate('silver', element.id, element.getAttribute('str-price'), element.getAttribute('dest'), element.getAttribute('num'), 'ST_VM');
+            getEstimate('silver', element.id, element.getAttribute('price'), element.getAttribute('dest'), element.getAttribute('num'), 'ST_VM');
             break;
         
         case 'san': 
@@ -1148,33 +1153,36 @@ function changeDescription(num, value)
     document.getElementById("description" + num).innerHTML = value;
 }
 
-function extraSnaps(num)
+function extraSnaps(vm_num, item_num, id)
 {
-    var currentPrice = parseFloat(document.getElementById('vm-sub' + num + '-total').value.replace("$", ""));
-    var val = document.getElementById('extrasnap' + num).value;
-    document.getElementById("No" + num).removeAttribute("selected");
-    document.getElementById("Yes" + num).removeAttribute("selected");
-    if (document.getElementById("os" + num).value == "UC") var price = PRICE_ST_VM_UC[5];
+    var currentPrice = parseFloat(document.getElementById('vm-sub' + vm_num + '-total').value.replace("$", ""));
+    var val = document.getElementById(id).value;
+    document.getElementById("No" + vm_num).removeAttribute("selected");
+    document.getElementById("Yes" + vm_num).removeAttribute("selected");
+    if (document.getElementById("os" + vm_num).value == "UC") var price = PRICE_ST_VM_UC[5];
     else var price = PRICE_ST_VM_EXT[5];
     if (val == 'Yes') {
-        document.getElementById('vm-sub' + num + '-total').setAttribute("value", '$' + (currentPrice + price));
-        document.getElementById('Yes' + num).setAttribute("selected", "selected");
-        var tempval = parseFloat(document.getElementById('vm-sub-total').value.replace("$", ""));
-        var temptotalval = parseFloat(document.getElementById('sub-total').value.replace("$", ""));
-        document.getElementById('vm-sub-total').setAttribute("value", "$" + parseFloat(tempval + price).toFixed(2));
-        document.getElementById('sub-total').setAttribute("value", "$" + parseFloat(temptotalval + price).toFixed(2));
-        document.getElementById('extra-sub-out' + num).setAttribute("value", "$" + parseFloat(price).toFixed(2));
-        document.getElementById("extrasnap" + num).setAttribute("value", "Yes");
-        document.getElementById("extrasnap" + num).setAttribute("name", "Yes");
+        //document.getElementById('vm-sub' + vm_num + '-total').setAttribute("value", '$' + (currentPrice + price));
+        document.getElementById('Yes' + vm_num).setAttribute("selected", "selected");
+        //var tempval = parseFloat(document.getElementById('vm-sub-total').value.replace("$", ""));
+        //var temptotalval = parseFloat(document.getElementById('sub-total').value.replace("$", ""));
+        //document.getElementById('vm-sub-total').setAttribute("value", "$" + parseFloat(tempval + price).toFixed(2));
+        //document.getElementById('sub-total').setAttribute("value", "$" + parseFloat(temptotalval + price).toFixed(2));
+        document.getElementById(id + "-sub" + vm_num + item_num).setAttribute("value", "$" + parseFloat(price).toFixed(2));
+        document.getElementById(id).setAttribute("value", "Yes");
+        document.getElementById(id).setAttribute("name", "Yes");
     } else if (val == 'No') {
-        document.getElementById('vm-sub' + num + '-total').setAttribute("value", '$' + (currentPrice - price));
-        document.getElementById('No' + num).setAttribute("selected", "selected");
-        var tempval = parseFloat(document.getElementById('vm-sub-total').value.replace("$", ""));
-        var temptotalval = parseFloat(document.getElementById('sub-total').value.replace("$", ""));
-        document.getElementById('vm-sub-total').setAttribute("value", "$" + parseFloat(tempval - price).toFixed(2));
-        document.getElementById('sub-total').setAttribute("value", "$" + parseFloat(temptotalval - price).toFixed(2));
-        document.getElementById('extra-sub-out' + num).setAttribute("value", "$" + parseFloat(0).toFixed(2));
-        document.getElementById("extrasnap" + num).setAttribute("value", "No");
-        document.getElementById("extrasnap" + num).setAttribute("name", "No");
+        //document.getElementById('vm-sub' + vm_num + '-total').setAttribute("value", '$' + (currentPrice - price));
+        document.getElementById('No' + vm_num).setAttribute("selected", "selected");
+        //var tempval = parseFloat(document.getElementById('vm-sub-total').value.replace("$", ""));
+        //var temptotalval = parseFloat(document.getElementById('sub-total').value.replace("$", ""));
+        //document.getElementById('vm-sub-total').setAttribute("value", "$" + parseFloat(tempval - price).toFixed(2));
+        //document.getElementById('sub-total').setAttribute("value", "$" + parseFloat(temptotalval - price).toFixed(2));
+        document.getElementById(id + "-sub" + vm_num + item_num).setAttribute("value", "$" + parseFloat(0).toFixed(2));
+        document.getElementById(id).setAttribute("value", "No");
+        document.getElementById(id).setAttribute("name", "No");
     }
+    sub("vm-sub");
+    sub("vm-sub" + vm_num);
+    sub("sub");
 }
