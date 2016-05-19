@@ -340,7 +340,7 @@ function changePrices(affiliation, id, num)
                 document.getElementById("cl-str-price" + num + item_num).value = parseFloat(price_cl_str).toFixed(2);
                 document.getElementById("cl-str-qty" + num + item_num).setAttribute("cl-str-price", price_cl_str);
                 document.getElementById("cl-str-price" + num + item_num).innerHTML = "$" + parseFloat(price_cl_str).toFixed(2) + "/TB";
-                document.getElementById("cl-units" + num + item_num).setAttribute("value", "TB");
+                document.getElementById("units" + num + item_num).setAttribute("value", "TB");
                 document.getElementById("GB" + num + item_num).removeAttribute("selected");
                 document.getElementById("TB" + num + item_num).setAttribute("selected", "selected");
                 document.getElementById("dualoptions" + num).setAttribute("original", original);
@@ -354,7 +354,7 @@ function changePrices(affiliation, id, num)
                 document.getElementById("cl-str-price" + num + item_num).value = parseFloat(price_pr_str).toFixed(2);
                 document.getElementById("cl-str-qty" + num + item_num).setAttribute("cl-str-price", price_pr_str);
                 document.getElementById("cl-str-price" + num + item_num).innerHTML = "$" + parseFloat(price_pr_str).toFixed(2) + "/TB";
-                document.getElementById("pr-units" + num + item_num).setAttribute("value", "TB");
+                document.getElementById("units" + num + item_num).setAttribute("value", "TB");
                 document.getElementById("GB" + num + item_num).removeAttribute("selected");
                 document.getElementById("TB" + num + item_num).setAttribute("selected", "selected");
                 getEstimate('pr-str', 'cl-str-qty' + num + item_num, price_pr_str, 'cl-str-sub' + num + item_num, num, 'CL_STR');
@@ -473,7 +473,7 @@ function getEstimate(type, id, price, dest, num, category)
         case 'CL_STR':
         case 'PR_STR':
         case 'PR_CON':
-            var theclass = 'str-sub';
+            var theclass = 'cl-str-sub';
             break;
         case 'DESK':
         case 'SYSTEMS':
@@ -671,6 +671,7 @@ function validate(type, id, dest, num)
             break;
         
         case "cl-str":
+            if (document.getElementById('units' + num + "1") == null) break;
             if (document.getElementById('units' + num + "1").getAttribute("value") == 'GB') {
                 if (v < 100) {
                     d.setAttribute("value", "Invalid input");
