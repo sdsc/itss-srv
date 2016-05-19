@@ -19,7 +19,7 @@ function addTitleOptions(table, title, rowsString, category) {
     remove.setAttribute("value", "-");
     remove.setAttribute("rownumber", "row" + vm_num);
     remove.setAttribute("title", "Remove Service");
-    var removeProduct = "this.getAttribute('rownumber'), " + rowsString + ",'" + category + "'";
+    var removeProduct = "removeProduct(this.getAttribute('rownumber'), " + rowsString + ",'" + category + "')";
     remove.setAttribute("onclick", removeProduct);
     // if (id == 'ST_VM') {
     //     remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), ROWS_STANDARD_VM, 'ST_VM')");
@@ -170,7 +170,19 @@ function addTitleOptions(table, title, rowsString, category) {
 }
 
 /* Function name: addItemLine
- * Parameters: 
+ * Parameters for function addItemLine(table, item_name, price, id, vm_num, item_num, tooltip, typeEstimate, category, unit_per_price, default_unit, TB_GB)                 
+                1 - the table
+                2 - Item name as a string
+                3 - Price as a decimal, without prefixes and suffixes
+                4 - The prefix used for all id's
+                5 - vm_num which is the number assigned to the entire service
+                6 - item_num which is the number assigned to the item within the service
+                7 - Tooltip for the input field for qty as a String
+                8 - Type which is used for populating getEstimate parameters
+                9 - Units suffix for price as a string, including the "/"
+                10 - Unit (static) displayed next to price
+                11 - Unit (static) displayed next to input field in qty 
+                12 - boolean for displaying the dropdown menu next to qty to change units (TB and GB)
  * Description: This is a helper function for addProduct which will generate one single line
  *          for the item nam, price, qty fields, and subtotal/cost. 
  */
@@ -272,7 +284,10 @@ function addItemLine(table, item_name, price, id, vm_num, item_num, tooltip, typ
             str_units.title = "Choose the units";
             str_units.setAttribute("num", vm_num);
             str_units.setAttribute("item_num", item_num);
-            str_units.setAttribute("typeUnits", "str");
+            if (typeEstimate == "silver") typeUnits = "str";
+            else if (typeEstimate == "san") typeUnits = "san";
+            else typeUnits = "cl";
+            str_units.setAttribute("typeUnits", typeUnits );
             str_units.id = "units" + vm_num + item_num;           
             /* add all unit options */
             option = new Option("TB", "TB", false, false);
@@ -443,199 +458,24 @@ function addProduct(id)
     /* ALL OF THIS IS FOR VM'S!!! */
     if (id == 'ST_VM' || id == 'HS_VM') {
         ++vm_num;
-        /* user has chosen standard vm */
+
         if(id == 'ST_VM') {
             /* set price array to ST_VM_UC */
             price_vm = PRICE_ST_VM_UC;
-
             /* prefix used for all id's */
             id_prefix = "st-vm";
             slice_text = "Standard VM";
-            vm_type_sub = "st-vm-sub"; //for sub id
-            vm_type_price = "st-vm-price"; //for each price id
-            vm_type_qty = "st-vm-qty"; //for each input qty id
 
         } else if (id == 'HS_VM') {
             price_vm = PRICE_HS_VM_UC;
             id_prefix = "hs-vm";
             slice_text = "High Security VM";
-            vm_type_sub = "hs-vm-vm-sub"; //for sub id
-            vm_type_price = "hs-vm-price"; //for each price id
-            vm_type_qty = "hs-vm-qty"; //for each input qty id
         }
         addTitleOptions(table, slice_text, "ROWS_" + id, id) ;
         
-        // row1 = table.insertRow(rowCount);
-        // row1.id = "row" + vm_num;
-        // var cell = row1.insertCell(0);
-        // var remove = document.createElement("button");
-        // var remove_text = document.createTextNode("-");
-        // remove.appendChild(remove_text);
-        // cell.appendChild(remove);
-        // cell.setAttribute("colspan", "1");
-        // cell.setAttribute("width", "20");
-        // remove.className = "remove-button";
-        // remove.setAttribute("value", "-");
-        // remove.setAttribute("rownumber", "row" + vm_num);
-        // remove.setAttribute("title", "Remove Service");
-        // if (id == 'ST_VM') {
-        //     remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), ROWS_STANDARD_VM, 'ST_VM')");
-        // } else {
-        //     remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), ROWS_HIGH_SECURITY_VM, 'ST_VM')");
-        // }
         
-        // var cell = row1.insertCell(1);
-        // var name = document.createTextNode(slice_text);                      
-        // cell.appendChild(name);
-        // cell.setAttribute("colspan", "1");
-        // cell.setAttribute("width", "220");
-        // cell.className = "service-title";
-            
-        // cell = row1.insertCell(2);
-        // var description_box = document.createElement("textarea");
-        // description_box.setAttribute("colspan", "3");
-        // description_box.id = "description" + vm_num;
-        // description_box.setAttribute("num", vm_num);
-        // description_box.setAttribute("name", " ");
-        // description_box.setAttribute("onchange", "changeDescription(this.getAttribute('num'), this.value)");
-        // description_box.setAttribute("rows", "5");
-        // description_box.setAttribute("cols", "30");
-        // cell.appendChild(description_box);
-        // document.getElementById("description" + vm_num).innerHTML = "Enter a description here";
-        // cell.setAttribute("colspan", 2);
-        
-        // var row = table.insertRow(++rowCount);
-        // var cell = row.insertCell(0);
-        // cell.setAttribute("colspan", "1");
-        
-        // var cell = row.insertCell(1);
-        // cell.setAttribute("style", "font-weight: bold");
-        // var options_text = document.createTextNode("Options");
-        // cell.appendChild(options_text);
-        // cell.setAttribute("colspan", "1");
-        // var row = table.insertRow(++rowCount);
-        // var cell = row.insertCell(0);
-        // cell.setAttribute("colspan", "1");
-        
-        // var cell = row.insertCell(1);
-        // cell.setAttribute("colspan", "1");
-        // var os_text = document.createTextNode("\u00a0\u00a0\u00a0\u00a0Affiliation:");
-        // cell.appendChild(os_text);
+        /* Adding Items Lines*/
 
-        // var cell = row.insertCell(2);
-        // var os = document.createElement("select"); 
-        // os.setAttribute("name", "affiliation");
-        // os.setAttribute("num", vm_num);
-        // os.setAttribute("title", "Choose client location");
-        // os.setAttribute("value", "UC");
-        // if (id == 'ST_VM'){
-        //     os.setAttribute("onchange", "changePrices(this.value, 'ST_VM', this.getAttribute('num'))");
-        // }
-        // else os.setAttribute("onchange", "changePrices(this.value, 'HS_VM', this.getAttribute('num'))");
-
-        // option = new Option("UC", "UC", false, false);
-        // option.id = "UC" + vm_num;
-        // os.appendChild(option);
-        // option = new Option("External", "External", false, false);
-        // option.id = "External" + vm_num;
-        // os.appendChild(option);
-        // cell.appendChild(os);
-        // cell.setAttribute("colspan", "2");
-        // os.id = "os" + vm_num;
-       
-        // var row = table.insertRow(++rowCount);
-        // var cell = row.insertCell(0);
-        // cell.setAttribute("colspan", "1");
-        
-        // var cell = row.insertCell(1);
-        // var os_text = document.createTextNode("\u00a0\u00a0\u00a0\u00a0Operating System:");
-        // cell.appendChild(os_text);
-        // cell.setAttribute("colspan", "1");
-        
-        // var cell = row.insertCell(2);
-        // var os = document.createElement("select"); 
-        // os.setAttribute("name", "os" + vm_num);
-        // os.setAttribute("value", "Windows");
-        // os.setAttribute("title", "Choose an operating system for your VM");
-
-        // option = new Option("Windows", "Windows", false, false);
-        // option.id = "Windows" + vm_num;
-        // os.appendChild(option);
-        // option = new Option("Red Hat 6 64-bit", "Red Hat 6 64-bit", false, false);
-        // option.id = "RedHat" + vm_num;
-        // os.appendChild(option);
-        // option = new Option("CentOS", "CentOS", false, false);
-        // option.id = "CentOS" + vm_num;
-        // os.appendChild(option);
-        // option = new Option("Ubuntu", "Ubuntu", false, false);
-        // option.id = "Ubuntu" + vm_num;
-        // os.appendChild(option);
-        // option = new Option("Other", "Other", false, false);
-        // option.id = "Other" + vm_num;
-        // os.appendChild(option);
-        // cell.appendChild(os);
-        // cell.setAttribute("colspan", "2");
-        // os.id = "os" + vm_num;
-        // os.setAttribute("optionval", vm_num);
-        // os.setAttribute("sys", "sys" + vm_num);
-        // os.setAttribute("manager", "manager" + vm_num);
-        // os.setAttribute("vm-type", id);
-        // os.setAttribute("onchange", "processOS(this.getAttribute('vm-type'), document.getElementById(this.id).value, this.getAttribute('sys'), this.getAttribute('manager'), this.getAttribute('optionval'))");
-        // os.setAttribute("readonly", "readonly");
-        
-        // var row = table.insertRow(++rowCount);
-        // var cell = row.insertCell(0);
-        // cell.setAttribute("colspan", "1");
-        
-        // var cell = row.insertCell(1);
-        // cell.setAttribute("style", "font-weight: bold");
-        // var specifications_text = document.createTextNode("Specifications");
-        // cell.appendChild(specifications_text);
-        
-        // var row = table.insertRow(++rowCount);
-        // var cell = row.insertCell(0);
-        // cell.setAttribute("colspan", "1");
-        
-        // var cell = row.insertCell(1);
-        // cell.setAttribute("style", "font-weight: bold;");
-        // cell.setAttribute("colspan", "1");
-        // var item_text = document.createTextNode("\u00a0\u00a0\u00a0\u00a0Item");
-        // cell.appendChild(item_text);
-        
-        // var cell = row.insertCell(2);
-        // cell.setAttribute("style", "font-weight: bold;");
-        // cell.setAttribute("colspan", "1");
-        // var item_text = document.createTextNode("Price");
-        // cell.appendChild(item_text);
-        
-        // var cell = row.insertCell(3);
-        // cell.setAttribute("style", "font-weight: bold;");
-        // cell.setAttribute("colspan", "1");
-        // var item_text = document.createTextNode("Qty");
-        // cell.appendChild(item_text);
-        
-        // var cell = row.insertCell(4);
-        // cell.setAttribute("style", "font-weight: bold;");
-        // cell.setAttribute("colspan", "1");
-        // var item_text = document.createTextNode("Cost");
-        // cell.appendChild(item_text);
-        
-        
-        /* Adding Items */
-        /* Parameters for function addItemLine(table, item_name, price, id, vm_num, item_num, tooltip, typeEstimate, category, unit_per_price, default_unit, TB_GB)                 
-                1 - the table
-                2 - Item name as a string
-                3 - Price as a decimal, without prefixes and suffixes
-                4 - The prefix used for all id's
-                5 - vm_num which is the number assigned to the entire service
-                6 - item_num which is the number assigned to the item within the service
-                7 - Tooltip for the input field for qty as a String
-                8 - Type which is used for populating getEstimate parameters
-                9 - Units suffix for price as a string, including the "/"
-                10 - Unit (static) displayed next to price
-                11 - Unit (static) displayed next to input field in qty 
-                12 - boolean for displaying the dropdown menu next to qty to change units (TB and GB)
-         */
         addItemLine(table, "Base-VM", price_vm[0], id_prefix, vm_num, item_num++, 0, 0, 0, 0, 0, 0);
         addItemLine(table, "Additional CPUs", price_vm[1], id_prefix, vm_num, item_num++, "Enter a whole number 0 to 11", "mem", id, "/CPU", "CPU(s)", 0);
         addItemLine(table, "Additional RAM", price_vm[2], id_prefix, vm_num, item_num++, "Enter a whole number 0 to 190", "mem", id, "/GB", "GB", 0 );
@@ -646,367 +486,9 @@ function addProduct(id)
         if (id == "HS_VM") {
             addItemLine(table, "System Management", 0, id_prefix, vm_num, item_num++,  0, 0, 0, 0, 0);
         }
-        // var row = table.insertRow(++rowCount);
-        // var cell = row.insertCell(0);
-        // cell.setAttribute("colspan", "1");
-        
-        // var cell = row.insertCell(1);
-        // cell.setAttribute("colspan", "1");
-        // var base_text = document.createTextNode("\u00a0\u00a0\u00a0\u00a0Base VM");
-        // cell.appendChild(base_text);
-        
-        // var cell = row.insertCell(2);
-        // cell.setAttribute("colspan", "1");
-        // var base_price = document.createTextNode("$" + price_vm[0]);
-        // cell.id = vm_type_price + vm_num + (++item_num); //first item
-        // cell.appendChild(base_price);
-        
-        // var cell = row.insertCell(3);
-        // cell.setAttribute("colspan", "1");
-        // cell.appendChild(document.createTextNode("1"));
-        // cell.setAttribute("value", 1);
-        // cell.setAttribute(vm_type_qty + vm_num + item_num, 1);
-        // cell.id = vm_type_qty + vm_num + item_num;
-        
-        // var cell = row.insertCell(4);
-        // var price = document.createElement("input");
-        // price.setAttribute("name", vm_type_sub + vm_num + item_num);
-        // price.setAttribute("type", "text");
-        // price.id = vm_type_sub + vm_num + item_num;
-        // price.className = "vm-sub vm-sub" + vm_num;
-        // price.className += " price-align";
-        // price.value = "$" + price_vm[0];
-        // price.setAttribute("size", 20);
-        // price.setAttribute("readonly", "readonly");
-        // price.setAttribute("value", price.value);
-        // cell.appendChild(price);
-        // cell.setAttribute("colspan", "1");
 
-        // var row2 = table.insertRow(++rowCount);
-        // var cell = row2.insertCell(0);
-        // cell.setAttribute("colspan", "1");
-        // var cell = row2.insertCell(1);
-        // var cpu = document.createTextNode("\u00a0\u00a0\u00a0\u00a0Additional CPUs");                       
-        // cell.appendChild(cpu);
-        // cell.setAttribute("colspan", "1");
-        
-        // var cell = row2.insertCell(2);
-        // var cpu_price = document.createTextNode("$" + price_vm[1] + "/CPU");
-        // cell.appendChild(cpu_price);
-        // cell.id = vm_type_price + vm_num+ (++item_num);
-        // cell.setAttribute(vm_type_price + vm_num + item_num, price_vm[1]);
-        // cell.setAttribute("colspan", "1");
-
-        // var cell = row2.insertCell(3);
-        // var cpu_qty = document.createElement("input");
-        // cpu_qty.setAttribute("type", "text");
-        // cpu_qty_in = vm_type_qty + vm_num + item_num;
-        // cpu_sub_out = vm_type_sub + vm_num + item_num;
-
-        // cell.appendChild(cpu_qty);
-        // cell.setAttribute("colspan", "1");
-        // cpu_qty.id = cpu_qty_in;
-        // cpu_qty.setAttribute("name", cpu_qty_in);
-        // cpu_qty.setAttribute("title", "Enter a whole number 0 to 11");
-        // cpu_qty.className += " cpu_qty userinput";
-        // cpu_qty.setAttribute("dest", "" + cpu_sub_out);
-        // cpu_qty.setAttribute("num", vm_num);
-        // cpu_qty.setAttribute(vm_type_price + vm_num + item_num, price_vm[1]);
-        // cpu_qty.setAttribute("cpu-price", price_vm[1])
-        // cpu_qty.setAttribute("size", 5);
-        // cpu_qty.setAttribute("onchange", "getEstimate('cpu', this.id, this.getAttribute('cpu-price'), this.getAttribute('dest'), this.getAttribute('num'), 'ST_VM')");
-        // cell.appendChild(document.createTextNode("\u00a0\u00a0CPU(s)"));
-        
-        // var cell = row2.insertCell(4);
-        // var cpu_sub = document.createElement("input");
-        // cpu_sub.setAttribute("type", "text");
-        // cell.appendChild(cpu_sub);
-        // cell.setAttribute("colspan", "1");
-        // cpu_sub.id = cpu_sub_out;
-        // cpu_sub.setAttribute("name", cpu_sub.id);
-        // cpu_sub.setAttribute("size", 20);
-        // document.getElementById(cpu_sub_out).setAttribute("readonly", "readonly");
-        // cpu_sub.className = "vm-sub vm-sub" + vm_num;
-
-        // var row3 = table.insertRow(++rowCount);
-        // var cell = row3.insertCell(0);
-        // cell.setAttribute("colspan", "1");
-        // var cell = row3.insertCell(1);
-        // var mem = document.createTextNode("\u00a0\u00a0\u00a0\u00a0Additional RAM");                       
-        // cell.appendChild(mem);
-        // cell.setAttribute("colspan", "1");
-        // var cell = row3.insertCell(2);
-        // var mem_price = document.createTextNode("$" + price_vm[2] + "/GB");
-        // cell.appendChild(mem_price);
-        // cell.setAttribute("colspan", "1");
-        // cell.id = vm_type_price + vm_num + (++item_num);
-
-        // var cell = row3.insertCell(3);
-        // var mem_qty = document.createElement("input");
-        // mem_qty.setAttribute("type", "text");
-        // mem_qty_in = vm_type_qty + vm_num + item_num;
-        // mem_sub_out = vm_type_sub + vm_num + item_num;
-        // cell.appendChild(mem_qty);
-        // cell.setAttribute("colspan", "1");
-        // mem_qty.id = mem_qty_in;
-        // mem_qty.setAttribute("name", mem_qty_in);
-        // mem_qty.setAttribute("title", "Enter a whole number 0 to 190");
-        // mem_qty.className += " userinput";
-        // mem_qty.setAttribute("dest", mem_sub_out);
-        // mem_qty.setAttribute("num", vm_num);
-        // mem_qty.setAttribute("mem-price", price_vm[2]);
-        // mem_qty.setAttribute("size", 5);
-        // mem_qty.setAttribute("onchange", "getEstimate('mem', this.id, this.getAttribute('mem-price'), this.getAttribute('dest'), this.getAttribute('num'), 'ST_VM')");
-        // cell.appendChild(document.createTextNode("\u00a0\u00a0GB"));
-        
-        // var cell = row3.insertCell(4);
-        // var mem_sub = document.createElement("input");
-        // mem_sub.setAttribute("type", "text");
-        // cell.appendChild(mem_sub);
-        // cell.setAttribute("colspan", "1");
-        // mem_sub.id = mem_sub_out;
-        // mem_sub.setAttribute("name", mem_sub.id);
-        // mem_sub.setAttribute("size", 20);
-        // document.getElementById(mem_sub_out).setAttribute("readonly", "readonly");
-        // mem_sub.className = "vm-sub vm-sub" + vm_num;
-
-        // var row4 = table.insertRow(++rowCount);
-        // var cell = row4.insertCell(0);
-        // cell.setAttribute("colspan", "1");
-        // if (id == 'ST_VM') {
-        //     var cell = row4.insertCell(1);
-        //     var str = document.createTextNode("\u00a0\u00a0\u00a0\u00a0Additional 'Silver' Storage");                        
-        //     cell.appendChild(str);
-        //     cell.setAttribute("colspan", "1");
-
-        //     var cell = row4.insertCell(2);
-        //     var str_price = document.createTextNode("$" + price_vm[3] + "/TB");
-        //     cell.appendChild(str_price);
-        //     cell.setAttribute("colspan", "1");
-        //     cell.id = vm_type_price + vm_num + (++item_num);
-
-        //     var cell = row4.insertCell(3);
-        //     var str_qty = document.createElement("input");
-        //     str_qty.setAttribute("type", "text");
-        //     str_qty_in = vm_type_qty + vm_num + item_num;
-        //     str_sub_out = vm_type_sub + vm_num + item_num;
-        //     cell.appendChild(str_qty);
-        //     cell.setAttribute("colspan", "1");
-        //     str_qty.id = str_qty_in;
-        //     str_qty.setAttribute("name", str_qty_in);
-        //     str_qty.setAttribute("title", "Minimum value 0.001TB (1GB). Max value 30TB (30000GB)");
-        //     str_qty.className += " userinput";
-        //     str_qty.setAttribute("dest", str_sub_out);
-        //     str_qty.setAttribute("num", vm_num);
-        //     str_qty.setAttribute("str-price", price_vm[3]);
-        //     str_qty.setAttribute("size", 5);
-        //     str_qty.setAttribute("onchange", "getEstimate('silver', this.id, this.getAttribute('str-price'), this.getAttribute('dest'), this.getAttribute('num'), 'ST_VM')");
-        //     var blanknode = document.createTextNode("\u00a0");
-        //     cell.appendChild(blanknode);
-            
-        //     var str_units = document.createElement("select");
-        //     str_units.setAttribute("name", "str-units" + vm_num + item_num);
-        //     str_units.setAttribute("value", "TB");
-        //     str_units.setAttribute("title", "Choose the units");
-        //     str_units.setAttribute("num", vm_num);
-        //     str_units.setAttribute("item_num", item_num)
-        //     str_units.id = "str-units" + vm_num + item_num;           
-        //     /* add all unit options */
-        //     option = new Option("TB", "TB", false, false);
-        //     option.id = "TB" + vm_num + item_num;
-        //     str_units.appendChild(option);
-        //     option = new Option("GB", "GB", false, false);
-        //     option.id = "GB" + vm_num + item_num;
-        //     str_units.appendChild(option);
-        //     str_units.setAttribute("vm_type_qty", vm_type_qty);
-        //     str_units.setAttribute("onchange", "changeUnits(this.getAttribute('vm_type_qty'), this.id, this.value, this.getAttribute('num'), this.getAttribute('item_num'), 'str')");
-        //     cell.appendChild(str_units);
-            
-        //     var cell = row4.insertCell(4);
-        //     var str_sub = document.createElement("input");
-        //     str_sub.setAttribute("type", "text");
-        //     cell.appendChild(str_sub);
-        //     cell.setAttribute("colspan", "1");
-        //     str_sub.id = str_sub_out;
-        //     str_sub.setAttribute("name", str_sub.id);
-        //     str_sub.setAttribute("size", 20);
-        //     document.getElementById(str_sub_out).setAttribute("readonly", "readonly");
-        //     str_sub.className = "vm-sub vm-sub" + vm_num;
-        // } 
-        
-        // else if (id == 'HS_VM') {
-        //     var cell = row4.insertCell(1);
-        //     var alert = document.createTextNode("Silver storage is unavailable for High Security VMs.");
-        //     cell.appendChild(alert);
-        //     cell.setAttribute("colspan", "4");
-        //     cell.className = "alert";
-        // }
-
-        // var row5 = table.insertRow(++rowCount);
-        // var cell = row5.insertCell(0);
-        // cell.setAttribute("colspan", "1");
-        
-        // var cell = row5.insertCell(1);
-        // var san = document.createTextNode("\u00a0\u00a0\u00a0\u00a0Additional 'Gold' Storage");                        
-        // cell.appendChild(san);
-        // cell.setAttribute("colspan", "1");
-
-        // var cell = row5.insertCell(2);
-        // var san_price = document.createTextNode("$" + parseFloat(price_vm[4]).toFixed(2) + "/TB");
-        // cell.appendChild(san_price);
-        // cell.setAttribute("colspan", "1");
-        // cell.id = vm_type_price + vm_num + (++item_num);
-
-        // var cell = row5.insertCell(3);
-        // var san_qty = document.createElement("input");
-        // san_qty.setAttribute("type", "text");
-        // san_qty_in = vm_type_qty + vm_num + item_num;;
-        // san_sub_out = vm_type_sub + vm_num + item_num;;
-        // cell.appendChild(san_qty);
-        // cell.setAttribute("colspan", "1");
-        // san_qty.id = san_qty_in;
-        // san_qty.setAttribute("name", san_qty_in);
-        // san_qty.setAttribute("title", "Min value 0.001TB (1GB). Max value 4.9TB (4900GB)");
-        // san_qty.className += " userinput";
-        // san_qty.setAttribute("dest", san_sub_out);
-        // san_qty.setAttribute("num", vm_num);
-        // san_qty.setAttribute("san-price", price_vm[4]);
-        // san_qty.setAttribute("size", 5);
-        // san_qty.setAttribute("onchange", "getEstimate('gold', this.id, this.getAttribute('san-price'), this.getAttribute('dest'), this.getAttribute('num'), 'ST_VM')");
-        // var blanknode = document.createTextNode("\u00a0");
-        // cell.appendChild(blanknode);
-        
-        // var san_units = document.createElement("select");
-        // san_units.setAttribute("name", "san-units" + vm_num + item_num);
-        // san_units.setAttribute("value", "TB");
-        // san_units.setAttribute("title", "Choose the units");
-        // san_units.setAttribute("num", vm_num);
-        // san_units.setAttribute("item_num", item_num)
-        // san_units.id = "san-units" + vm_num + item_num;
-        // /* add all unit options */
-        // option = new Option("TB", "TB", false, false);
-        // option.id = "TB" + vm_num + item_num;
-        // san_units.appendChild(option);
-        // option = new Option("GB", "GB", false, false);
-        // option.id = "GB" + vm_num + item_num;
-        // san_units.appendChild(option);
-        // san_units.setAttribute("vm_type_qty", vm_type_qty);
-        // san_units.setAttribute("onchange", "changeUnits(this.getAttribute('vm_type_qty'), this.id, this.value, this.getAttribute('num'), this.getAttribute('item_num'), 'san')");
-        // cell.appendChild(san_units);
-
-        // var cell = row5.insertCell(4);
-        // var san_sub = document.createElement("input");
-        // san_sub.setAttribute("type", "text");
-        // cell.appendChild(san_sub);
-        // cell.setAttribute("colspan", "1");
-        // san_sub.id = san_sub_out;
-        // san_sub.setAttribute("name", san_sub.id);
-        // san_sub.setAttribute("size", 20);
-        // document.getElementById(san_sub_out).setAttribute("readonly", "readonly");
-        // san_sub.className = "vm-sub vm-sub" + vm_num;
-        
-        // var row = table.insertRow(++rowCount);
-        // row.id = "row" + vm_num;
-        // var cell = row.insertCell(0);
-        
-        // var cell = row.insertCell(1);
-        // var dual_text = document.createTextNode("\u00a0\u00a0\u00a0\u00a0Extra Snapshots");
-        // cell.appendChild(dual_text);
-        
-        // var cell = row.insertCell(2);
-        // var extrasnap_price = document.createTextNode("$" + parseFloat(price_vm[5]).toFixed(2));
-        // cell.appendChild(extrasnap_price);
-        // cell.setAttribute("colspan", "1");
-        // cell.id = vm_type_price + vm_num + (++item_num);    
-        // cell.setAttribute(vm_type_price + item_num, price_vm[5]);    
-
-        // var cell = row.insertCell(3);
-        // var extrasnap = document.createElement("select");
-        // extrasnap.id = "extrasnap" + vm_num;
-        // extrasnap.setAttribute("value", "No");
-        // extrasnap.setAttribute("num", vm_num);
-        // extrasnap.setAttribute("name", extrasnap.id);
-        // extrasnap.setAttribute("title", "Marking yes will add $" + price_vm[5] + " to the subtotal");
-        // extrasnap.setAttribute("onchange", "extraSnaps(this.getAttribute('num'))");
-                
-        // var options = new Option("No", "No", false, false);
-        // options.id = "No" + vm_num;
-        // options.setAttribute("num", vm_num);
-        // extrasnap.appendChild(options);
-        // extrasnap.setAttribute("value", "No");
-        
-        // options = new Option("Yes", "Yes", false, false);
-        // options.id = "Yes" + vm_num;
-        // options.setAttribute("num", vm_num);
-        // extrasnap.appendChild(options);
-        // cell.appendChild(extrasnap);
-        
-        // var cell = row.insertCell(4);
-        // var extra_sub = document.createElement("input");
-        // extra_sub.setAttribute("type", "text");
-        // cell.appendChild(extra_sub);
-        //     // cell.setAttribute("class", "pad-bottom");
-        
-        // cell.setAttribute("colspan", "1");
-        // extra_sub.id = "extra-sub-out" + vm_num;
-        // extra_sub.setAttribute("name", extrasnap.id);
-        // extra_sub.setAttribute("size", 20);
-        // document.getElementById(extra_sub.id).setAttribute("readonly", "readonly");
-        // extra_sub.className = "vm-sub vm-sub" + vm_num;
-
-        // if (id == 'HS_VM') {
-        //     var row6 = table.insertRow(++rowCount);
-        //     var cell = row6.insertCell(0);
-        //     cell.setAttribute("colspan", "1");
-
-        //     cell = row6.insertCell(1);
-        //     var sysmanagement = document.createTextNode("\u00a0\u00a0\u00a0\u00a0System Management");
-        //     cell.appendChild(sysmanagement);
-        //     cell.setAttribute("colspan", "1");
-
-        //     cell = row6.insertCell(2);
-        //     var sysmanagement_text = document.createElement("input");
-        //     sysmanagement_text.setAttribute("type", "text");
-        //     cell.appendChild(sysmanagement_text);
-        //     cell.setAttribute("colspan", "3");
-        //     cell.setAttribute("class", "pad-bottom");
-
-        //     sysmanagement_text.id = "sys" + vm_num;
-        //     sysmanagement_text.setAttribute("name", sysmanagement_text.id);
-        //     sysmanagement_text.className = "info";
-        //     sysmanagement_text.setAttribute("size", 30);
-        //     document.getElementById(sysmanagement_text.id).setAttribute("readonly", "readonly");
-
-        //     /* Default values for System Management */
-        //     /*if(id == 'ST_VM') {
-        //         document.getElementById(sysmanagement_text.id).setAttribute("value", "Included");  
-        //     } else { */ 
-        //         document.getElementById(sysmanagement_text.id).setAttribute("value", "User-managed");
-        //     /*}*/
-        // }
         addSubtotalRow(table, vm_num);
-        // var row8 = table.insertRow(++rowCount);
-        // var cell = row8.insertCell(0);
-        // cell.setAttribute("colspan", "1");
-        // // cell.setAttribute("style", "border-bottom: 1px solid #d3d3d3;");
-        // var cell = row8.insertCell(1);
-        // var subtext = document.createTextNode("Subtotal:\u00a0\u00a0");
-        // cell.appendChild(subtext);
-        // cell.setAttribute("colspan", "3");
-        // cell.className += " ";
-        // cell.setAttribute("style", "text-align: left;");
 
-
-        // var cell = row8.insertCell(2);
-        // var vmsubtotal = document.createElement("input");
-        // vmsubtotal.setAttribute("type", "text");
-        // vmsubtotal.setAttribute("size", 20);
-        // cell.appendChild(vmsubtotal);
-        // // cell.setAttribute("style", "border-bottom: 1px solid #d3d3d3;")
-        // cell.setAttribute("colspan", "1");
-        // vmsubtotal.setAttribute("style", "");
-        // vmsubtotal.id = "vm-sub" + vm_num + "-total";
-        // vmsubtotal.setAttribute("name", vmsubtotal.id);
 
         //remove duplicate of sub total row when there are two VM's
         if (document.getElementById("vm-sub-total-row") != null) {
@@ -1039,13 +521,14 @@ function addProduct(id)
         sub('vm-sub');
         sub('sub');
             
-    } /* END CODE FOR VM'S!!!! */
+    } 
                 
-    /* THIS CODE IS FOR CLOUD STORAGE */
+    /*  CLOUD STORAGE */
     else if (id == 'CL_STR') {
         ++vm_num;
-        var cl_str_price_val = PRICE_CLOUD_STORAGE_UC;
+        var price_vm = PRICE_CLOUD_STORAGE_UC;
         var cl_str_price_val_double = PRICE_DUAL_SITE_CLOUD_STORAGE_UC;
+        var id_prefix = "cl-str";
         vm_type_sub = "cl-str-sub"; //for sub id
         vm_type_price = "cl-str-price"; //for each price id
         vm_type_qty = "cl-str-qty";
@@ -1107,7 +590,7 @@ function addProduct(id)
         var dualoptions = document.createElement("select");
         dualoptions.id = "dualoptions" + vm_num;
         dualoptions.setAttribute("num", vm_num);
-        dualoptions.setAttribute("original", cl_str_price_val);
+        dualoptions.setAttribute("original", price_vm);
         dualoptions.setAttribute("double", cl_str_price_val_double);
         dualoptions.setAttribute("name", dualoptions.id);
         dualoptions.setAttribute("title", "Dual site redundancy doubles the cost");
@@ -1211,71 +694,73 @@ function addProduct(id)
         cell.setAttribute("style", "font-weight: bold");
         cell.appendChild(document.createTextNode("Cost"));
         
-        row = table.insertRow(++rowCount);
-        cell = row.insertCell(0);
-        cell.setAttribute("colspan", "1");
-        //cell.setAttribute("style", "border-bottom: #d3d3d3 1px solid");
-        
-        cell = row.insertCell(1);
-        cell.appendChild(document.createTextNode("\u00a0\u00a0\u00a0\u00a0Storage"));
-        //cell.setAttribute("style", "border-bottom: #d3d3d3 1px solid");        
-        
-        cell = row.insertCell(2);
-        //cell.setAttribute("style", "border-bottom: #d3d3d3 1px solid");
-        var cl_str_price = document.createTextNode("$" + cl_str_price_val + "/TB");
-        cell.id = vm_type_price + vm_num + (++item_num);
-        cell.setAttribute("value",cl_str_price_val);
-        cell.setAttribute("name", cell.id);
-        cell.appendChild(cl_str_price);
-        
-        var cell = row.insertCell(3);
-        //cell.setAttribute("style", "border-bottom: #d3d3d3 1px solid");
-        var cl_str_qty = document.createElement("input");
-        cl_str_qty.setAttribute("type", "text");
-        cl_str_qty_in = vm_type_qty + vm_num + item_num;
-        cl_str_sub_out = vm_type_sub+ vm_num + item_num;
-        cell.appendChild(cl_str_qty);
-        cell.setAttribute("colspan", "1");
-        cl_str_qty.id = cl_str_qty_in;
-        cl_str_qty.className += " cl_str_qty userinput";
-        cl_str_qty.setAttribute("dest", "" + cl_str_sub_out);
-        cl_str_qty.setAttribute("num", vm_num);
-        cl_str_qty.setAttribute(vm_type_price, cl_str_price_val);
-        cl_str_qty.setAttribute("name", cl_str_qty.id);
-        cl_str_qty.setAttribute("title", "Min value 0.100TB (100GB)");
-        cl_str_qty.setAttribute("size", 5);
-        cl_str_qty.setAttribute("onchange", "getEstimate('cl-str', this.id, this.getAttribute('cl-str-price'), this.getAttribute('dest'), this.getAttribute('num'), 'CL_STR')");
-        var blanknode = document.createTextNode("\u00a0");
-        cell.appendChild(blanknode);
-        
-        var cl_units = document.createElement("select");
-        cl_units.setAttribute("name", "cl-units" + vm_num + item_num);
-        cl_units.setAttribute("value", "TB");
-        cl_units.setAttribute("title", "Choose the units");
-        cl_units.setAttribute("num", vm_num);
-        cl_units.id = "cl-units" + vm_num + item_num;
-        cl_units.setAttribute("item_num", item_num)
-        cl_units.setAttribute("vm_type_qty", vm_type_qty);
-        /* add all unit options */
-        option = new Option("TB", "TB", false, false);
-        option.id = "TB" + vm_num + item_num;
-        cl_units.appendChild(option);
-        option = new Option("GB", "GB", false, false);
-        option.id = "GB" + vm_num + item_num;
-        cl_units.appendChild(option);
-        cl_units.setAttribute("onchange", "changeUnits(this.getAttribute('vm_type_qty'), this.id, this.value, this.getAttribute('num'), this.getAttribute('item_num'), 'cl')");
-        cell.appendChild(cl_units);
 
-        var cell = row.insertCell(4);
-        var cl_str_sub = document.createElement("input");
-        cl_str_sub.setAttribute("type", "text");
-        cell.appendChild(cl_str_sub);
-        cell.setAttribute("colspan", "1");
-        cl_str_sub.id = cl_str_sub_out;
-        document.getElementById(cl_str_sub_out).setAttribute("readonly", "readonly");
-        cl_str_sub.className = "str-sub vm-sub" + vm_num;
-        cl_str_sub.setAttribute("name", cl_str_sub.id);
-        cl_str_sub.setAttribute("size", 20);
+        addItemLine(table, "Storage", price_vm, id_prefix, vm_num, item_num++, "Min value 0.100TB (100GB)", "cl-str", id, "/TB", 0, 1);
+        // row = table.insertRow(++rowCount);
+        // cell = row.insertCell(0);
+        // cell.setAttribute("colspan", "1");
+        // //cell.setAttribute("style", "border-bottom: #d3d3d3 1px solid");
+        
+        // cell = row.insertCell(1);
+        // cell.appendChild(document.createTextNode("\u00a0\u00a0\u00a0\u00a0Storage"));
+        // //cell.setAttribute("style", "border-bottom: #d3d3d3 1px solid");        
+        
+        // cell = row.insertCell(2);
+        // //cell.setAttribute("style", "border-bottom: #d3d3d3 1px solid");
+        // var cl_str_price = document.createTextNode("$" + cl_str_price_val + "/TB");
+        // cell.id = vm_type_price + vm_num + (++item_num);
+        // cell.setAttribute("value",cl_str_price_val);
+        // cell.setAttribute("name", cell.id);
+        // cell.appendChild(cl_str_price);
+        
+        // var cell = row.insertCell(3);
+        // //cell.setAttribute("style", "border-bottom: #d3d3d3 1px solid");
+        // var cl_str_qty = document.createElement("input");
+        // cl_str_qty.setAttribute("type", "text");
+        // cl_str_qty_in = vm_type_qty + vm_num + item_num;
+        // cl_str_sub_out = vm_type_sub+ vm_num + item_num;
+        // cell.appendChild(cl_str_qty);
+        // cell.setAttribute("colspan", "1");
+        // cl_str_qty.id = cl_str_qty_in;
+        // cl_str_qty.className += " cl_str_qty userinput";
+        // cl_str_qty.setAttribute("dest", "" + cl_str_sub_out);
+        // cl_str_qty.setAttribute("num", vm_num);
+        // cl_str_qty.setAttribute(vm_type_price, cl_str_price_val);
+        // cl_str_qty.setAttribute("name", cl_str_qty.id);
+        // cl_str_qty.setAttribute("title", "Min value 0.100TB (100GB)");
+        // cl_str_qty.setAttribute("size", 5);
+        // cl_str_qty.setAttribute("onchange", "getEstimate('cl-str', this.id, this.getAttribute('cl-str-price'), this.getAttribute('dest'), this.getAttribute('num'), 'CL_STR')");
+        // var blanknode = document.createTextNode("\u00a0");
+        // cell.appendChild(blanknode);
+        
+        // var cl_units = document.createElement("select");
+        // cl_units.setAttribute("name", "cl-units" + vm_num + item_num);
+        // cl_units.setAttribute("value", "TB");
+        // cl_units.setAttribute("title", "Choose the units");
+        // cl_units.setAttribute("num", vm_num);
+        // cl_units.id = "cl-units" + vm_num + item_num;
+        // cl_units.setAttribute("item_num", item_num)
+        // cl_units.setAttribute("vm_type_qty", vm_type_qty);
+        // /* add all unit options */
+        // option = new Option("TB", "TB", false, false);
+        // option.id = "TB" + vm_num + item_num;
+        // cl_units.appendChild(option);
+        // option = new Option("GB", "GB", false, false);
+        // option.id = "GB" + vm_num + item_num;
+        // cl_units.appendChild(option);
+        // cl_units.setAttribute("onchange", "changeUnits(this.getAttribute('vm_type_qty'), this.id, this.value, this.getAttribute('num'), this.getAttribute('item_num'), 'cl')");
+        // cell.appendChild(cl_units);
+
+        // var cell = row.insertCell(4);
+        // var cl_str_sub = document.createElement("input");
+        // cl_str_sub.setAttribute("type", "text");
+        // cell.appendChild(cl_str_sub);
+        // cell.setAttribute("colspan", "1");
+        // cl_str_sub.id = cl_str_sub_out;
+        // document.getElementById(cl_str_sub_out).setAttribute("readonly", "readonly");
+        // cl_str_sub.className = "str-sub vm-sub" + vm_num;
+        // cl_str_sub.setAttribute("name", cl_str_sub.id);
+        // cl_str_sub.setAttribute("size", 20);
 
         var row8 = table.insertRow(++rowCount);
         var cell = row8.insertCell(0);

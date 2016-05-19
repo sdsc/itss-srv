@@ -1,9 +1,9 @@
- /* Author: Kimberly Ly
+ /* Author: Kimberly Ly and Andie Romero
  * Filename: functions.js
  * Purpose: Contains the calculating functions for creating the invoice.
  *          Please EDIT in the appropriate areas to CHANGE PRICE and
  *          SERVICE NAMES. 
- * Last Updated: 4/28/15, version 3.0
+ * Last Updated: 
  */
 
 /* PRICES FOR EVERYTHING.
@@ -459,7 +459,7 @@ function changePrices(affiliation, id, num)
  *             id - the id of the field
  *             price - price of the product
  *             dest - the id of the dest to output the result
- *             category - which category this belongs to... 
+ *             category - which category this belongs to
  */
 function getEstimate(type, id, price, dest, num, category)
 {
@@ -671,7 +671,7 @@ function validate(type, id, dest, num)
             break;
         
         case "cl-str":
-            if (document.getElementById('cl-units' + num + "1").getAttribute("value") == 'GB') {
+            if (document.getElementById('units' + num + "1").getAttribute("value") == 'GB') {
                 if (v < 100) {
                     d.setAttribute("value", "Invalid input");
                     d.style.color = "#ff0000";
@@ -747,7 +747,10 @@ function validate(type, id, dest, num)
 }
             
 /* Function Name: removeProduct
- * Parameters: rowNum - the index of the row to delete
+ * Parameters: 
+    rowNum - the index of the row to delete
+    deleteNum - the number of rows to delete
+    category - the category of the service
  * Result: Deletes a product and its associated rows. Recalculates subtotals
  */
 function removeProduct(rowNum, deleteNum, category)
@@ -875,6 +878,14 @@ function processOS(id, o, system, manager, num) {
     document.getElementById(name + num).setAttribute("selected", "selected");
 }
 
+/* Function Name: changePrice
+ * Parameters: 
+    - num
+    - originalval
+    - doubleval
+ * Result: Changes the System Management and Manager boxes
+ *          depending on the OS chosen. Also changes the dropdown selected value
+ */
 function changePrice(num, originalval, doubleval)
 {
     var val = document.getElementById('dualoptions' + num).value;
@@ -1014,6 +1025,10 @@ function changeValue(id, value, num)
     calculateBackup(num);
 }
 
+/* Function Name: changeUnits
+ * Parameters: 
+ * Result: 
+ */
 function changeUnits(vm_qty, id, value, num, item_num, category)
 {
     var currentprice;
@@ -1049,30 +1064,32 @@ function changeUnits(vm_qty, id, value, num, item_num, category)
         
         case 'san': 
             if (value == 'TB') {
-                currentprice = document.getElementById(vm_qty + num + item_num).getAttribute("san-price");
+                currentprice = document.getElementById(vm_qty + num + item_num).getAttribute("price");
                 currentprice *= 1000;
-                document.getElementById(vm_qty + num + item_num).setAttribute("san-price", currentprice);
+                document.getElementById(vm_qty + num + item_num).setAttribute("price", currentprice);
             } else {
-                currentprice = document.getElementById(vm_qty + num + item_num).getAttribute("san-price");
+                currentprice = document.getElementById(vm_qty + num + item_num).getAttribute("price");
                 currentprice /= 1000;
-                document.getElementById(vm_qty + num + item_num).setAttribute("san-price", currentprice);
+                document.getElementById(vm_qty + num + item_num).setAttribute("price", currentprice);
             }
             var element = document.getElementById(vm_qty + num + item_num);
-            getEstimate('gold', element.id, element.getAttribute('san-price'), element.getAttribute('dest'), element.getAttribute('num'), 'ST_VM');
+            if (vm_qty == "hs-vm-qty") var category = "HS-VM";
+            else var category = 'ST-VM';
+            getEstimate('gold', element.id, element.getAttribute('price'), element.getAttribute('dest'), element.getAttribute('num'), category);
             break;
         
         case 'cl': 
             if (value == 'TB') {
-                currentprice = document.getElementById("cl-str-qty" + num + item_num).getAttribute("cl-str-price");
+                currentprice = document.getElementById("cl-str-qty" + num + item_num).getAttribute("price");
                 currentprice *= 1000;
-                document.getElementById("cl-str-qty" + num + item_num).setAttribute("cl-str-price", currentprice);
+                document.getElementById("cl-str-qty" + num + item_num).setAttribute("price", currentprice);
             } else {
-                currentprice = document.getElementById("cl-str-qty" + num + item_num).getAttribute("cl-str-price");
+                currentprice = document.getElementById("cl-str-qty" + num + item_num).getAttribute("price");
                 currentprice /= 1000;
-                document.getElementById("cl-str-qty" + num + item_num).setAttribute("cl-str-price", currentprice);
+                document.getElementById("cl-str-qty" + num + item_num).setAttribute("price", currentprice);
             }
             var element = document.getElementById('cl-str-qty' + num + item_num);
-            getEstimate('cl-str', element.id, element.getAttribute('cl-str-price'), element.getAttribute('dest'), element.getAttribute('num'), 'CL_STR');
+            getEstimate('cl-str', element.id, element.getAttribute('price'), element.getAttribute('dest'), element.getAttribute('num'), 'CL_STR');
             break;
         
         case 'pr': 
