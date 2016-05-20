@@ -191,6 +191,33 @@ function addTitleOptions(table, title, rowsString, category) {
 
         }
     }
+    if (category == "SYS_MAN") {
+        var row = table.insertRow(++rowCount);
+        var cell = row.insertCell(0);
+        cell.setAttribute("colspan", "1");
+        
+        cell = row.insertCell(1);
+        cell.appendChild(document.createTextNode("\u00a0\u00a0\u00a0\u00a0Management Type"));
+        
+        cell = row.insertCell(2);
+        var psa = document.createElement("select"); 
+        
+        option = new Option("Standard", "Standard", false, false);
+        option.id = "Standard" + vm_num;
+        psa.appendChild(option);
+
+        option = new Option("Custom", "Custom", false, false);
+        option.id = "Custom" + vm_num;
+        psa.appendChild(option);
+        psa.setAttribute("title", "Choose the Standard option, or customize your own settings. Customization results in different prices.");
+
+        cell.appendChild(psa);
+        cell.setAttribute("colspan", "1");
+        psa.id = "psa" + vm_num;
+        psa.setAttribute("optionval", vm_num);
+        psa.setAttribute("onchange", "processPrice(document.getElementById(this.id).value, this.getAttribute('optionval'))");
+        psa.setAttribute("value", "Standard");
+    }
         
     var row = table.insertRow(++rowCount);
     var cell = row.insertCell(0);
@@ -334,7 +361,8 @@ function addItemLine(table, item_name, price, id, vm_num, item_num, tooltip, typ
         var getEstimate = "getEstimate('" + qty.typeEstimate + "','" + qty.id + "', this.getAttribute('price') , this.getAttribute('dest'), this.getAttribute('num'),'" + category + "')";
         qty.setAttribute("onchange", getEstimate);
         // static unit 
-        if (default_unit) {
+        if (default_unit == 0) {}
+        else if (default_unit) {
             cell.appendChild(document.createTextNode("\u00a0\u00a0" + default_unit));
         }
         // dropdown menu with different units
@@ -642,176 +670,10 @@ function addProduct(id)
     /* BEGIN SYSTEM MANAGEMENT */
     else if (id == 'SYS_MAN') {
         ++vm_num;
-        row1 = table.insertRow(rowCount);
-        row1.id = "row" + vm_num;
-        var cell = row1.insertCell(0);
-        var remove = document.createElement("button");
-        var remove_text = document.createTextNode("-");
-        remove.appendChild(remove_text);
-        cell.appendChild(remove);
-        cell.setAttribute("width", "20");
-        remove.className = "remove-button";
-        remove.setAttribute("value", "-");
-        remove.setAttribute("rownumber", "row" + vm_num);
-        remove.setAttribute("title", "Remove Service");
-        remove.setAttribute("numRows", ROWS_SYSTEM_MANAGEMENT);
-        remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), this.getAttribute('numRows'), 'SYS_MAN')");
-        
-        var cell = row1.insertCell(1);
-        cell.setAttribute("width", "220");
-        var name = document.createTextNode("System Management");                      
-        cell.appendChild(name);
-        cell.setAttribute("colspan", "1");
-        cell.className = "service-title";
-            
-        cell = row1.insertCell(2);
-        var description_box = document.createElement("textarea");
-        description_box.setAttribute("colspan", "2");
-        description_box.id = "description" + vm_num;
-        description_box.setAttribute("num", vm_num);
-        description_box.setAttribute("name", " ");
-        description_box.setAttribute("onchange", "changeDescription(this.getAttribute('num'), this.value)");
-        description_box.setAttribute("rows", "5");
-        description_box.setAttribute("cols", "30");
-        cell.appendChild(description_box);
-        document.getElementById("description" + vm_num).innerHTML = "Enter a description here";
-        
-        var row = table.insertRow(++rowCount);
-        var cell = row.insertCell(0);
-        cell.setAttribute("colspan", "1");
-        
-        cell = row.insertCell(1);
-        cell.setAttribute("style", "font-weight: bold");
-        cell.appendChild(document.createTextNode("Options"));
-        
-        var row = table.insertRow(++rowCount);
-        var cell = row.insertCell(0);
-        cell.setAttribute("colspan", "1");
-        
-        cell = row.insertCell(1);
-        cell.appendChild(document.createTextNode("\u00a0\u00a0\u00a0\u00a0Management Type"));
-        
-        cell = row.insertCell(2);
-        var psa = document.createElement("select"); 
-        
-        option = new Option("Standard", "Standard", false, false);
-        option.id = "Standard" + vm_num;
-        psa.appendChild(option);
+        id_prefix = "pa";
+        addTitleOptions(table, "Cloud Storage", "ROWS_" + id, id);
 
-        option = new Option("Custom", "Custom", false, false);
-        option.id = "Custom" + vm_num;
-        psa.appendChild(option);
-        psa.setAttribute("title", "Choose the Standard option, or customize your own settings. Customization results in different prices.");
-
-        cell.appendChild(psa);
-        cell.setAttribute("colspan", "1");
-        psa.id = "psa" + vm_num;
-        psa.setAttribute("optionval", vm_num);
-        psa.setAttribute("onchange", "processPrice(document.getElementById(this.id).value, this.getAttribute('optionval'))");
-        psa.setAttribute("value", "Standard");
-
-        var row = table.insertRow(++rowCount);
-        var cell = row.insertCell(0);
-        cell.setAttribute("colspan", "1");
-        
-        var cell = row.insertCell(1);
-        cell.setAttribute("colspan", "1");
-        var os_text = document.createTextNode("\u00a0\u00a0\u00a0\u00a0Affiliation:");
-        cell.appendChild(os_text);
-
-        var cell = row.insertCell(2);
-        var os = document.createElement("select"); 
-        os.setAttribute("name", "affiliation");
-        os.setAttribute("title", "Choose client location");
-        os.setAttribute("value", "UC");
-        os.setAttribute("num", vm_num);
-        os.setAttribute("onchange", "changePrices(this.value, 'SYS_MAN', this.getAttribute('num'))");
-
-        option = new Option("UC", "UC", false, false);
-        option.id = "UC" + vm_num;
-        os.appendChild(option);
-
-        option = new Option("External", "External", false, false);
-        option.id = "External" + vm_num;
-        os.appendChild(option);
-
-        cell.appendChild(os);
-        cell.setAttribute("colspan", "2");
-        os.id = "os" + vm_num;
-
-        var row = table.insertRow(++rowCount);
-        var cell = row.insertCell(0);
-        cell.setAttribute("colspan", "1");
-        
-        cell = row.insertCell(1);
-        cell.setAttribute("style", "font-weight: bold");
-        cell.appendChild(document.createTextNode("Specifications"));
-        
-        var row = table.insertRow(++rowCount);
-        cell = row.insertCell(0);
-        cell.setAttribute("colspan", "1");
-        
-        cell = row.insertCell(1);
-        cell.setAttribute("style", "font-weight: bold");
-        cell.appendChild(document.createTextNode("\u00a0\u00a0\u00a0\u00a0Item"));
-        cell.setAttribute("colspan", "1");
-        
-        cell = row.insertCell(2);
-        cell.setAttribute("style", "font-weight: bold");
-        cell.appendChild(document.createTextNode("Price"));
-        
-        cell = row.insertCell(3);
-        cell.setAttribute("style", "font-weight: bold");
-        cell.appendChild(document.createTextNode("Qty"));
-        
-        cell = row.insertCell(4);
-        cell.setAttribute("style", "font-weight: bold");
-        cell.appendChild(document.createTextNode("Cost"));
-        
-        row = table.insertRow(++rowCount);
-        cell = row.insertCell(0);
-        cell.setAttribute("colspan", "1");
-        
-        cell = row.insertCell(1);
-        cell.appendChild(document.createTextNode("\u00a0\u00a0\u00a0\u00a0System"));
-        cell.setAttribute("colspan", "1");
-        
-        cell = row.insertCell(2);
-        var system_price = document.createElement("input");
-        system_price.setAttribute("type", "text");
-        system_price.setAttribute("readonly", "readonly");
-        system_price.setAttribute("value", "$" + parseFloat(PRICE_SYSTEM_MANAGEMENT_UC[0]).toFixed(2));
-        system_price.id = "system-price" + vm_num;
-        system_price.setAttribute("name", system_price.id);
-        cell.appendChild(system_price);
-        cell.setAttribute("colspan", "1");
-        
-        cell = row.insertCell(3);
-        var sys_man_qty = document.createElement("input");
-        sys_man_qty.setAttribute("type", "text");
-        sys_man_qty_in = "sys-man-qty" + vm_num;
-        sys_man_sub_out = "sys-man-sub" + vm_num;
-        cell.appendChild(sys_man_qty);
-        cell.setAttribute("colspan", "1");
-        sys_man_qty.id = sys_man_qty_in;
-        sys_man_qty.className += " sys_man_qty userinput";
-        sys_man_qty.setAttribute("dest", "" + sys_man_sub_out);
-        sys_man_qty.setAttribute("num", vm_num);
-        sys_man_qty.setAttribute("sys-man-price", PRICE_SYSTEM_MANAGEMENT_UC[0]);
-        sys_man_qty.setAttribute("name", sys_man_qty.id);
-        sys_man_qty.setAttribute("size", 5);
-        sys_man_qty.setAttribute("onchange", "getEstimate('sys-man', this.id, this.getAttribute('sys-man-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'SYS_MAN')");
-
-        var cell = row.insertCell(4);
-        var sys_man_sub = document.createElement("input");
-        sys_man_sub.setAttribute("type", "text");
-        cell.appendChild(sys_man_sub);
-        cell.setAttribute("colspan", "1");
-        sys_man_sub.id = sys_man_sub_out;
-        sys_man_sub.setAttribute("name", sys_man_sub.id);
-        sys_man_sub.setAttribute("size", 20);
-        document.getElementById(sys_man_sub_out).setAttribute("readonly", "readonly");
-        sys_man_sub.className = "pa-sub vm-sub" + vm_num;
+        addItemLine(table, "System", PRICE_SYSTEM_MANAGEMENT_UC[0], id_prefix, vm_num, item_num++, "", "pa-sub", id, 0, 0, 0);
         
         row = table.insertRow(++rowCount);
         cell = row.insertCell(0); 
@@ -821,289 +683,18 @@ function addProduct(id)
         cell.setAttribute("style", "font-weight: bold");
         cell.appendChild(document.createTextNode("\u00a0\u00a0\u00a0\u00a0Surcharge for"));
         
-        var row3 = table.insertRow(++rowCount);
-        var cell = row3.insertCell(0);
-        cell.setAttribute("colspan", "1");
-        
-        var cell = row3.insertCell(1);
-        var nonrec = document.createTextNode("\u00a0\u00a0\u00a0\u00a0Non-recommended hardware");                       
-        cell.appendChild(nonrec);
-        cell.setAttribute("colspan", "1");
+        addItemLine(table, "Non-recommended hardware", PRICE_SYSTEM_MANAGEMENT_UC[1], id_prefix, vm_num, item_num++, "To receive this option, enter 1", "pa-sub", id, 0, 0, 0);
 
-        cell = row3.insertCell(2);
-        var nonrec_price = document.createElement("input");
-        nonrec_price.setAttribute("type", "text");
-        nonrec_price.setAttribute("readonly", "readonly");
-        nonrec_price.setAttribute("value", "$" + parseFloat(PRICE_SYSTEM_MANAGEMENT_UC[1]).toFixed(2));
-        nonrec_price.id = "nonrec-price" + vm_num;
-        nonrec_price.setAttribute("name", nonrec_price.id);
-        cell.appendChild(nonrec_price);
-        cell.setAttribute("colspan", "1");
-        
-        var cell = row3.insertCell(3);
-        var nonrec_qty = document.createElement("input");
-        nonrec_qty.setAttribute("type", "text");
-        nonrec_qty_in = "nonrec-qty" + vm_num;
-        nonrec_sub_out = "nonrec-sub" + vm_num;
-        cell.appendChild(nonrec_qty);
-        cell.setAttribute("colspan", "1");
-        nonrec_qty.id = nonrec_qty_in;
-        nonrec_qty.className += " nonrec_qty userinput";
-        nonrec_qty.setAttribute("dest", "" + nonrec_sub_out);
-        nonrec_qty.setAttribute("num", vm_num);
-        nonrec_qty.setAttribute("nonrec-price", PRICE_SYSTEM_MANAGEMENT_UC[1]);
-        nonrec_qty.setAttribute("name", nonrec_qty.id);
-        nonrec_qty.setAttribute("title", "To receive this option, enter 1");
-        nonrec_qty.setAttribute("size", 5);
-        nonrec_qty.setAttribute("onchange", "getEstimate('nonrec', this.id, this.getAttribute('nonrec-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'SYS_MAN')");
+        addItemLine(table, "Hardware without build-in OS support", PRICE_SYSTEM_MANAGEMENT_UC[2], id_prefix, vm_num, item_num++, "To receive this option, enter 1", "pa-sub", id, 0, 0, 0);
 
-        var cell = row3.insertCell(4);
-        var nonrec_sub = document.createElement("input");
-        nonrec_sub.setAttribute("type", "text");
-        cell.appendChild(nonrec_sub);
-        cell.setAttribute("colspan", "1");
-        nonrec_sub.id = nonrec_sub_out;
-        nonrec_sub.setAttribute("name", nonrec_sub.id);
-        nonrec_sub.setAttribute("size", 20);
-        document.getElementById(nonrec_sub_out).setAttribute("readonly", "readonly");
-        nonrec_sub.className = "pa-sub vm-sub" + vm_num;
-        
-        var row4 = table.insertRow(++rowCount);
-        
-        var cell = row4.insertCell(0);
-        cell.setAttribute("colspan", "1");
-        
-        var cell = row4.insertCell(1);
-        var no_os = document.createTextNode("\u00a0\u00a0\u00a0\u00a0Hardware without build-in OS support");                       
-        cell.appendChild(no_os);
-        cell.setAttribute("colspan", "1");
-        
-        cell = row4.insertCell(2);
-        var no_os_price = document.createElement("input");
-        no_os_price.setAttribute("type", "text");
-        no_os_price.setAttribute("readonly", "readonly");
-        no_os_price.setAttribute("value", "$" + parseFloat(PRICE_SYSTEM_MANAGEMENT_UC[2]).toFixed(2));
-        no_os_price.id = "no-os-price" + vm_num;
-        no_os_price.setAttribute("name", no_os_price.id);
-        cell.appendChild(no_os_price);
-        cell.setAttribute("colspan", "1");
-        
-        var cell = row4.insertCell(3);
-        var no_os_qty = document.createElement("input");
-        no_os_qty.setAttribute("type", "text");
-        no_os_qty_in = "no-os-qty" + vm_num;
-        no_os_sub_out = "no-os-sub" + vm_num;
-        cell.appendChild(no_os_qty);
-        cell.setAttribute("colspan", "1");
-        no_os_qty.id = no_os_qty_in;
-        no_os_qty.className += " no_os_qty userinput";
-        no_os_qty.setAttribute("dest", "" + no_os_sub_out);
-        no_os_qty.setAttribute("num", vm_num);
-        no_os_qty.setAttribute("no-os-price", PRICE_SYSTEM_MANAGEMENT_UC[2]);
-        no_os_qty.setAttribute("name", no_os_qty.id);
-        no_os_qty.setAttribute("title", "To receive this option, enter 1");
-        no_os_qty.setAttribute("size", 5);
-        no_os_qty.setAttribute("onchange", "getEstimate('no_os', this.id, this.getAttribute('no-os-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'SYS_MAN')");
+        addItemLine(table, "Each attached storage array", PRICE_SYSTEM_MANAGEMENT_UC[3], id_prefix, vm_num, item_num++, "To receive this option, enter 1", "pa-sub", id, 0, 0, 0);
 
-        var cell = row4.insertCell(4);
-        var no_os_sub = document.createElement("input");
-        no_os_sub.setAttribute("type", "text");
-        cell.appendChild(no_os_sub);
-        cell.setAttribute("colspan", "1");
-        no_os_sub.id = no_os_sub_out;
-        document.getElementById(no_os_sub_out).setAttribute("readonly", "readonly");
-        no_os_sub.className = "pa-sub vm-sub" + vm_num;
-        no_os_sub.setAttribute("name", no_os_sub.id);
-        no_os_sub.setAttribute("size", 20);
-        
-        var row5 = table.insertRow(++rowCount);
-        var cell = row5.insertCell(0);
-        cell.setAttribute("colspan", "1");
-        
-        var cell = row5.insertCell(1);
-        var storage_array = document.createTextNode("\u00a0\u00a0\u00a0\u00a0Each attached storage array");                       
-        cell.appendChild(storage_array);
-        cell.setAttribute("colspan", "1");
-        
+        addItemLine(table, "Non-OS vendor software", PRICE_SYSTEM_MANAGEMENT_UC[4], id_prefix, vm_num, item_num++, "To receive this option, enter 1", "pa-sub", id, 0, 0, 0);
 
-        cell = row5.insertCell(2);
-        var storage_array_price = document.createElement("input");
-        storage_array_price.setAttribute("type", "text");
-        storage_array_price.setAttribute("readonly", "readonly");
-        storage_array_price.setAttribute("value", "$" + parseFloat(PRICE_SYSTEM_MANAGEMENT_UC[3]).toFixed(2));
-        storage_array_price.id = "storage-array-price" + vm_num;
-        storage_array_price.setAttribute("name", storage_array_price.id);
-        cell.appendChild(storage_array_price);
-        cell.setAttribute("colspan", "1");        
+        addItemLine(table, "Local administration access", PRICE_SYSTEM_MANAGEMENT_UC[5], id_prefix, vm_num, item_num++, "To receive this option, enter 1", "pa-sub", id, 0, 0, 0);
 
-        var cell = row5.insertCell(3);
-        var storage_array_qty = document.createElement("input");
-        storage_array_qty.setAttribute("type", "text");
-        storage_array_qty_in = "storage-array-qty" + vm_num;
-        storage_array_sub_out = "storage-array-sub" + vm_num;
-        cell.appendChild(storage_array_qty);
-        cell.setAttribute("colspan", "1");
-        storage_array_qty.id = storage_array_qty_in;
-        storage_array_qty.className += " storage_array_qty userinput";
-        storage_array_qty.setAttribute("dest", "" + storage_array_sub_out);
-        storage_array_qty.setAttribute("num", vm_num);
-        storage_array_qty.setAttribute("storage-array-price", PRICE_SYSTEM_MANAGEMENT_UC[3]);
-        storage_array_qty.setAttribute("name", storage_array_qty.id);
-        storage_array_qty.setAttribute("title", "To receive this option, enter 1");
-        storage_array_qty.setAttribute("size", 5);
-        storage_array_qty.setAttribute("onchange", "getEstimate('storage_array', this.id, this.getAttribute('storage-array-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'SYS_MAN')");
+        addItemLine(table, "24/7 system monitoring and support", PRICE_SYSTEM_MANAGEMENT_UC[5], id_prefix, vm_num, item_num++, "To receive this option, enter 1", "pa-sub", id, 0, 0, 0);
 
-        var cell = row5.insertCell(4);
-        var storage_array_sub = document.createElement("input");
-        storage_array_sub.setAttribute("type", "text");
-        cell.appendChild(storage_array_sub);
-        cell.setAttribute("colspan", "1");
-        storage_array_sub.id = storage_array_sub_out;
-        document.getElementById(storage_array_sub_out).setAttribute("readonly", "readonly");
-        storage_array_sub.className = "pa-sub vm-sub" + vm_num;
-        storage_array_sub.setAttribute("name", storage_array_sub.id);
-        storage_array_sub.setAttribute("size", 20);
-        
-        var row6 = table.insertRow(++rowCount);
-        var cell = row6.insertCell(0);
-        cell.setAttribute("colspan", "1");
-        
-        var cell = row6.insertCell(1);
-        var non_os_vendor = document.createTextNode("\u00a0\u00a0\u00a0\u00a0Non-OS vendor software");                       
-        cell.appendChild(non_os_vendor);
-        cell.setAttribute("colspan", "1");
-        
-        cell = row6.insertCell(2);
-        var non_os_vendor_price = document.createElement("input");
-        non_os_vendor_price.setAttribute("type", "text");
-        non_os_vendor_price.setAttribute("readonly", "readonly");
-        non_os_vendor_price.setAttribute("value", "$" + parseFloat(PRICE_SYSTEM_MANAGEMENT_UC[4]).toFixed(2));
-        non_os_vendor_price.id = "non-os-vendor-price" + vm_num;
-        non_os_vendor_price.setAttribute("name", non_os_vendor_price.id);
-        cell.appendChild(non_os_vendor_price);
-        cell.setAttribute("colspan", "1");    
-
-        var cell = row6.insertCell(3);
-        var non_os_vendor_qty = document.createElement("input");
-        non_os_vendor_qty.setAttribute("type", "text");
-        non_os_vendor_qty_in = "non-os-vendor-qty" + vm_num;
-        non_os_vendor_sub_out = "non-os-vendor-sub" + vm_num;
-        cell.appendChild(non_os_vendor_qty);
-        cell.setAttribute("colspan", "1");
-        non_os_vendor_qty.id = non_os_vendor_qty_in;
-        non_os_vendor_qty.className += " non_os_vendor_qty userinput";
-        non_os_vendor_qty.setAttribute("dest", "" + non_os_vendor_sub_out);
-        non_os_vendor_qty.setAttribute("num", vm_num);
-        non_os_vendor_qty.setAttribute("size", 5);
-        non_os_vendor_qty.setAttribute("name", non_os_vendor_qty.id);
-        non_os_vendor_qty.setAttribute("title", "To receive this option, enter 1");
-        non_os_vendor_qty.setAttribute("non-os-vendor-price", PRICE_SYSTEM_MANAGEMENT_UC[4]);
-        non_os_vendor_qty.setAttribute("onchange", "getEstimate('non_os_vendor', this.id, this.getAttribute('non-os-vendor-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'SYS_MAN')");
-
-        var cell = row6.insertCell(4);
-        var non_os_vendor_sub = document.createElement("input");
-        non_os_vendor_sub.setAttribute("type", "text");
-        cell.appendChild(non_os_vendor_sub);
-        cell.setAttribute("colspan", "1");
-        non_os_vendor_sub.id = non_os_vendor_sub_out;
-        document.getElementById(non_os_vendor_sub_out).setAttribute("readonly", "readonly");
-        non_os_vendor_sub.className = "pa-sub vm-sub" + vm_num;
-        non_os_vendor_sub.setAttribute("name", non_os_vendor_sub.id);
-        non_os_vendor_sub.setAttribute("size", 20);
-        
-        var row7 = table.insertRow(++rowCount);
-        var cell = row7.insertCell(0);
-        cell.setAttribute("colspan", "1");
-        
-        var cell = row7.insertCell(1);
-        var local_admin_access = document.createTextNode("\u00a0\u00a0\u00a0\u00a0Local administration access");                       
-        cell.appendChild(local_admin_access);
-        cell.setAttribute("colspan", "1");
-        
-        cell = row7.insertCell(2);
-        var local_admin_access_price = document.createElement("input");
-        local_admin_access_price.setAttribute("type", "text");
-        local_admin_access_price.setAttribute("readonly", "readonly");
-        local_admin_access_price.setAttribute("value", "$" + parseFloat(PRICE_SYSTEM_MANAGEMENT_UC[5]).toFixed(2));
-        local_admin_access_price.id = "local-admin-access-price" + vm_num;
-        local_admin_access_price.setAttribute("name", local_admin_access_price.id);
-        cell.appendChild(local_admin_access_price);
-        cell.setAttribute("colspan", "1");  
-        
-        var cell = row7.insertCell(3);
-        var local_admin_access_qty = document.createElement("input");
-        local_admin_access_qty.setAttribute("type", "text");
-        local_admin_access_qty_in = "local-admin-access-qty" + vm_num;
-        local_admin_access_sub_out = "local-admin-access-sub" + vm_num;
-        cell.appendChild(local_admin_access_qty);
-        cell.setAttribute("colspan", "1");
-        local_admin_access_qty.id = local_admin_access_qty_in;
-        local_admin_access_qty.className += " local_admin_access_qty userinput";
-        local_admin_access_qty.setAttribute("dest", "" + local_admin_access_sub_out);
-        local_admin_access_qty.setAttribute("num", vm_num);
-        local_admin_access_qty.setAttribute("local-admin-access-price", PRICE_SYSTEM_MANAGEMENT_UC[5]);
-        local_admin_access_qty.setAttribute("name", local_admin_access_qty.id);
-        local_admin_access_qty.setAttribute("title", "To receive this option, enter 1");
-        local_admin_access_qty.setAttribute("size", 5);
-        local_admin_access_qty.setAttribute("onchange", "getEstimate('local_admin_access', this.id, this.getAttribute('local-admin-access-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'SYS_MAN')");
-
-        var cell = row7.insertCell(4);
-        var local_admin_access_sub = document.createElement("input");
-        local_admin_access_sub.setAttribute("type", "text");
-        cell.appendChild(local_admin_access_sub);
-        cell.setAttribute("colspan", "1");
-        local_admin_access_sub.id = local_admin_access_sub_out;
-        document.getElementById(local_admin_access_sub_out).setAttribute("readonly", "readonly");
-        local_admin_access_sub.className = "pa-sub vm-sub" + vm_num;
-        local_admin_access_sub.setAttribute("name", local_admin_access_sub.id);
-        local_admin_access_sub.setAttribute("size", 20);
-        
-        var row8 = table.insertRow(++rowCount);
-        var cell = row8.insertCell(0);
-        cell.setAttribute("colspan", "1");
-        
-        var cell = row8.insertCell(1);
-        var sys_monitor = document.createTextNode("\u00a0\u00a0\u00a0\u00a024/7 system monitoring and support");                       
-        cell.appendChild(sys_monitor);
-        cell.setAttribute("colspan", "1");
- 
-        cell = row8.insertCell(2);
-        var sys_monitor_price = document.createElement("input");
-        sys_monitor_price.setAttribute("type", "text");
-        sys_monitor_price.setAttribute("readonly", "readonly");
-        sys_monitor_price.setAttribute("value", "$" + parseFloat(PRICE_SYSTEM_MANAGEMENT_UC[6]).toFixed(2));
-        sys_monitor_price.id = "sys-monitor-price" + vm_num;
-        sys_monitor_price.setAttribute("name", sys_monitor_price.id);
-        cell.appendChild(sys_monitor_price);
-        cell.setAttribute("colspan", "1");  
-
-        var cell = row8.insertCell(3);
-        var sys_monitor_qty = document.createElement("input");
-        sys_monitor_qty.setAttribute("type", "text");
-        sys_monitor_qty_in = "sys-monitor-qty" + vm_num;
-        sys_monitor_sub_out = "sys-monitor-sub" + vm_num;
-        cell.appendChild(sys_monitor_qty);
-        cell.setAttribute("colspan", "1");
-        sys_monitor_qty.id = sys_monitor_qty_in;
-        sys_monitor_qty.className += " sys_monitor_qty userinput";
-        sys_monitor_qty.setAttribute("dest", "" + sys_monitor_sub_out);
-        sys_monitor_qty.setAttribute("num", vm_num);
-        sys_monitor_qty.setAttribute("sys-monitor-price", PRICE_SYSTEM_MANAGEMENT_UC[6]);
-        sys_monitor_qty.setAttribute("name", sys_monitor_qty.id);
-        sys_monitor_qty.setAttribute("title", "To receive this option, enter 1");
-        sys_monitor_qty.setAttribute("size", 5);
-        sys_monitor_qty.setAttribute("onchange", "getEstimate('sys_monitor', this.id, this.getAttribute('sys-monitor-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'SYS_MAN')");
-
-        var cell = row8.insertCell(4);
-        var sys_monitor_sub = document.createElement("input");
-        sys_monitor_sub.setAttribute("type", "text");
-        cell.appendChild(sys_monitor_sub);
-        cell.setAttribute("colspan", "1");
-        sys_monitor_sub.id = sys_monitor_sub_out;
-        document.getElementById(sys_monitor_sub_out).setAttribute("readonly", "readonly");
-        sys_monitor_sub.className = "pa-sub vm-sub" + vm_num;
-        sys_monitor_sub.setAttribute("name", sys_monitor_sub.id);
-        sys_monitor_sub.setAttribute("size", 20);
         
         var row8 = table.insertRow(++rowCount);
         var cell = row8.insertCell(0);
@@ -1118,31 +709,16 @@ function addProduct(id)
         var colo_price = document.createTextNode("See Colocation Rates");
         cell.appendChild(colo_price);
         cell.setAttribute("colspan", "3");
-        
-        var row9 = table.insertRow(++rowCount);
 
-        var cell = row9.insertCell(0);
-        cell.setAttribute("style", "border-bottom: 1px solid #d3d3d3;");
-        cell.setAttribute("colspan", "1");
-        
-        var cell = row9.insertCell(1);
-        cell.setAttribute("style", "border-bottom: 1px solid #d3d3d3;");
-        var subtext = document.createTextNode("Subtotal:");
-        cell.appendChild(subtext);
-        cell.setAttribute("colspan", "3");
-        cell.className += " pad-bottom";
 
-        var cell = row9.insertCell(2);
-        cell.setAttribute("style", "border-bottom: 1px solid #d3d3d3;");
-        var vmsubtotal = document.createElement("input");
-        vmsubtotal.setAttribute("type", "text");
-        cell.appendChild(vmsubtotal);
-        cell.setAttribute("colspan", "1");
-        vmsubtotal.id = "vm-sub" + vm_num + "-total";
-        //vmsubtotal.className = "sub";
-        vmsubtotal.setAttribute("name", vmsubtotal.id);
-        vmsubtotal.setAttribute("size", 20);
-        document.getElementById(vmsubtotal.id).setAttribute("readonly", "readonly");
+        //remove duplicate of sub total row when there are multiple storage items
+        if (document.getElementById("pa-sub-total-row") != null) {
+            var elem  = document.getElementById("pa-sub-total-row");
+            elem.parentNode.removeChild(elem);
+            --rowTotals;
+        }
+
+        addSubtotalRow(table, vm_num);
 
         //create sys man  at the top of totals table
         row1 = totals.insertRow(0);

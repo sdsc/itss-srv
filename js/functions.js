@@ -1001,8 +1001,8 @@ function processPrice(o, num)
         document.getElementById('system-price'+num).setAttribute("value", "Custom");
     } else if (o == 'Standard') {
         document.getElementById('Standard' + num).setAttribute("selected", "selected");
-        document.getElementById('system-price'+num).setAttribute("value", "$" + PRICE_SYSTEM);
-        getEstimate('sys-man', 'sys-man-qty' + num, PRICE_SYSTEM, 'sys-man-sub' + num, num, 'SYS_MAN');
+        document.getElementById('system-price'+num).setAttribute("value", "$" + parseFloat(PRICE_SYSTEM_MANAGEMENT_UC[0]).toFixed(2));
+        getEstimate('sys-man', 'sys-man-qty' + num, PRICE_SYSTEM_MANAGEMENT_UC[0], 'sys-man-sub' + num, num, 'SYS_MAN');
     }
     document.getElementById("psa" + num).setAttribute("value", o);
 }
