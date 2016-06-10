@@ -122,15 +122,18 @@ var PRICE_CL_COMPUTE_EXT = [0.116, 0.232, 0.464, 0.928, 0.1885, 0.377, 0.754, 0.
     **** EDIT THE NUMBER OF ROWS PER PRODUCT HERE **** */
 
 var ROWS_ST_VM = 13;
-var ROWS_HS_VM = 14;
-var ROWS_CLOUD_STORAGE = 9;
-var ROWS_PROJECT_STORAGE = 7;
-var ROWS_PROJECT_CONDO = 7;
-var ROWS_SYSTEM_MANAGEMENT = 16;
+var ROWS_HS_VM = 13;
+var ROWS_CL_STR = 9;
+var ROWS_PR_STR = 7;
+var ROWS_PR_CON = 7;
+var ROWS_SYS_MAN = 16;
 var ROWS_BACKUPS = 15;
-var ROWS_DESKTOP_SERVICES = 7;
-var ROWS_SYSTEMS_SERVICES = 7;
-var ROWS_STORAGE_SERVICES = 7;
+var ROWS_DESK = 7;
+var ROWS_RECUR_DESK = 7;
+var ROWS_SYSTEMS = 7;
+var ROWS_RECUR_SYSTEMS = 7;
+var ROWS_STORAGE = 7;
+var ROWS_RECUR_STORAGE = 7;
 var ROWS_RECURRING_CONSULTING_SERVICES = 7;
 var ROWS_SHAREPOINT_SITES = 8;
 var ROWS_CLOUD_COMPUTE = 30;
@@ -177,17 +180,17 @@ function changePrices(affiliation, id, num)
             case 'PR_CON':
                 price_pr_con = PRICE_PROJECT_CONDO_UC;
                 break;
+            case 'RECUR_DESK':
             case 'DESK':
                 price_consult = PRICE_DESKTOP_SERVICES_UC;
                 break;
+            case 'RECUR_SYSTEMS':
             case 'SYSTEMS':
                 price_consult = PRICE_SYSTEMS_SERVICES_UC;
                 break;
+            case 'RECUR_STORAGE':
             case 'STORAGE':
                 price_consult = PRICE_STORAGE_SERVICES_UC;
-                break;
-            case 'RECUR':
-                price_consult = PRICE_RECURRING_CONSULTING_SERVICES_UC;
                 break;
             case 'SITE':
                 price_share = [PRICE_SHAREPOINT_SITES_UC, PRICE_ADD_DA_STORAGE_UC, PRICE_CONSULTATION_SUPPORT_UC];
@@ -225,16 +228,16 @@ function changePrices(affiliation, id, num)
                 price_pr_con = PRICE_PROJECT_CONDO_EXT;
                 break;
             case 'DESK':
+            case 'RECUR_DESK':
                 price_consult = PRICE_DESKTOP_SERVICES_EXT;
                 break;
             case 'SYSTEMS':
+            case 'RECUR_SYSTEMS':
                 price_consult = PRICE_SYSTEMS_SERVICES_EXT;
                 break;
             case 'STORAGE':
+            case 'RECUR_STORAGE':
                 price_consult = PRICE_STORAGE_SERVICES_EXT;
-                break;
-            case 'RECUR':
-                price_consult = PRICE_RECURRING_CONSULTING_SERVICES_EXT;
                 break;
             case 'SITE':
                 price_share = [PRICE_SHAREPOINT_SITES_EXT, PRICE_ADD_DA_STORAGE_EXT, PRICE_CONSULTATION_SUPPORT_EXT];
@@ -337,9 +340,9 @@ function changePrices(affiliation, id, num)
                 break;
             case 'CL_STR':
                 item_num = 1;
-                document.getElementById("cl-str-price" + num + item_num).value = parseFloat(price_cl_str).toFixed(2);
-                document.getElementById("cl-str-qty" + num + item_num).setAttribute("cl-str-price", price_cl_str);
-                document.getElementById("cl-str-price" + num + item_num).innerHTML = "$" + parseFloat(price_cl_str).toFixed(2) + "/TB";
+                document.getElementById("str-price" + num + item_num).value = parseFloat(price_cl_str).toFixed(2);
+                document.getElementById("str-qty" + num + item_num).setAttribute("str-price", price_cl_str);
+                document.getElementById("str-price" + num + item_num).innerHTML = "$" + parseFloat(price_cl_str).toFixed(2) + "/TB";
                 document.getElementById("units" + num + item_num).setAttribute("value", "TB");
                 document.getElementById("GB" + num + item_num).removeAttribute("selected");
                 document.getElementById("TB" + num + item_num).setAttribute("selected", "selected");
@@ -347,29 +350,31 @@ function changePrices(affiliation, id, num)
                 document.getElementById("dualoptions" + num).setAttribute("double", dual);
                 document.getElementById("onchange", "changePrice(num, document.getElementById('dualoptions' + num).getAttribute('original'), document.getElementById('dualoptions' + num).getAttribute('double'))");
                 if (document.getElementById("dualoptions" + num).value == "Yes") changePrice(num, document.getElementById('dualoptions' + num).getAttribute('original'), document.getElementById('dualoptions' + num).getAttribute('double'));
-                getEstimate("cl-str", "cl-str-qty" + num + item_num, document.getElementById("cl-str-price" + num + item_num).value, "cl-str-sub" + num + item_num, num, "CL_STR");
+                getEstimate("str", "str-qty" + num + item_num, document.getElementById("str-price" + num + item_num).value, "str-sub" + num + item_num, num, "CL_STR");
                 break;
             case 'PR_STR':
                 item_num = 1;
-                document.getElementById("cl-str-price" + num + item_num).value = parseFloat(price_pr_str).toFixed(2);
-                document.getElementById("cl-str-qty" + num + item_num).setAttribute("cl-str-price", price_pr_str);
-                document.getElementById("cl-str-price" + num + item_num).innerHTML = "$" + parseFloat(price_pr_str).toFixed(2) + "/TB";
+                document.getElementById("str-price" + num + item_num).value = parseFloat(price_pr_str).toFixed(2);
+                document.getElementById("str-qty" + num + item_num).setAttribute("str-price", price_pr_str);
+                document.getElementById("str-price" + num + item_num).innerHTML = "$" + parseFloat(price_pr_str).toFixed(2) + "/TB";
                 document.getElementById("units" + num + item_num).setAttribute("value", "TB");
                 document.getElementById("GB" + num + item_num).removeAttribute("selected");
                 document.getElementById("TB" + num + item_num).setAttribute("selected", "selected");
-                getEstimate('pr-str', 'cl-str-qty' + num + item_num, price_pr_str, 'cl-str-sub' + num + item_num, num, 'CL_STR');
+                getEstimate('pr-str', 'str-qty' + num + item_num, price_pr_str, 'str-sub' + num + item_num, num, 'CL_STR');
                 break;
             case 'PR_CON':
                 item_num = 1;
-                document.getElementById("cl-str-price" + num + item_num).value = parseFloat(price_pr_con).toFixed(2);
-                document.getElementById("cl-str-qty" + num + item_num).setAttribute("cl-str-price", price_pr_con);
-                document.getElementById("cl-str-price" + num + item_num).innerHTML = "$" + parseFloat(price_pr_con).toFixed(2) + "/unit";
-                getEstimate('pr-str', 'cl-str-qty' + num + item_num, price_pr_con, 'cl-str-sub' + num + item_num, num, 'CL_STR');
+                document.getElementById("str-price" + num + item_num).value = parseFloat(price_pr_con).toFixed(2);
+                document.getElementById("str-qty" + num + item_num).setAttribute("str-price", price_pr_con);
+                document.getElementById("str-price" + num + item_num).innerHTML = "$" + parseFloat(price_pr_con).toFixed(2) + "/unit";
+                getEstimate('pr-str', 'str-qty' + num + item_num, price_pr_con, 'str-sub' + num + item_num, num, 'CL_STR');
                 break;
             case 'DESK':
             case 'SYSTEMS':
             case 'STORAGE':
-            case 'RECUR':
+            case 'RECUR_DESK':
+            case 'RECUR_SYSTEMS':
+            case 'RECUR_STORAGE':
                 item_num = 1;
                 document.getElementById("consult-price" + num + item_num).value = parseFloat(price_consult).toFixed(2);
                 document.getElementById("consult-price" + num + item_num).innerHTML = "$" + parseFloat(price_consult).toFixed(2) + "/hr";
@@ -397,34 +402,36 @@ function changePrices(affiliation, id, num)
                 break;
             case 'SUPPORT':
             case 'SYS_MAN':
-                document.getElementById("system-price" + num).value = "$" + parseFloat(price_sys_man[0]).toFixed(2);
-                document.getElementById("system-price" + num).innerHTML = "$" + parseFloat(price_sys_man[0]).toFixed(2);
-                document.getElementById("sys-man-qty" + num).setAttribute("sys-man-price", price_sys_man[0]);
-                getEstimate('sys-man', "sys-man-qty" + num, price_sys_man[0], "sys-man-sub" + num, num, 'SYS_MAN');
+                item_num = 1;
+                // set up loop to go through each line item with new naming convention
+                document.getElementById("pa" + num + item_num).value = "$" + parseFloat(price_sys_man[0]).toFixed(2);
+                document.getElementById("pa" + num + item_num).innerHTML = "$" + parseFloat(price_sys_man[0]).toFixed(2);
+                document.getElementById("pa-qty" + num + item_num).setAttribute("pa-price", price_sys_man[0]);
+                getEstimate('pa-sub', "pa-qty" + num + item_num, price_sys_man[0], "sys-man-sub" + num + item_num, num, 'SYS_MAN');
                 document.getElementById("nonrec-price" + num).value = "$" + parseFloat(price_sys_man[1]).toFixed(2);
                 document.getElementById("nonrec-price" + num).innerHTML = "$" + parseFloat(price_sys_man[1]).toFixed(2);
                 document.getElementById("nonrec-qty" + num).setAttribute("nonrec-price", price_sys_man[1]);
-                getEstimate('nonrec', "nonrec-qty" + num, price_sys_man[1], "nonrec-sub" + num, num, 'SYS_MAN');
+                getEstimate('pa-sub', "pa-qty" + num + item_num, price_sys_man[1], "nonrec-sub" + num, num, 'SYS_MAN');
                 document.getElementById("no-os-price" + num).value = "$" + parseFloat(price_sys_man[2]).toFixed(2);
                 document.getElementById("no-os-price" + num).innerHTML = "$" + parseFloat(price_sys_man[2]).toFixed(2);
                 document.getElementById("no-os-qty" + num).setAttribute("no-os-price", price_sys_man[2]);
-                getEstimate('no_os', "no-os-qty" + num, price_sys_man[2], "no-os-sub" + num, num, 'SYS_MAN');
+                getEstimate('pa-sub', "pa-qty" + num + item_num, price_sys_man[2], "no-os-sub" + num, num, 'SYS_MAN');
                 document.getElementById("storage-array-price" + num).value = "$" + parseFloat(price_sys_man[3]).toFixed(2);
                 document.getElementById("storage-array-price" + num).innerHTML = "$" + parseFloat(price_sys_man[3]).toFixed(2);
                 document.getElementById("storage-array-qty" + num).setAttribute("storage-array-price", price_sys_man[3]);
-                getEstimate('storage_array', "storage-array-qty" + num, price_sys_man[3], "storage-array-sub" + num, num, 'SYS_MAN');
+                getEstimate('pa-sub', "pa-qty" + num + item_num, price_sys_man[3], "storage-array-sub" + num, num, 'SYS_MAN');
                 document.getElementById("non-os-vendor-price" + num).value = "$" + parseFloat(price_sys_man[4]).toFixed(2);
                 document.getElementById("non-os-vendor-price" + num).innerHTML = "$" + parseFloat(price_sys_man[4]).toFixed(2);
                 document.getElementById("non-os-vendor-qty" + num).setAttribute("non-os-vendor-price", price_sys_man[4]);
-                getEstimate('non_os_vendor', "non-os-vendor-qty" + num, price_sys_man[4], "non-os-vendor-sub" + num, num, 'SYS_MAN');              
+                getEstimate('pa-sub', "pa-qty" + num + item_num, price_sys_man[4], "non-os-vendor-sub" + num, num, 'SYS_MAN');              
                 document.getElementById("local-admin-access-price" + num).value = "$" + parseFloat(price_sys_man[5]).toFixed(2);
                 document.getElementById("local-admin-access-price" + num).innerHTML = "$" + parseFloat(price_sys_man[5]).toFixed(2);
                 document.getElementById("local-admin-access-qty" + num).setAttribute("local-admin-access-price", price_sys_man[5]);
-                getEstimate('local_admin_access', "local-admin-access-qty" + num, price_sys_man[5], "local-admin-access-sub" + num, num, 'SYS_MAN');              
+                getEstimate('pa-sub', "pa-qty" + num + item_num, price_sys_man[5], "local-admin-access-sub" + num, num, 'SYS_MAN');              
                 document.getElementById("sys-monitor-price" + num).value = "$" + parseFloat(price_sys_man[6]).toFixed(2);
                 document.getElementById("sys-monitor-price" + num).innerHTML = "$" + parseFloat(price_sys_man[6]).toFixed(2);
                 document.getElementById("sys-monitor-qty" + num).setAttribute("sys-monitor-price", price_sys_man[6]);
-                getEstimate('sys_monitor', "sys-monitor-qty" + num, price_sys_man[6], "sys-monitor-sub" + num, num, 'SYS_MAN');              
+                getEstimate('pa-sub', "sys-monitor-qty" + num, price_sys_man[6], "sys-monitor-sub" + num, num, 'SYS_MAN');              
                 break;
             case 'COMMVAULT':
                 for (i = 0, item_num = 1; item_num < 4; item_num++, i++){
@@ -473,7 +480,7 @@ function getEstimate(type, id, price, dest, num, category)
         case 'CL_STR':
         case 'PR_STR':
         case 'PR_CON':
-            var theclass = 'cl-str-sub';
+            var theclass = 'str-sub';
             break;
         case 'DESK':
         case 'SYSTEMS':
@@ -500,6 +507,7 @@ function getEstimate(type, id, price, dest, num, category)
         sub(theclass);
         if (theclass == "vm-sub") sub(theclass + num);
         sub('sub');
+        sub('onetime');
     } 
     else if (validate(type, id, dest, num)) {
         if (type == 'sys-man' && document.getElementById('psa' + num).value == 'Custom') {
@@ -549,13 +557,13 @@ function getEstimate(type, id, price, dest, num, category)
             document.getElementById('vm-sub' + num + '-total').setAttribute("value", 'Custom');
         }
 
-        if (type == 'consult' || type == 'sp-consult') {
+        //if (type == 'consult' || type == 'sp-consult') {
             sub("onetime");
-        }
-        else {
+        //}
+        //else {
             sub(theclass);
             sub('sub');
-        }
+        //}
         // sub(theclass);
         // sub('sub');
         if (category == 'ST_VM' || category == 'HS_VM') {
@@ -773,6 +781,9 @@ function removeProduct(rowNum, deleteNum, category)
         case 'DESK':
         case 'SYSTEMS':
         case 'STORAGE':
+        case 'RECUR_DESK':
+        case 'RECUR_SYSTEMS':
+        case 'RECUR_STORAGE':
             var table = document.getElementById('consult-table');
             var totals = "consult-table-totals";
             var theclass = "consult-sub";
@@ -1074,37 +1085,37 @@ function changeUnits(vm_qty, id, value, num, item_num, category)
                 document.getElementById(vm_qty + num + item_num).setAttribute("price", currentprice);
             }
             var element = document.getElementById(vm_qty + num + item_num);
-            if (vm_qty == "hs-vm-qty") var category = "HS-VM";
-            else var category = 'ST-VM';
+            if (vm_qty == "hs-vm-qty") var category = "HS_VM";
+            else var category = 'ST_VM';
             getEstimate('gold', element.id, element.getAttribute('price'), element.getAttribute('dest'), element.getAttribute('num'), category);
             break;
         
         case 'cl': 
             if (value == 'TB') {
-                currentprice = document.getElementById("cl-str-qty" + num + item_num).getAttribute("price");
+                currentprice = document.getElementById("str-qty" + num + item_num).getAttribute("price");
                 currentprice *= 1000;
-                document.getElementById("cl-str-qty" + num + item_num).setAttribute("price", currentprice);
+                document.getElementById("str-qty" + num + item_num).setAttribute("price", currentprice);
             } else {
-                currentprice = document.getElementById("cl-str-qty" + num + item_num).getAttribute("price");
+                currentprice = document.getElementById("str-qty" + num + item_num).getAttribute("price");
                 currentprice /= 1000;
-                document.getElementById("cl-str-qty" + num + item_num).setAttribute("price", currentprice);
+                document.getElementById("str-qty" + num + item_num).setAttribute("price", currentprice);
             }
-            var element = document.getElementById('cl-str-qty' + num + item_num);
-            getEstimate('cl-str', element.id, element.getAttribute('price'), element.getAttribute('dest'), element.getAttribute('num'), 'CL_STR');
+            var element = document.getElementById('str-qty' + num + item_num);
+            getEstimate('str', element.id, element.getAttribute('price'), element.getAttribute('dest'), element.getAttribute('num'), 'CL_STR');
             break;
         
         case 'pr': 
             if (value == 'TB') {
-                currentprice = document.getElementById("cl-str-qty" + num + item_num).getAttribute("cl-str-price");
+                currentprice = document.getElementById("str-qty" + num + item_num).getAttribute("str-price");
                 currentprice *= 1000;
-                document.getElementById("cl-str-qty" + num + item_num).setAttribute("cl-str-price", currentprice);
+                document.getElementById("str-qty" + num + item_num).setAttribute("str-price", currentprice);
             } else {
-                currentprice = document.getElementById("cl-str-qty" + num + item_num).getAttribute("cl-str-price");
+                currentprice = document.getElementById("str-qty" + num + item_num).getAttribute("str-price");
                 currentprice /= 1000;
-                document.getElementById("cl-str-qty" + num + item_num).setAttribute("cl-str-price", currentprice);
+                document.getElementById("str-qty" + num + item_num).setAttribute("str-price", currentprice);
             }
-            var element = document.getElementById('cl-str-qty' + num + item_num);
-            getEstimate('pr-str', element.id, element.getAttribute('cl-str-price'), element.getAttribute('dest'), element.getAttribute('num'), 'CL_STR');
+            var element = document.getElementById('str-qty' + num + item_num);
+            getEstimate('pr-str', element.id, element.getAttribute('str-price'), element.getAttribute('dest'), element.getAttribute('num'), 'CL_STR');
             break;
         
         case 'raw':
