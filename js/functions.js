@@ -734,6 +734,7 @@ function validate(type, id, dest, num)
                 d.style.color = "#ff0000";
                 return false;
             }
+        case "recur":
         case 'consult':
         case 'sp-consult':
             v = v * 10;
