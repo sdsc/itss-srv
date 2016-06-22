@@ -386,7 +386,8 @@ function addItemLine(table, item_name, price, id, vm_num, item_num, tooltip, typ
             str_units.setAttribute("num", vm_num);
             str_units.setAttribute("item_num", item_num);
             if (typeEstimate == "silver") typeUnits = "str";
-            else if (typeEstimate == "san") typeUnits = "san";
+            else if (typeEstimate == "gold") typeUnits = "gold";
+            else if (typeEstimate == "pr-str") typeUnits = "pr";
             else typeUnits = "cl";
             str_units.setAttribute("typeUnits", typeUnits );
             str_units.id = "units" + vm_num + item_num;
@@ -599,7 +600,7 @@ function addProduct(id)
         addItemLine(table, "Additional RAM", price_vm[2], id_prefix, vm_num, item_num++, "Enter a whole number 0 to 190", "mem", id, "/GB", "GB", 0 );
         if (id == "ST_VM")
             addItemLine(table, "Additional 'Silver' Storage", price_vm[3], id_prefix, vm_num, item_num++, "Minimum value 0.001TB (1GB). Max value 30TB (30000GB)", "silver", id, "/TB", 0, 1);
-        addItemLine(table, "Additional 'Gold' Storage", price_vm[4], id_prefix, vm_num, item_num++, "Min value 0.001TB (1GB). Max value 4.9TB (4900GB)", "san", id, "/TB", 0,  1);
+        addItemLine(table, "Additional 'Gold' Storage", price_vm[4], id_prefix, vm_num, item_num++, "Min value 0.001TB (1GB). Max value 4.9TB (4900GB)", "gold", id, "/TB", 0,  1);
         addItemLine(table, "Extra Snapshots", price_vm[5], id_prefix, vm_num, item_num++, 0, 0, id, 0, 0, 0);
         if (id == "HS_VM") {
             addItemLine(table, "System Management", 0, id_prefix, vm_num, item_num++,  0, 0, 0, 0, 0);
@@ -648,11 +649,11 @@ function addProduct(id)
 
         if (id == "CL_STR") {
             addTitleOptions(table, "Cloud Storage", "ROWS_" + id, id);
-            addItemLine(table, "Storage", PRICE_CLOUD_STORAGE_UC, id_prefix, vm_num, item_num++, "Min value 1TB", "str", id, "/TB", 0, 1);
+            addItemLine(table, "Storage", PRICE_CLOUD_STORAGE_UC, id_prefix, vm_num, item_num++, "Min value 1TB", "cl-str", id, "/TB", 0, 1);
         }
         else if (id== 'PR_STR') {
             addTitleOptions(table, "Project Storage", "ROWS_" + id, id);
-            addItemLine(table, "Storage", PRICE_PROJECT_STORAGE_UC, id_prefix, vm_num, item_num++, "Minimum 1TB (1000GB). Enter in multiples of 0.5TB (500GB)", "str", id, "/TB", 0, 1);
+            addItemLine(table, "Storage", PRICE_PROJECT_STORAGE_UC, id_prefix, vm_num, item_num++, "Minimum 1TB (1000GB). Enter in multiples of 0.5TB (500GB)", "pr-str", id, "/TB", 0, 1);
         }
         else {
             addTitleOptions(table, "Project Condo", "ROWS_" + id, id);

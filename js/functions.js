@@ -2,8 +2,8 @@
  * Filename: functions.js
  * Purpose: Contains the calculating functions for creating the invoice.
  *          Please EDIT in the appropriate areas to CHANGE PRICE and
- *          SERVICE NAMES. 
- * Last Updated: 
+ *          SERVICE NAMES.
+ * Last Updated:
  */
 
 /* PRICES FOR EVERYTHING.
@@ -118,7 +118,7 @@ var PRICE_CL_COMPUTE_EXT = [0.116, 0.232, 0.464, 0.928, 0.1885, 0.377, 0.754, 0.
 
 /**** END PRICES. ****/
 
-/* NUMBER OF ROWS PER PRODUCT 
+/* NUMBER OF ROWS PER PRODUCT
     **** EDIT THE NUMBER OF ROWS PER PRODUCT HERE **** */
 
 var ROWS_ST_VM = 13;
@@ -147,14 +147,14 @@ var row1, cell, rowCount, rowTotals;
 
 /* list of variables for input/output */
 var cpu_qty_in, cpu_sub_out, mem_qty_in, mem_sub_out, str_qty_in, str_sub_out, san_qty_in, san_sub_out, cl_str_qty_in, cl_str_sub_out;
-            
-/* options variable for dropdown menus */
-var option; 
 
-   
+/* options variable for dropdown menus */
+var option;
+
+
 /* Function Name: changePrices
  * Description: This function changes the prices of the services when the user changes affiliation (UC or External).
- * Parameters:  
+ * Parameters:
         affiliation - either UC or external to change specific pricings
         price - array of prices per flavor/item
  */
@@ -204,7 +204,7 @@ function changePrices(affiliation, id, num)
                 break;
             case 'RAW':
             case 'CL_COMPUTE':
-                price = PRICE_CL_COMPUTE_UC; 
+                price = PRICE_CL_COMPUTE_UC;
                 break;
             }
     }
@@ -251,12 +251,12 @@ function changePrices(affiliation, id, num)
                 break;
             case 'RAW':
             case 'CL_COMPUTE':
-                    price = PRICE_CL_COMPUTE_EXT; 
+                    price = PRICE_CL_COMPUTE_EXT;
                     break;
             }
     }
     switch (id) {
-            case 'ST_VM': 
+            case 'ST_VM':
                 for (n=0, item_num=1; n < price_vm.length; n++, item_num++) {
                     document.getElementById("st-vm-price" + num + item_num).setAttribute("st-vm-price" + num + item_num, parseFloat(price_vm[n]).toFixed(2));
                     if (item_num!=6)document.getElementById("st-vm-qty" + num + item_num).setAttribute("st-vm-price" + num + item_num, parseFloat(price_vm[n]).toFixed(2));
@@ -388,14 +388,14 @@ function changePrices(affiliation, id, num)
                     else document.getElementById("share-price" + num + item_num).innerHTML = "$" + parseFloat(price_share[n]).toFixed(2);
                     document.getElementById("share-qty" + num + item_num).setAttribute("share_price", price_share[n]);
                     switch (item_num) {
-                        case (1): 
-                            getEstimate('sp', "share-qty" + num + item_num, price_share[n], "share-sub" + num + item_num, num, 'SITE'); 
+                        case (1):
+                            getEstimate('sp', "share-qty" + num + item_num, price_share[n], "share-sub" + num + item_num, num, 'SITE');
                             break;
                         case (2):
-                            getEstimate('additional-sp', "share-qty" + num + item_num, price_share[n], "share-sub" + num + item_num, num, 'SITE'); 
+                            getEstimate('additional-sp', "share-qty" + num + item_num, price_share[n], "share-sub" + num + item_num, num, 'SITE');
                             break;
                         case(3):
-                            getEstimate('sp-consult', "share-qty" + num + item_num, price_share[n], "share-sub" + num + item_num, num, 'SITE'); 
+                            getEstimate('sp-consult', "share-qty" + num + item_num, price_share[n], "share-sub" + num + item_num, num, 'SITE');
                             break;
                     }
                 }
@@ -423,15 +423,15 @@ function changePrices(affiliation, id, num)
                 document.getElementById("non-os-vendor-price" + num).value = "$" + parseFloat(price_sys_man[4]).toFixed(2);
                 document.getElementById("non-os-vendor-price" + num).innerHTML = "$" + parseFloat(price_sys_man[4]).toFixed(2);
                 document.getElementById("non-os-vendor-qty" + num).setAttribute("non-os-vendor-price", price_sys_man[4]);
-                getEstimate('pa-sub', "pa-qty" + num + item_num, price_sys_man[4], "non-os-vendor-sub" + num, num, 'SYS_MAN');              
+                getEstimate('pa-sub', "pa-qty" + num + item_num, price_sys_man[4], "non-os-vendor-sub" + num, num, 'SYS_MAN');
                 document.getElementById("local-admin-access-price" + num).value = "$" + parseFloat(price_sys_man[5]).toFixed(2);
                 document.getElementById("local-admin-access-price" + num).innerHTML = "$" + parseFloat(price_sys_man[5]).toFixed(2);
                 document.getElementById("local-admin-access-qty" + num).setAttribute("local-admin-access-price", price_sys_man[5]);
-                getEstimate('pa-sub', "pa-qty" + num + item_num, price_sys_man[5], "local-admin-access-sub" + num, num, 'SYS_MAN');              
+                getEstimate('pa-sub', "pa-qty" + num + item_num, price_sys_man[5], "local-admin-access-sub" + num, num, 'SYS_MAN');
                 document.getElementById("sys-monitor-price" + num).value = "$" + parseFloat(price_sys_man[6]).toFixed(2);
                 document.getElementById("sys-monitor-price" + num).innerHTML = "$" + parseFloat(price_sys_man[6]).toFixed(2);
                 document.getElementById("sys-monitor-qty" + num).setAttribute("sys-monitor-price", price_sys_man[6]);
-                getEstimate('pa-sub', "sys-monitor-qty" + num, price_sys_man[6], "sys-monitor-sub" + num, num, 'SYS_MAN');              
+                getEstimate('pa-sub', "sys-monitor-qty" + num, price_sys_man[6], "sys-monitor-sub" + num, num, 'SYS_MAN');
                 break;
             case 'COMMVAULT':
                 for (i = 0, item_num = 1; item_num < 4; item_num++, i++){
@@ -453,13 +453,13 @@ function changePrices(affiliation, id, num)
                 }
                 document.getElementById("cl-compute-instances" + num + item_num).setAttribute("cl-compute-price", price[n]);
                 document.getElementById("cl-compute-hours" + num + item_num).setAttribute("cl-compute-price",  price[n]);
-                getEstimate('cl-compute', 'cl-compute-hours' + num + item_num, price[n], document.getElementById("cl-compute-hours" + num + item_num).getAttribute('dest'), item_num,'CL_COMPUTE'); 
+                getEstimate('cl-compute', 'cl-compute-hours' + num + item_num, price[n], document.getElementById("cl-compute-hours" + num + item_num).getAttribute('dest'), item_num,'CL_COMPUTE');
                 }
                 break;
 
     }
     document.getElementsByName("affiliation")[0].setAttribute("value", affiliation);
-}            
+}
 /* Function Name: getEstimate
  * Description: This function calculates the subtotals within one line item and populates the subtotal column at the farthest right.
  * Parameters: type - the type of field (used in the function validate())
@@ -508,13 +508,13 @@ function getEstimate(type, id, price, dest, num, category)
         if (theclass == "vm-sub") sub(theclass + num);
         sub('sub');
         sub('onetime');
-    } 
+    }
     else if (validate(type, id, dest, num)) {
         if (type == 'sys-man' && document.getElementById('psa' + num).value == 'Custom') {
             document.getElementById(dest).value = 0;
             document.getElementById('vm-sub' + num + '-total').setAttribute("value", "0");
             sub('pa-sub');
-            
+
             document.getElementById(dest).value = 'Custom';
             document.getElementById('vm-sub' + num + '-total').setAttribute("value", "Custom");
         } else {
@@ -552,7 +552,7 @@ function getEstimate(type, id, price, dest, num, category)
                 }
             }
         }
-        
+
         if (type == 'sys-man' && document.getElementById('psa' + num).value == 'Custom') {
             document.getElementById('vm-sub' + num + '-total').setAttribute("value", 'Custom');
         }
@@ -576,7 +576,7 @@ function getEstimate(type, id, price, dest, num, category)
                     document.getElementById('sub-total').setAttribute("value", "$" + (temptotalval + PRICE_ADD_SNAPSHOT_STANDARD_VM_UC));
                 }
         }
-                    
+
 
         //sub('vm-sub');
     }
@@ -598,22 +598,22 @@ function sub(theclass)
     for(i = 0; i < subarray.length; i++) {
         if(subarray[i].value != null || subarray[i].value != "") {
             valtext = subarray[i].value.replace("$", "");
-            
+
             val = parseFloat(valtext);
-            
+
             if(!isNaN(val) && val != null) {
                 sum += val;
             }
-        }  
+        }
     }
     if (theclass == 'sub') {
         document.getElementById(theclass + '-total').setAttribute("value", "$" + sum.toFixed(2) + "/month");
     } else {
         document.getElementById(theclass + "-total").setAttribute("value", "$" + sum.toFixed(2));
     }
-    
+
 }
-            
+
 /* Function Name: validate
  * Parameters: type - type of field to validate
  *             id - id of field to validate
@@ -621,12 +621,12 @@ function sub(theclass)
  * Result: Will print error message or correct result, depending on true/false
  */
 function validate(type, id, dest, num)
-{            
+{
     var v = document.getElementById(id).value;
     var d = document.getElementById(dest);
-                
+
     d.style.color = "#000"; //default color if validation passes
-    
+
     switch (type) {
         case "cpu":
             if (v < 0 || v > 11 || v % 1 != 0) {
@@ -635,15 +635,15 @@ function validate(type, id, dest, num)
                 return false;
             }
             break;
-        
+
         case "mem":
             if (v < 0 || v > 190 || v % 1 != 0) {
                 d.setAttribute("value", "Invalid input");
                 d.style.color = "#ff0000";
-                return false; 
+                return false;
             }
             break;
-        
+
         case "silver":
             if (document.getElementById('units' + num + "4").getAttribute("value") == 'GB') {
                 if (v < 1 || v > 30000) {
@@ -659,7 +659,7 @@ function validate(type, id, dest, num)
                 }
             }
             break;
-        
+
         case "gold":
             if (document.getElementById('units' + num + "5")) var i = 5;
             else var i = 4;
@@ -677,43 +677,43 @@ function validate(type, id, dest, num)
                 }
             }
             break;
-        
+
         case "cl-str":
             if (document.getElementById('units' + num + "1") == null) break;
             if (document.getElementById('units' + num + "1").getAttribute("value") == 'GB') {
-                if (v < 100) {
+                if (v < 1000) {
                     d.setAttribute("value", "Invalid input");
                     d.style.color = "#ff0000";
                     return false;
                 }
             } else {
-                if ( v < 0.1) {
+                if ( v < 1) {
                     d.setAttribute("value", "Invalid input");
                     d.style.color = "#ff0000";
                     return false;
                 }
             }
-            break; 
-        
-        case 'pr-str':
-            if (document.getElementById('pr-units' + num) != null) {
-            
-                if (document.getElementById('pr-units' + num).getAttribute("value") == 'GB') {
+            break;
+
+        case "pr-str":
+            if (document.getElementById('units' + num) != null) {
+              if (document.getElementById('units' + num).getAttribute("value") == 'GB') {
                 if (v < 1000 || v % 500 != 0) {
                     d.setAttribute("value", "Invalid input");
                     d.style.color = "#ff0000";
                     return false;
                 }
-            } else {
+              }
+              else {
                 if (v < 1 || (v * 10) % 5 != 0) {
                     d.setAttribute("value", "Invalid input");
                     d.style.color = "#ff0000";
                     return false;
                 }
+              }
             }
-            }
-            
-            
+
+
             break;
         case 'nonrec':
         case 'no_os':
@@ -737,7 +737,7 @@ function validate(type, id, dest, num)
         case 'consult':
         case 'sp-consult':
             v = v * 10;
-            v = v % 1; 
+            v = v % 1;
             if (v != 0) {
                 d.setAttribute("value", "Invalid input");
                 d.style.color = "#ff0000";
@@ -754,9 +754,9 @@ function validate(type, id, dest, num)
 
     return true;
 }
-            
+
 /* Function Name: removeProduct
- * Parameters: 
+ * Parameters:
     rowNum - the index of the row to delete
     deleteNum - the number of rows to delete
     category - the category of the service
@@ -823,12 +823,12 @@ function removeProduct(rowNum, deleteNum, category)
     /* check if onetime fees are zero */
     var onetime = document.getElementById("onetime-total");
     if(onetime.value == "$0.00") onetime.setAttribute("value", "N/A");
-    
+
     if(table.rows.length - 1 === 0) {
         table.setAttribute("hidden", "hidden");
         //document.getElementById("totals").setAttribute("hidden", "hidden");
     }
-    
+
     if (--numProducts === 0) {
         document.getElementById('totals').setAttribute("hidden", "hidden");
         /*delete monthly and one-time totals rows*/
@@ -842,12 +842,12 @@ function removeProduct(rowNum, deleteNum, category)
     /*loop through all tooltips on doc to hide before removing product*/
     var tooltipList = document.getElementsByClassName("ui-tooltip");
     for (i = 0; i < tooltipList.length; i++) {
-        tooltipList[i].style.display = 'none';  
+        tooltipList[i].style.display = 'none';
     }
-    
-    
+
+
 }
-            
+
 /* Function Name: processOS
  * Parameters: id - id of the dropdown menu calling this function
  *              o - value of the OS system
@@ -858,21 +858,21 @@ function removeProduct(rowNum, deleteNum, category)
  *          depending on the OS chosen. Also changes the dropdown selected value
  */
 function processOS(id, o, system, manager, num) {
-    var name; 
+    var name;
     if(o == 'Red Hat 6 64-bit') {
         name = 'RedHat';
     } else {
         name = "" + o;
     }
-                
-    /*// determines the type of system management 
+
+    /*// determines the type of system management
     if((o == 'Windows' || o == 'Red Hat 6 64-bit') && id != 'HS_VM') {
         document.getElementById(system).setAttribute("value", "Included");
     } else {
         document.getElementById(system).setAttribute("value", "User-managed OR Added Premium (Contact SDSC for details)");
     }
-                
-    // determines the manager 
+
+    // determines the manager
     if(o != 'Red Hat 6 64-bit' || id == 'HS_VM') {
         document.getElementById(manager).setAttribute("value", "Brian Balderston");
     } else {
@@ -891,7 +891,7 @@ function processOS(id, o, system, manager, num) {
 }
 
 /* Function Name: changePrice
- * Parameters: 
+ * Parameters:
     - num
     - originalval
     - doubleval
@@ -929,23 +929,23 @@ function changePrice(num, originalval, doubleval)
         document.getElementById("SD" + num).setAttribute("selected", "selected");
         document.getElementById("siteoptions" + num).removeAttribute("disabled");
     }
-    
+
     document.getElementById('dualoptions' + num).setAttribute("value", val);
-    
+
 }
 
 /* Function Name: processPackage()
  * Parameters: o - option value
  *             num - number of the product
  * Description: Used by the CommVault Backup option. Automatically places the values for
- *              3-month and 6-month retention. Makes these fields readonly. 
+ *              3-month and 6-month retention. Makes these fields readonly.
  */
 function processPackage(o, num)
 {
     var duration = 3;
     var isReadOnly = false;
     var optionid = "Custom" + num;
-    
+
     // user has selected 3 mo retention
     if (o == 'Standard 3-mo. Retention') {
         duration = 3;
@@ -956,27 +956,27 @@ function processPackage(o, num)
         isReadOnly = true;
         optionid = "sixmonth" + num;
     }
-    
+
     document.getElementById('monthlybackup-qty' + num).setAttribute("value", "1");
     document.getElementById('monthlybackup-qty' + num).value = 1;
-    
+
     document.getElementById('durmonthlybackup-qty' + num).setAttribute("value", duration);
     document.getElementById('durmonthlybackup-qty' + num).value = duration;
-    
+
     document.getElementById('diffwk-qty' + num).setAttribute("value", "1");
     document.getElementById('diffwk-qty' + num).value = 1;
-    
+
     document.getElementById('incwk-qty' + num).setAttribute("value", "5");
     document.getElementById('incwk-qty' + num).value = 5;
-    
+
     document.getElementById('durdiffinc-qty' + num).setAttribute("value", duration);
     document.getElementById('durdiffinc-qty' + num).value = duration;
-    
+
     document.getElementById("Custom" + num).removeAttribute("selected");
     document.getElementById("threemonth" + num).removeAttribute("selected");
     document.getElementById("sixmonth" + num).removeAttribute("selected");
     document.getElementById(optionid).setAttribute("selected", "selected");
-    
+
     if (isReadOnly) {
         document.getElementById('monthlybackup-qty' + num).setAttribute("readonly", "readonly");
         document.getElementById('durmonthlybackup-qty' + num).setAttribute("readonly", "readonly");
@@ -1038,43 +1038,43 @@ function changeValue(id, value, num)
 }
 
 /* Function Name: changeUnits
- * Parameters: 
- * Result: 
+ * Parameters:
+ * Result:
  */
 function changeUnits(vm_qty, id, value, num, item_num, category)
 {
     var currentprice;
     document.getElementById(id).setAttribute("value", value);
-    
+
     if (value == 'TB') {
         document.getElementById("GB" + num + item_num).removeAttribute("selected");
-        document.getElementById("TB" + num + item_num).setAttribute("selected", "selected");         
+        document.getElementById("TB" + num + item_num).setAttribute("selected", "selected");
     } else {
         document.getElementById("TB" + num + item_num).removeAttribute("selected");
         document.getElementById("GB" + num + item_num).setAttribute("selected", "selected");
     }
     switch (category) {
-        case 'str': 
+        case 'str':
             if (value == 'TB') {
                 currentprice = document.getElementById(vm_qty + num + item_num).getAttribute("price");
                 currentprice *= 1000;
 
                 document.getElementById(vm_qty + num + item_num).setAttribute("price", currentprice);
-                
+
             } else {
                 currentprice = document.getElementById(vm_qty + num + item_num).getAttribute("price");
-                
+
                 currentprice /= 1000;
-                
+
                 document.getElementById(vm_qty + num + item_num).setAttribute("price", currentprice);
-                
+
             }
-            
+
             var element = document.getElementById(vm_qty + num + item_num);
             getEstimate('silver', element.id, element.getAttribute('price'), element.getAttribute('dest'), element.getAttribute('num'), 'ST_VM');
             break;
-        
-        case 'san': 
+
+        case 'gold':
             if (value == 'TB') {
                 currentprice = document.getElementById(vm_qty + num + item_num).getAttribute("price");
                 currentprice *= 1000;
@@ -1089,8 +1089,8 @@ function changeUnits(vm_qty, id, value, num, item_num, category)
             else var category = 'ST_VM';
             getEstimate('gold', element.id, element.getAttribute('price'), element.getAttribute('dest'), element.getAttribute('num'), category);
             break;
-        
-        case 'cl': 
+
+        case 'cl':
             if (value == 'TB') {
                 currentprice = document.getElementById("str-qty" + num + item_num).getAttribute("price");
                 currentprice *= 1000;
@@ -1101,10 +1101,10 @@ function changeUnits(vm_qty, id, value, num, item_num, category)
                 document.getElementById("str-qty" + num + item_num).setAttribute("price", currentprice);
             }
             var element = document.getElementById('str-qty' + num + item_num);
-            getEstimate('str', element.id, element.getAttribute('price'), element.getAttribute('dest'), element.getAttribute('num'), 'CL_STR');
+            getEstimate('cl-str', element.id, element.getAttribute('price'), element.getAttribute('dest'), element.getAttribute('num'), 'CL_STR');
             break;
-        
-        case 'pr': 
+
+        case 'pr':
             if (value == 'TB') {
                 currentprice = document.getElementById("str-qty" + num + item_num).getAttribute("str-price");
                 currentprice *= 1000;
@@ -1117,7 +1117,7 @@ function changeUnits(vm_qty, id, value, num, item_num, category)
             var element = document.getElementById('str-qty' + num + item_num);
             getEstimate('pr-str', element.id, element.getAttribute('str-price'), element.getAttribute('dest'), element.getAttribute('num'), 'CL_STR');
             break;
-        
+
         case 'raw':
             if (value == 'TB') {
                 currentprice = document.getElementById("raw-qty" + num).getAttribute("comm-price");
@@ -1146,10 +1146,10 @@ function calculateBackup(num)
     var diffwk = document.getElementById("diffwk-qty" + num);
     var incwk = document.getElementById("incwk-qty" + num);
     var durdiffinc = document.getElementById("durdiffinc-qty" + num);
-    
+
     var backupsvalue = parseFloat(input.value * monthlynum.value * durmonthly.value * 0.8).toFixed(2);
     var diffvalue = parseFloat(((diffwk.value * input.value * 0.015) + (incwk.value * input.value * 0.0075)) * (4 * durdiffinc.value * 0.8)).toFixed(2);
-    
+
     if (document.getElementById("raw-units" + num + "1").getAttribute("value") == "GB") {
         backupsvalue /= 1000;
         backupsvalue = backupsvalue.toFixed(2);
@@ -1158,7 +1158,7 @@ function calculateBackup(num)
     }
     fullbackups.setAttribute("value", backupsvalue);
     differentials.setAttribute("value", diffvalue);
-    
+
     getEstimate('full', fullbackups.id, fullbackups.getAttribute('comm-price'), fullbackups.getAttribute('dest'),  fullbackups.getAttribute('num'), 'RAW');
     getEstimate('diff', differentials.id, differentials.getAttribute('comm-price'), differentials.getAttribute('dest'),  differentials.getAttribute('num'), 'RAW');
 }
