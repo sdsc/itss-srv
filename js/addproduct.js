@@ -356,10 +356,14 @@ function addItemLine(table, item_name, price, id, vm_num, item_num, tooltip, typ
         if (id=="onetime") {
             qty.setAttribute("dest", "consult-sub" + vm_num + item_num);
             qty.id = "consult-qty" + vm_num + item_num;
+            qty.setAttribute("name", qty.id);
+
         }
         else {
             qty.setAttribute("dest", id + "-sub" + vm_num + item_num);
             qty.id = id + "-qty" + vm_num + item_num;
+            qty.setAttribute("name", qty.id);
+
         }
         qty.setAttribute("num", vm_num);
         // qty.price = price;
@@ -392,12 +396,13 @@ function addItemLine(table, item_name, price, id, vm_num, item_num, tooltip, typ
             str_units.setAttribute("typeUnits", typeUnits );
             str_units.id = "units" + vm_num + item_num;
             /* add all unit options */
-            option = new Option("TB", "TB", false, false);
+            option = new Option("TB", "TB");
             option.id = "TB" + vm_num + item_num;
             str_units.appendChild(option);
             option = new Option("GB", "GB", false, false);
             option.id = "GB" + vm_num + item_num;
             str_units.appendChild(option);
+            str_units.setAttribute("value","TB");
             str_units.setAttribute("vm_type_qty", id + "-qty");
             var onchange = "changeUnits('" + str_units.getAttribute("vm_type_qty") + "', '" + str_units.id + "',this.value," + str_units.getAttribute("num") + "," + str_units.getAttribute("item_num") + ",'" + str_units.getAttribute("typeUnits") + "')";
             str_units.setAttribute("onchange", onchange);
