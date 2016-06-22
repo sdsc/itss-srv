@@ -696,8 +696,8 @@ function validate(type, id, dest, num)
             break;
 
         case "pr-str":
-            if (document.getElementById('units' + num) != null) {
-              if (document.getElementById('units' + num).getAttribute("value") == 'GB') {
+            if (document.getElementById('units' + num +"1") != null) {
+              if (document.getElementById('units' + num + "1").getAttribute("value") == 'GB') {
                 if (v < 1000 || v % 500 != 0) {
                     d.setAttribute("value", "Invalid input");
                     d.style.color = "#ff0000";
@@ -1106,13 +1106,13 @@ function changeUnits(vm_qty, id, value, num, item_num, category)
 
         case 'pr':
             if (value == 'TB') {
-                currentprice = document.getElementById("str-qty" + num + item_num).getAttribute("str-price");
+                currentprice = document.getElementById("str-qty" + num + item_num).getAttribute("price");
                 currentprice *= 1000;
-                document.getElementById("str-qty" + num + item_num).setAttribute("str-price", currentprice);
+                document.getElementById("str-qty" + num + item_num).setAttribute("price", currentprice);
             } else {
-                currentprice = document.getElementById("str-qty" + num + item_num).getAttribute("str-price");
+                currentprice = document.getElementById("str-qty" + num + item_num).getAttribute("price");
                 currentprice /= 1000;
-                document.getElementById("str-qty" + num + item_num).setAttribute("str-price", currentprice);
+                document.getElementById("str-qty" + num + item_num).setAttribute("price", currentprice);
             }
             var element = document.getElementById('str-qty' + num + item_num);
             getEstimate('pr-str', element.id, element.getAttribute('str-price'), element.getAttribute('dest'), element.getAttribute('num'), 'CL_STR');
