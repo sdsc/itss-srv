@@ -86,7 +86,7 @@ function addTitleOptions(table, title, rowsString, category) {
     os.appendChild(option);
     cell.appendChild(os);
     cell.setAttribute("colspan", "2");
-    os.id = "os" + vm_num;
+    os.id = "affiliation" + vm_num;
 
     if (category == "ST_VM" || category == "HS_VM") {
         var row = table.insertRow(++rowCount);
