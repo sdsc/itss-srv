@@ -1311,7 +1311,7 @@ function addProduct(id)
         option.id = "GB" + vm_num + item_num;
         raw_units.appendChild(option);
         raw_units.setAttribute("item_num", item_num);
-        raw_units.setAttribute("onchange", "changeUnits(this.id, this.value, this.getAttribute('num'), this.getAttribute('item_num'), 'raw')");
+        raw_units.setAttribute("onchange", "changeUnits('raw_units', this.id, this.value ,this.getAttribute('num'), this.getAttribute('item_num'), 'raw')");
         cell.appendChild(raw_units);
 
         var cell = row2.insertCell(4);

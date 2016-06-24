@@ -984,6 +984,20 @@ function processPackage(o, num)
         document.getElementById('diffwk-qty' + num).setAttribute("readonly", "readonly");
         document.getElementById('incwk-qty' + num).setAttribute("readonly", "readonly");
         document.getElementById('durdiffinc-qty' + num).setAttribute("readonly", "readonly");
+
+        document.getElementById('monthlybackup-qty' + num).setAttribute("value","1");
+        document.getElementById('monthlybackup-qty' + num).value = 1;
+        document.getElementById('durmonthlybackup-qty' + num).setAttribute("value", duration);
+        document.getElementById('durmonthlybackup-qty' + num).value = duration;
+        document.getElementById('diffwk-qty' + num).setAttribute("value", "1");
+        document.getElementById('diffwk-qty' + num).value = 1;
+        document.getElementById('incwk-qty' + num).setAttribute("value", "5");
+        document.getElementById('incwk-qty' + num).value = 5;
+        document.getElementById('durdiffinc-qty' + num).setAttribute("value", duration);
+        document.getElementById('durdiffinc-qty' + num).value = duration;
+        changePrices(document.getElementById('affiliation'+num).value, 'COMMVAULT', num);
+
+
     } else {
         document.getElementById('monthlybackup-qty' + num).removeAttribute("readonly");
         document.getElementById('durmonthlybackup-qty' + num).removeAttribute("readonly");
@@ -1121,15 +1135,15 @@ function changeUnits(vm_qty, id, value, num, item_num, category)
 
         case 'raw':
             if (value == 'TB') {
-                currentprice = document.getElementById("raw-qty" + num).getAttribute("comm-price");
+                currentprice = document.getElementById("comm-qty" + num + item_num).getAttribute("comm-price");
                 currentprice *= 1000;
-                document.getElementById("raw-qty" + num).setAttribute("comm-price", currentprice);
+                document.getElementById("comm-qty" + num + item_num).setAttribute("comm-price", currentprice);
             } else {
-                currentprice = document.getElementById("raw-qty" + num).getAttribute("comm-price");
+                currentprice = document.getElementById("comm-qty" + num + item_num).getAttribute("comm-price");
                 currentprice /= 1000;
-                document.getElementById("raw-qty" + num).setAttribute("comm-price", currentprice);
+                document.getElementById("comm-qty" + num + item_num).setAttribute("comm-price", currentprice);
             }
-            var element = document.getElementById('raw-qty' + num);
+            var element = document.getElementById("comm-qty" + num + item_num);
             getEstimate('raw', element.id, element.getAttribute('comm-price'), element.getAttribute('dest'),  element.getAttribute('num'), 'RAW');
             break;
     }
