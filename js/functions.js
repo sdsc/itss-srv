@@ -436,11 +436,11 @@ function changePrices(affiliation, id, num)
             case 'COMMVAULT':
                 for (i = 0, item_num = 1; item_num < 4; item_num++, i++){
                     document.getElementById("comm-price" + num + item_num).setAttribute("value", price_comm[i]);
-                    document.getElementById("comm-price" + num + item_num).innerHTML = "$" + parseFloat(price_comm[i]).toFixed(2);
+                    document.getElementById("comm-price" + num + item_num).innerHTML = "$" + parseFloat(price_comm[i]).toFixed(2) + '/TB';
                     document.getElementById("comm-qty" + num + item_num).setAttribute("comm-price", price_comm[i]);
                 }
                 getEstimate('raw', "comm-qty" + num + "1", price_comm[0], "comm-sub" + num + "1", num, 'RAW');
-                calculateBackup(num);
+                //calculateBackup(num);
                 break;
             case 'RAW':
             case 'CL_COMPUTE':
