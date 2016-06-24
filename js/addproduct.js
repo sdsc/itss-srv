@@ -1221,7 +1221,7 @@ function addProduct(id)
 
         cell.appendChild(os);
         cell.setAttribute("colspan", "2");
-        os.id = "os" + vm_num;
+        os.id = "affiliation" + vm_num; // changed from "os"
 
         var row = table.insertRow(++rowCount);
         var cell = row.insertCell(0);
