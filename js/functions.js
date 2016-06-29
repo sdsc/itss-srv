@@ -151,6 +151,8 @@ var cpu_qty_in, cpu_sub_out, mem_qty_in, mem_sub_out, str_qty_in, str_sub_out, s
 /* options variable for dropdown menus */
 var option;
 
+var toggle = false;
+
 
 /* Function Name: changePrices
  * Description: This function changes the prices of the services when the user changes affiliation (UC or External).
@@ -439,8 +441,20 @@ function changePrices(affiliation, id, num)
                     document.getElementById("comm-price" + num + item_num).innerHTML = "$" + parseFloat(price_comm[i]).toFixed(2) + '/TB';
                     document.getElementById("comm-qty" + num + item_num).setAttribute("comm-price", price_comm[i]);
                 }
-                getEstimate('raw', "comm-qty" + num + "1", price_comm[0], "comm-sub" + num + "1", num, 'RAW');
-                //calculateBackup(num);
+                if(toggle == true) {
+
+                    if (document.getElementById("raw-units" + num + "1").getAttribute("value") == 'TB') {
+                        currentprice = price_comm[0];
+                        currentprice *= 1000;
+                        document.getElementById("comm-qty" + num + "1").setAttribute("comm-price", currentprice);
+                    } else {
+                        currentprice = price_comm[0];
+                        currentprice /= 1000;
+                        document.getElementById("comm-qty" + num + "1").setAttribute("comm-price", currentprice);
+                    }
+                }
+                var element = document.getElementById("comm-qty" + num + "1")
+                getEstimate('raw', "comm-qty" + num + "1", element.getAttribute("comm-price"), "comm-sub" + num + "1", num, 'RAW');
                 break;
             case 'RAW':
             case 'CL_COMPUTE':
@@ -1060,6 +1074,7 @@ function changeValue(id, value, num)
 function changeUnits(vm_qty, id, value, num, item_num, category)
 {
     var currentprice;
+    toggle = !toggle;
     document.getElementById(id).setAttribute("value", value);
 
     if (value == 'TB') {
