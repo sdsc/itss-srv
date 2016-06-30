@@ -34,6 +34,8 @@ function addTitleOptions(table, title, rowsString, category) {
     cell.setAttribute("width", "220");
     cell.className = "service-title";
 
+
+    // create description box
     cell = row1.insertCell(2);
     var description_box = document.createElement("textarea");
     description_box.setAttribute("colspan", "3");
@@ -65,6 +67,8 @@ function addTitleOptions(table, title, rowsString, category) {
     var os_text = document.createTextNode("\u00a0\u00a0\u00a0\u00a0Affiliation:");
     cell.appendChild(os_text);
 
+
+    // add dropdown menu for affiliation
     var cell = row.insertCell(2);
     var os = document.createElement("select");
     os.setAttribute("name", "affiliation");
@@ -98,6 +102,8 @@ function addTitleOptions(table, title, rowsString, category) {
         cell.appendChild(os_text);
         cell.setAttribute("colspan", "1");
 
+
+        // add dropdown menu for OS selection
         var cell = row.insertCell(2);
         var os = document.createElement("select");
         os.setAttribute("name", "os" + vm_num);
@@ -139,7 +145,7 @@ function addTitleOptions(table, title, rowsString, category) {
         var dual_text = document.createTextNode("\u00a0\u00a0\u00a0\u00a0Dual Site Redundancy?");
         cell.appendChild(dual_text);
 
-
+        // add dropdown menu for cloud storage options
         var cell = row2.insertCell(2);
         var dualoptions = document.createElement("select");
         dualoptions.id = "dualoptions" + vm_num;
@@ -170,6 +176,7 @@ function addTitleOptions(table, title, rowsString, category) {
             var site_text = document.createTextNode("\u00a0\u00a0\u00a0\u00a0Site");
             cell.appendChild(site_text);
 
+            // add dropdown menu for OnSite options
             var cell = row3.insertCell(2);
             var siteoptions = document.createElement("select");
             siteoptions.id = "siteoptions" + vm_num;
@@ -198,6 +205,9 @@ function addTitleOptions(table, title, rowsString, category) {
 
         cell = row.insertCell(1);
         cell.appendChild(document.createTextNode("\u00a0\u00a0\u00a0\u00a0Management Type"));
+
+
+        // add dropdown menu retention plans
 
         cell = row.insertCell(2);
         var psa = document.createElement("select");
@@ -886,6 +896,9 @@ function addProduct(id)
         cell.setAttribute("colspan", "1");
         cell.className = "service-title";
 
+
+        // create description box
+
         cell = row1.insertCell(2);
         var description_box = document.createElement("textarea");
         description_box.setAttribute("colspan", "3");
@@ -916,6 +929,8 @@ function addProduct(id)
         var os_text = document.createTextNode("\u00a0\u00a0\u00a0\u00a0Affiliation:");
         cell.appendChild(os_text);
 
+
+        // added dropdown menu for affiliation
         var cell = row.insertCell(2);
         var os = document.createElement("select");
         os.setAttribute("name", "affiliation");
@@ -1182,6 +1197,8 @@ function addProduct(id)
         option.id = "Custom" + vm_num;
         package.appendChild(option);
 
+
+        // add text description for CommVault
         cell.appendChild(package);
         cell.setAttribute("colspan", "2");
         package.id = "package" + vm_num;
@@ -1203,6 +1220,8 @@ function addProduct(id)
         var os_text = document.createTextNode("\u00a0\u00a0\u00a0\u00a0Affiliation:");
         cell.appendChild(os_text);
 
+
+        // add dropdown for affiliation
         var cell = row.insertCell(2);
         var os = document.createElement("select");
         os.setAttribute("name", "affiliation");
@@ -1404,6 +1423,7 @@ function addProduct(id)
         cell.appendChild(durmonthlybackup);
         cell.setAttribute("colspan", "2");
 
+        // add input box for backups
         var cell = row5.insertCell(2);
         var durmonthlybackup_qty = document.createElement("input");
         durmonthlybackup_qty.setAttribute("type", "text");
