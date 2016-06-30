@@ -151,6 +151,7 @@ var cpu_qty_in, cpu_sub_out, mem_qty_in, mem_sub_out, str_qty_in, str_sub_out, s
 /* options variable for dropdown menus */
 var option;
 
+/* Used to recalculate prices for COMMVAULT  */
 var toggle = false;
 
 
@@ -1068,8 +1069,13 @@ function changeValue(id, value, num)
 }
 
 /* Function Name: changeUnits
- * Parameters:
- * Result:
+ * Parameters: vm_qty - prefix for id
+ *             id - the id of the element
+ *             value - Unit value "GB" ot "TB"
+ *             item_num - element suffix
+ *             category - type of service
+ * Result: Toogles "GB" and "TB" and changes the prices
+ *        accordingly. Calls getEstimate to recalculate the prices
  */
 function changeUnits(vm_qty, id, value, num, item_num, category)
 {
@@ -1165,6 +1171,11 @@ function changeUnits(vm_qty, id, value, num, item_num, category)
     }
 }
 
+
+/* Function Name: calculateBackup
+ * Parameters: num - identifier for element in CommVault
+ * Result: Calcuale the prices for CommVault backups
+ */
 function calculateBackup(num)
 {
     var input = document.getElementById("comm-qty" + num + "1");
@@ -1194,6 +1205,11 @@ function calculateBackup(num)
     getEstimate('diff', differentials.id, differentials.getAttribute('comm-price'), differentials.getAttribute('dest'),  differentials.getAttribute('num'), 'RAW');
 }
 
+
+/* Function Name: calculateBackup
+ * Parameters: num - suffix for element in Cloud Storage
+ * Result: Process the OnSite option for Cloud Storage
+ */
 function changeSite(num)
 {
     var currentValue = document.getElementById("siteoptions" + num).value;
@@ -1207,12 +1223,25 @@ function changeSite(num)
     }
 }
 
+
+/* Function Name: changeDescription
+ * Parameters: num - identifier for element
+ *             value - the text to be entered in description box
+ * Result: Displays/proceess the text entered in the description box
+ */
 function changeDescription(num, value)
 {
     document.getElementById("description" + num).setAttribute("name", value);
     document.getElementById("description" + num).innerHTML = value;
 }
 
+
+/* Function Name: extraSnaps
+ * Parameters: vm_num - token in the identifier
+ *             item_num - suffix in identifier
+ *             id - the identifier of element
+ * Result: Calcuales and Displays the cost of extra snapshots for vms
+ */
 function extraSnaps(vm_num, item_num, id)
 {
     var currentPrice = parseFloat(document.getElementById('vm-sub' + vm_num + '-total').value.replace("$", ""));
