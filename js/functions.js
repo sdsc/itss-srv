@@ -405,36 +405,13 @@ function changePrices(affiliation, id, num)
                 break;
             case 'SUPPORT':
             case 'SYS_MAN':
-                item_num = 1;
-                // set up loop to go through each line item with new naming convention
-                document.getElementById("pa" + num + item_num).value = "$" + parseFloat(price_sys_man[0]).toFixed(2);
-                document.getElementById("pa" + num + item_num).innerHTML = "$" + parseFloat(price_sys_man[0]).toFixed(2);
-                document.getElementById("pa-qty" + num + item_num).setAttribute("pa-price", price_sys_man[0]);
-                getEstimate('pa-sub', "pa-qty" + num + item_num, price_sys_man[0], "sys-man-sub" + num + item_num, num, 'SYS_MAN');
-                document.getElementById("nonrec-price" + num).value = "$" + parseFloat(price_sys_man[1]).toFixed(2);
-                document.getElementById("nonrec-price" + num).innerHTML = "$" + parseFloat(price_sys_man[1]).toFixed(2);
-                document.getElementById("nonrec-qty" + num).setAttribute("nonrec-price", price_sys_man[1]);
-                getEstimate('pa-sub', "pa-qty" + num + item_num, price_sys_man[1], "nonrec-sub" + num, num, 'SYS_MAN');
-                document.getElementById("no-os-price" + num).value = "$" + parseFloat(price_sys_man[2]).toFixed(2);
-                document.getElementById("no-os-price" + num).innerHTML = "$" + parseFloat(price_sys_man[2]).toFixed(2);
-                document.getElementById("no-os-qty" + num).setAttribute("no-os-price", price_sys_man[2]);
-                getEstimate('pa-sub', "pa-qty" + num + item_num, price_sys_man[2], "no-os-sub" + num, num, 'SYS_MAN');
-                document.getElementById("storage-array-price" + num).value = "$" + parseFloat(price_sys_man[3]).toFixed(2);
-                document.getElementById("storage-array-price" + num).innerHTML = "$" + parseFloat(price_sys_man[3]).toFixed(2);
-                document.getElementById("storage-array-qty" + num).setAttribute("storage-array-price", price_sys_man[3]);
-                getEstimate('pa-sub', "pa-qty" + num + item_num, price_sys_man[3], "storage-array-sub" + num, num, 'SYS_MAN');
-                document.getElementById("non-os-vendor-price" + num).value = "$" + parseFloat(price_sys_man[4]).toFixed(2);
-                document.getElementById("non-os-vendor-price" + num).innerHTML = "$" + parseFloat(price_sys_man[4]).toFixed(2);
-                document.getElementById("non-os-vendor-qty" + num).setAttribute("non-os-vendor-price", price_sys_man[4]);
-                getEstimate('pa-sub', "pa-qty" + num + item_num, price_sys_man[4], "non-os-vendor-sub" + num, num, 'SYS_MAN');
-                document.getElementById("local-admin-access-price" + num).value = "$" + parseFloat(price_sys_man[5]).toFixed(2);
-                document.getElementById("local-admin-access-price" + num).innerHTML = "$" + parseFloat(price_sys_man[5]).toFixed(2);
-                document.getElementById("local-admin-access-qty" + num).setAttribute("local-admin-access-price", price_sys_man[5]);
-                getEstimate('pa-sub', "pa-qty" + num + item_num, price_sys_man[5], "local-admin-access-sub" + num, num, 'SYS_MAN');
-                document.getElementById("sys-monitor-price" + num).value = "$" + parseFloat(price_sys_man[6]).toFixed(2);
-                document.getElementById("sys-monitor-price" + num).innerHTML = "$" + parseFloat(price_sys_man[6]).toFixed(2);
-                document.getElementById("sys-monitor-qty" + num).setAttribute("sys-monitor-price", price_sys_man[6]);
-                getEstimate('pa-sub', "sys-monitor-qty" + num, price_sys_man[6], "sys-monitor-sub" + num, num, 'SYS_MAN');
+                // set up loop to go through each line item
+                for (i = 0, item_num = 1; item_num < 8; item_num++, i++){
+                    document.getElementById("pa-price" + num + item_num).value = "$" + parseFloat(price_sys_man[i]).toFixed(2);
+                    document.getElementById("pa-price" + num + item_num).innerHTML = "$" + parseFloat(price_sys_man[i]).toFixed(2);
+                    document.getElementById("pa-qty" + num + item_num).setAttribute("price", price_sys_man[i]);
+                    getEstimate('pa-sub', "pa-qty" + num + item_num, price_sys_man[i], "pa-sub" + num + item_num, num, 'SYS_MAN');
+                }
                 break;
             case 'COMMVAULT':
                 for (i = 0, item_num = 1; item_num < 4; item_num++, i++){
