@@ -385,7 +385,7 @@ function changePrices(affiliation, id, num)
                 getEstimate('consult', "consult-qty" + num + item_num, price_consult, "consult-sub" + num + item_num, num, 'DESK');
                 break;
             case 'SITE':
-                for (item_num = 1, n = 0; item_num < 4; n++, item_num++) {
+                for (item_num = 1, n = 0; item_num < 3; n++, item_num++) {
                     document.getElementById("share-price" + num + item_num).value = parseFloat(price_share[n]).toFixed(2);
                     if (i<2)document.getElementById("share-price" + num + item_num).innerHTML = "$" + parseFloat(price_share[n]).toFixed(2) + "/month";
                     else document.getElementById("share-price" + num + item_num).innerHTML = "$" + parseFloat(price_share[n]).toFixed(2);
