@@ -381,7 +381,7 @@ function changePrices(affiliation, id, num)
                 item_num = 1;
                 document.getElementById("consult-price" + num + item_num).value = parseFloat(price_consult).toFixed(2);
                 document.getElementById("consult-price" + num + item_num).innerHTML = "$" + parseFloat(price_consult).toFixed(2) + "/hr";
-                document.getElementById("consult-qty" + num + item_num).setAttribute("consult-price" + num + item_num, price_consult);
+                document.getElementById("consult-qty" + num + item_num).setAttribute("price", price_consult);
                 getEstimate('consult', "consult-qty" + num + item_num, price_consult, "consult-sub" + num + item_num, num, 'DESK');
                 break;
             case 'SITE':
