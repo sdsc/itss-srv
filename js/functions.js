@@ -820,6 +820,8 @@ function removeProduct(rowNum, deleteNum, category)
     if(table.rows.length - 1 === 0) {
         table.setAttribute("hidden", "hidden");
         document.getElementById(theclass+"-total-row").setAttribute("hidden", "hidden");
+        var parent = document.getElementById(theclass+"-total-row").parentNode;
+        parent.removeChild(document.getElementById(theclass+"-total-row"));
 
     }
 
