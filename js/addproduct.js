@@ -142,7 +142,7 @@ function addTitleOptions(table, title, rowsString, category) {
         var cell = row2.insertCell(0);
 
         var cell = row2.insertCell(1);
-        var dual_text = document.createTextNode("\u00a0\u00a0\u00a0\u00a0Dual Site Redundancy?");
+        var dual_text = document.createTextNode("\u00a0\u00a0\u00a0\u00a0Dual Site Redundancy");
         cell.appendChild(dual_text);
 
         // add dropdown menu for cloud storage options
@@ -154,7 +154,7 @@ function addTitleOptions(table, title, rowsString, category) {
         dualoptions.setAttribute("double", PRICE_DUAL_SITE_CLOUD_STORAGE_UC);
         dualoptions.setAttribute("name", dualoptions.id);
         dualoptions.setAttribute("title", "Dual site redundancy doubles the cost");
-        dualoptions.setAttribute("onchange", "changePrice(this.getAttribute('num'), this.getAttribute('original'), this.getAttribute('double'))");
+        dualoptions.setAttribute("onchange", "changePrice(this.value,this.getAttribute('num'), this.getAttribute('original'), this.getAttribute('double'))");
         var options = new Option("No", "No", false, false);
         options.id = "No" + vm_num;
         options.setAttribute("num", vm_num);

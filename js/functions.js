@@ -894,30 +894,29 @@ function processOS(id, o, system, manager, num) {
  * Result: Changes the System Management and Manager boxes
  *          depending on the OS chosen. Also changes the dropdown selected value
  */
-function changePrice(num, originalval, doubleval)
+function changePrice(val, num, originalval, doubleval)
 {
-    var val = document.getElementById('dualoptions' + num).value;
-    var currentprice = document.getElementById('cl-str-qty' + num + "1").getAttribute('cl-str-price');
+    var currentprice = document.getElementById('str-qty' + num + "1").getAttribute('str-price');
     document.getElementById("No" + num).removeAttribute("selected");
     document.getElementById("Yes" + num).removeAttribute("selected");
     if (val == 'Yes') {
-        document.getElementById('cl-str-price' + num + "1").value = doubleval;
-        document.getElementById('cl-str-price' + num + "1").setAttribute("value", doubleval);
-        document.getElementById('cl-str-price' + num + "1").innerHTML = '$' + doubleval + '/TB';
+        document.getElementById('str-price' + num + "1").value = doubleval;
+        document.getElementById('str-price' + num + "1").setAttribute("value", doubleval);
+        document.getElementById('str-price' + num + "1").innerHTML = '$' + doubleval + '/TB';
         document.getElementById('Yes' + num).setAttribute("selected", "selected");
-        document.getElementById("cl-str-qty" + num + "1").setAttribute("cl-str-price", currentprice * 2);
-        document.getElementById("cl-str-price" + num + "1").setAttribute("value", "$" + (currentprice * 2) + "/TB");
-        getEstimate('cl-str', 'cl-str-qty' + num + "1", document.getElementById('cl-str-qty' + num + "1").getAttribute('cl-str-price'), 'cl-str-sub' + num + "1", num, 'CL_STR');
+        document.getElementById("str-qty" + num + "1").setAttribute("str-price", currentprice * 2);
+        document.getElementById("str-price" + num + "1").setAttribute("value", "$" + (currentprice * 2) + "/TB");
+        getEstimate('cl-str', 'str-qty' + num + "1", document.getElementById('str-qty' + num + "1").getAttribute('str-price'), 'str-sub' + num + "1", num, 'CL_STR');
         document.getElementById("siteoptions" + num).setAttribute("value", "N/A");
         document.getElementById("siteoptions" + num).setAttribute("disabled", "disabled");
     } else if (val == 'No') {
-        document.getElementById('cl-str-price' + num + "1").value = originalval;
-        document.getElementById('cl-str-price' + num + "1").setAttribute("value", originalval);
-        document.getElementById('cl-str-price' + num + "1").innerHTML = '$' + originalval + '/TB';
+        document.getElementById('str-price' + num + "1").value = originalval;
+        document.getElementById('str-price' + num + "1").setAttribute("value", originalval);
+        document.getElementById('str-price' + num + "1").innerHTML = '$' + originalval + '/TB';
         document.getElementById('No' + num).setAttribute("selected", "selected");
-        document.getElementById("cl-str-qty" + num + "1").setAttribute("cl-str-price", currentprice / 2);
-        document.getElementById("cl-str-price" + num + "1").setAttribute("value", "$" +  (currentprice / 2) + "/TB");
-        getEstimate('cl-str', 'cl-str-qty' + num + "1", document.getElementById('cl-str-qty' + num + "1").getAttribute('cl-str-price'), 'cl-str-sub' + num + "1", num, 'CL_STR');
+        document.getElementById("str-qty" + num + "1").setAttribute("str-price", currentprice / 2);
+        document.getElementById("str-price" + num + "1").setAttribute("value", "$" +  (currentprice / 2) + "/TB");
+        getEstimate('cl-str', 'str-qty' + num + "1", document.getElementById('str-qty' + num + "1").getAttribute('str-price'), 'str-sub' + num + "1", num, 'CL_STR');
         document.getElementById("siteoptions" + num).removeAttribute("readonly");
         document.getElementById("SD" + num).removeAttribute("selected");
         document.getElementById("Oakland" + num).removeAttribute("selected");
@@ -1200,6 +1199,7 @@ function changeSite(num)
     } else {
         document.getElementById("Oakland" + num).setAttribute("selected", "selected");
     }
+    document.getElementById("siteoptions"+num).setAttribute("value",currentValue);
 }
 
 
