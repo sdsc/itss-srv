@@ -359,6 +359,7 @@ function changePrices(affiliation, id, num)
                 item_num = 1;
                 document.getElementById("str-price" + num + item_num).value = parseFloat(price_pr_str).toFixed(2);
                 document.getElementById("str-qty" + num + item_num).setAttribute("str-price", price_pr_str);
+                document.getElementById("str-qty" + num + item_num).setAttribute("price",price_pr_str);
                 document.getElementById("str-price" + num + item_num).innerHTML = "$" + parseFloat(price_pr_str).toFixed(2) + "/TB";
                 document.getElementById("units" + num + item_num).setAttribute("value", "TB");
                 document.getElementById("GB" + num + item_num).removeAttribute("selected");
