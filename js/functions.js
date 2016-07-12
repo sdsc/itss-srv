@@ -370,6 +370,7 @@ function changePrices(affiliation, id, num)
                 item_num = 1;
                 document.getElementById("str-price" + num + item_num).value = parseFloat(price_pr_con).toFixed(2);
                 document.getElementById("str-qty" + num + item_num).setAttribute("str-price", price_pr_con);
+                document.getElementById("str-qty" + num + item_num).setAttribute("price",price_pr_con);
                 document.getElementById("str-price" + num + item_num).innerHTML = "$" + parseFloat(price_pr_con).toFixed(2) + "/unit";
                 getEstimate('pr-str', 'str-qty' + num + item_num, price_pr_con, 'str-sub' + num + item_num, num, 'CL_STR');
                 break;
