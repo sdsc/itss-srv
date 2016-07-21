@@ -1,7 +1,7 @@
 /* Function name: addTitleOptions
- * Parameters: 
+ * Parameters:
  * Description: This is a helper function for addProduct which will generate the title, description box,
-            option rows (affiliation and/or OS), and the two specifications rows (one with just "Specifications" 
+            option rows (affiliation and/or OS), and the two specifications rows (one with just "Specifications"
             and the other with Item/Price/Qty/Cost as cells)
  */
 
@@ -26,14 +26,16 @@ function addTitleOptions(table, title, rowsString, category) {
     // } else {
     //     remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), ROWS_HIGH_SECURITY_VM, 'ST_VM')");
     // }
-    
+
     var cell = row1.insertCell(1);
-    var name = document.createTextNode(title);                      
+    var name = document.createTextNode(title);
     cell.appendChild(name);
     cell.setAttribute("colspan", "1");
     cell.setAttribute("width", "220");
     cell.className = "service-title";
-        
+
+
+    // create description box
     cell = row1.insertCell(2);
     var description_box = document.createElement("textarea");
     description_box.setAttribute("colspan", "3");
@@ -46,11 +48,11 @@ function addTitleOptions(table, title, rowsString, category) {
     cell.appendChild(description_box);
     document.getElementById("description" + vm_num).innerHTML = "Enter a description here";
     cell.setAttribute("colspan", 2);
-    
+
     var row = table.insertRow(++rowCount);
     var cell = row.insertCell(0);
     cell.setAttribute("colspan", "1");
-    
+
     var cell = row.insertCell(1);
     cell.setAttribute("style", "font-weight: bold");
     var options_text = document.createTextNode("Options");
@@ -59,14 +61,16 @@ function addTitleOptions(table, title, rowsString, category) {
     var row = table.insertRow(++rowCount);
     var cell = row.insertCell(0);
     cell.setAttribute("colspan", "1");
-    
+
     var cell = row.insertCell(1);
     cell.setAttribute("colspan", "1");
     var os_text = document.createTextNode("\u00a0\u00a0\u00a0\u00a0Affiliation:");
     cell.appendChild(os_text);
 
+
+    // add dropdown menu for affiliation
     var cell = row.insertCell(2);
-    var os = document.createElement("select"); 
+    var os = document.createElement("select");
     os.setAttribute("name", "affiliation");
     os.setAttribute("num", vm_num);
     os.setAttribute("title", "Choose client location");
@@ -86,20 +90,22 @@ function addTitleOptions(table, title, rowsString, category) {
     os.appendChild(option);
     cell.appendChild(os);
     cell.setAttribute("colspan", "2");
-    os.id = "os" + vm_num;
-   
+    os.id = "affiliation" + vm_num;
+
     if (category == "ST_VM" || category == "HS_VM") {
         var row = table.insertRow(++rowCount);
         var cell = row.insertCell(0);
         cell.setAttribute("colspan", "1");
-        
+
         var cell = row.insertCell(1);
         var os_text = document.createTextNode("\u00a0\u00a0\u00a0\u00a0Operating System:");
         cell.appendChild(os_text);
         cell.setAttribute("colspan", "1");
-        
+
+
+        // add dropdown menu for OS selection
         var cell = row.insertCell(2);
-        var os = document.createElement("select"); 
+        var os = document.createElement("select");
         os.setAttribute("name", "os" + vm_num);
         os.setAttribute("value", "Windows");
         os.setAttribute("title", "Choose an operating system for your VM");
@@ -129,16 +135,17 @@ function addTitleOptions(table, title, rowsString, category) {
         os.setAttribute("onchange", "processOS(this.getAttribute('vm-type'), document.getElementById(this.id).value, this.getAttribute('sys'), this.getAttribute('manager'), this.getAttribute('optionval'))");
         os.setAttribute("readonly", "readonly");
     }
+
     if (category == "CL_STR") {
         var row2 = table.insertRow(++rowCount);
         row2.id = "row" + vm_num;
         var cell = row2.insertCell(0);
-        
+
         var cell = row2.insertCell(1);
-        var dual_text = document.createTextNode("\u00a0\u00a0\u00a0\u00a0Dual Site Redundancy?");
+        var dual_text = document.createTextNode("\u00a0\u00a0\u00a0\u00a0Dual Site Redundancy");
         cell.appendChild(dual_text);
-        
-        
+
+        // add dropdown menu for cloud storage options
         var cell = row2.insertCell(2);
         var dualoptions = document.createElement("select");
         dualoptions.id = "dualoptions" + vm_num;
@@ -147,28 +154,29 @@ function addTitleOptions(table, title, rowsString, category) {
         dualoptions.setAttribute("double", PRICE_DUAL_SITE_CLOUD_STORAGE_UC);
         dualoptions.setAttribute("name", dualoptions.id);
         dualoptions.setAttribute("title", "Dual site redundancy doubles the cost");
-        dualoptions.setAttribute("onchange", "changePrice(this.getAttribute('num'), this.getAttribute('original'), this.getAttribute('double'))");
+        dualoptions.setAttribute("onchange", "changePrice(this.value,this.getAttribute('num'), this.getAttribute('original'), this.getAttribute('double'))");
         var options = new Option("No", "No", false, false);
         options.id = "No" + vm_num;
         options.setAttribute("num", vm_num);
         dualoptions.appendChild(options);
         dualoptions.setAttribute("value", "No");
-        
+
         options = new Option("Yes", "Yes", false, false);
         options.id = "Yes" + vm_num;
         options.setAttribute("num", vm_num);
         dualoptions.appendChild(options);
         cell.appendChild(dualoptions);
-        
+
         if (dualoptions.value == 'No') {
             var row3 = table.insertRow(++rowCount);
             row3.id = "row" + vm_num;
             var cell = row3.insertCell(0);
-            
+
             var cell = row3.insertCell(1);
             var site_text = document.createTextNode("\u00a0\u00a0\u00a0\u00a0Site");
             cell.appendChild(site_text);
 
+            // add dropdown menu for OnSite options
             var cell = row3.insertCell(2);
             var siteoptions = document.createElement("select");
             siteoptions.id = "siteoptions" + vm_num;
@@ -190,38 +198,68 @@ function addTitleOptions(table, title, rowsString, category) {
 
         }
     }
-        
+    if (category == "SYS_MAN") {
+        var row = table.insertRow(++rowCount);
+        var cell = row.insertCell(0);
+        cell.setAttribute("colspan", "1");
+
+        cell = row.insertCell(1);
+        cell.appendChild(document.createTextNode("\u00a0\u00a0\u00a0\u00a0Management Type"));
+
+
+        // add dropdown menu retention plans
+
+        cell = row.insertCell(2);
+        var psa = document.createElement("select");
+
+        option = new Option("Standard", "Standard", false, false);
+        option.id = "Standard" + vm_num;
+        psa.appendChild(option);
+
+        option = new Option("Custom", "Custom", false, false);
+        option.id = "Custom" + vm_num;
+        psa.appendChild(option);
+        psa.setAttribute("title", "Choose the Standard option, or customize your own settings. Customization results in different prices.");
+
+        cell.appendChild(psa);
+        cell.setAttribute("colspan", "1");
+        psa.id = "psa" + vm_num;
+        psa.setAttribute("optionval", vm_num);
+        psa.setAttribute("onchange", "processPrice(document.getElementById(this.id).value, this.getAttribute('optionval'))");
+        psa.setAttribute("value", "Standard");
+    }
+
     var row = table.insertRow(++rowCount);
     var cell = row.insertCell(0);
     cell.setAttribute("colspan", "1");
-    
+
     var cell = row.insertCell(1);
     cell.setAttribute("style", "font-weight: bold");
     var specifications_text = document.createTextNode("Specifications");
     cell.appendChild(specifications_text);
-    
+
     var row = table.insertRow(++rowCount);
     var cell = row.insertCell(0);
     cell.setAttribute("colspan", "1");
-    
+
     var cell = row.insertCell(1);
     cell.setAttribute("style", "font-weight: bold;");
     cell.setAttribute("colspan", "1");
     var item_text = document.createTextNode("\u00a0\u00a0\u00a0\u00a0Item");
     cell.appendChild(item_text);
-    
+
     var cell = row.insertCell(2);
     cell.setAttribute("style", "font-weight: bold;");
     cell.setAttribute("colspan", "1");
     var item_text = document.createTextNode("Price");
     cell.appendChild(item_text);
-    
+
     var cell = row.insertCell(3);
     cell.setAttribute("style", "font-weight: bold;");
     cell.setAttribute("colspan", "1");
     var item_text = document.createTextNode("Qty");
     cell.appendChild(item_text);
-    
+
     var cell = row.insertCell(4);
     cell.setAttribute("style", "font-weight: bold;");
     cell.setAttribute("colspan", "1");
@@ -231,7 +269,7 @@ function addTitleOptions(table, title, rowsString, category) {
 }
 
 /* Function name: addItemLine
- * Parameters for function addItemLine(table, item_name, price, id, vm_num, item_num, tooltip, typeEstimate, category, unit_per_price, default_unit, TB_GB)                 
+ * Parameters for function addItemLine(table, item_name, price, id, vm_num, item_num, tooltip, typeEstimate, category, unit_per_price, default_unit, TB_GB)
                 1 - the table
                 2 - Item name as a string
                 3 - Price as a decimal, without prefixes and suffixes
@@ -242,15 +280,15 @@ function addTitleOptions(table, title, rowsString, category) {
                 8 - Type which is used for populating getEstimate parameters
                 9 - Units suffix for price as a string, including the "/"
                 10 - Unit (static) displayed next to price
-                11 - Unit (static) displayed next to input field in qty 
+                11 - Unit (static) displayed next to input field in qty
                 12 - boolean for displaying the dropdown menu next to qty to change units (TB and GB)
  * Description: This is a helper function for addProduct which will generate one single line
- *          for the item nam, price, qty fields, and subtotal/cost. 
+ *          for the item nam, price, qty fields, and subtotal/cost.
  */
 
 function addItemLine(table, item_name, price, id, vm_num, item_num, tooltip, typeEstimate, category, unit_per_price, default_unit, TB_GB) {
     var row = table.insertRow(++rowCount);
-    // Item 
+    // Item
     var cell = row.insertCell(0);
     cell.setAttribute("colspan", "1");
     var cell = row.insertCell(1);
@@ -262,7 +300,7 @@ function addItemLine(table, item_name, price, id, vm_num, item_num, tooltip, typ
     /******* Price *********/
     var cell = row.insertCell(2);
     cell.setAttribute("colspan", "1");
-    // i.e. $12.94/CPU 
+    // i.e. $12.94/CPU
     if (unit_per_price) {
         var itemprice = document.createTextNode("$" + parseFloat(price).toFixed(2) + unit_per_price);
     }
@@ -270,11 +308,13 @@ function addItemLine(table, item_name, price, id, vm_num, item_num, tooltip, typ
     else if (id == "hs-vm" && item_num == 5) {
         var itemprice = document.createTextNode("User-managed");
     }
-    // i.e. $69.75 
+    // i.e. $69.75
     else {
         var itemprice = document.createTextNode("$" + parseFloat(price).toFixed(2));
     }
-    cell.id = id + "-price" + vm_num + (++item_num); //first item
+    if (id=="onetime")
+        cell.id = "consult-price" + vm_num + (++item_num); //first item
+    else cell.id = id + "-price" + vm_num + (++item_num); //first item
     cell.appendChild(itemprice);
 
     /********* Qty ***********/
@@ -286,7 +326,7 @@ function addItemLine(table, item_name, price, id, vm_num, item_num, tooltip, typ
             cell.appendChild(document.createTextNode("1"));
             cell.setAttribute("value", 1);
             cell.setAttribute(id + "-qty" + vm_num + item_num, 1);
-    
+
     }
     else if ((id == "st-vm" || id == "hs-vm") && price == 24) {
             // extra snapshots don't have an input field
@@ -299,18 +339,18 @@ function addItemLine(table, item_name, price, id, vm_num, item_num, tooltip, typ
             extrasnap.setAttribute("name", extrasnap.id);
             extrasnap.setAttribute("title", "Marking yes will add $" + price + " to the subtotal");
             extrasnap.setAttribute("onchange", "extraSnaps(this.getAttribute('vm_num'),this.getAttribute('item_num'), this.getAttribute('id'))");
-                    
+
             var options = new Option("No", "No", false, false);
             options.id = "No" + vm_num;
             options.setAttribute("num", vm_num);
             extrasnap.appendChild(options);
             extrasnap.setAttribute("value", "No");
-            
+
             options = new Option("Yes", "Yes", false, false);
             options.id = "Yes" + vm_num;
             options.setAttribute("num", vm_num);
             extrasnap.appendChild(options);
-            cell.appendChild(extrasnap); 
+            cell.appendChild(extrasnap);
     }
     // system management in hs-vm doesn't have a qty
     else if (id == "hs-vm" && item_num == 6) {}
@@ -320,10 +360,21 @@ function addItemLine(table, item_name, price, id, vm_num, item_num, tooltip, typ
         qty.setAttribute("type", "text");
         cell.appendChild(qty);
         cell.setAttribute("colspan", "1");
-        qty.id = id + "-qty" + vm_num + item_num;
+
         qty.title = tooltip;
         qty.className += " userinput";
-        qty.setAttribute("dest", id + "-sub" + vm_num + item_num);
+        if (id=="onetime") {
+            qty.setAttribute("dest", "consult-sub" + vm_num + item_num);
+            qty.id = "consult-qty" + vm_num + item_num;
+            qty.setAttribute("name", qty.id);
+
+        }
+        else {
+            qty.setAttribute("dest", id + "-sub" + vm_num + item_num);
+            qty.id = id + "-qty" + vm_num + item_num;
+            qty.setAttribute("name", qty.id);
+
+        }
         qty.setAttribute("num", vm_num);
         // qty.price = price;
         qty.setAttribute("price", price);
@@ -332,8 +383,11 @@ function addItemLine(table, item_name, price, id, vm_num, item_num, tooltip, typ
         qty.typeEstimate = typeEstimate;
         var getEstimate = "getEstimate('" + qty.typeEstimate + "','" + qty.id + "', this.getAttribute('price') , this.getAttribute('dest'), this.getAttribute('num'),'" + category + "')";
         qty.setAttribute("onchange", getEstimate);
-        // static unit 
-        if (default_unit) {
+
+        // if its system management, don't display any units besides the quantity
+        if (id == "pa") {}
+        // if there's a default unit, display it beside the quantity
+        else if (default_unit !=0) {
             cell.appendChild(document.createTextNode("\u00a0\u00a0" + default_unit));
         }
         // dropdown menu with different units
@@ -346,17 +400,19 @@ function addItemLine(table, item_name, price, id, vm_num, item_num, tooltip, typ
             str_units.setAttribute("num", vm_num);
             str_units.setAttribute("item_num", item_num);
             if (typeEstimate == "silver") typeUnits = "str";
-            else if (typeEstimate == "san") typeUnits = "san";
+            else if (typeEstimate == "gold") typeUnits = "gold";
+            else if (typeEstimate == "pr-str") typeUnits = "pr";
             else typeUnits = "cl";
             str_units.setAttribute("typeUnits", typeUnits );
-            str_units.id = "units" + vm_num + item_num;           
+            str_units.id = "units" + vm_num + item_num;
             /* add all unit options */
-            option = new Option("TB", "TB", false, false);
+            option = new Option("TB", "TB");
             option.id = "TB" + vm_num + item_num;
             str_units.appendChild(option);
             option = new Option("GB", "GB", false, false);
             option.id = "GB" + vm_num + item_num;
             str_units.appendChild(option);
+            str_units.setAttribute("value","TB");
             str_units.setAttribute("vm_type_qty", id + "-qty");
             var onchange = "changeUnits('" + str_units.getAttribute("vm_type_qty") + "', '" + str_units.id + "',this.value," + str_units.getAttribute("num") + "," + str_units.getAttribute("item_num") + ",'" + str_units.getAttribute("typeUnits") + "')";
             str_units.setAttribute("onchange", onchange);
@@ -368,12 +424,26 @@ function addItemLine(table, item_name, price, id, vm_num, item_num, tooltip, typ
     /******** Cost ********/
     var cell = row.insertCell(4);
     var cost = document.createElement("input");
-    cost.setAttribute("name", id + "-sub" + vm_num + item_num);
     cost.setAttribute("type", "text");
-    cost.id = id + "-sub" + vm_num + item_num;
-    if (id == "st-vm" || id == "hs-vm") cost.className = "vm-sub vm-sub" + vm_num;
-    else if (id == "pr-str") cost.className = "cl-str vm-sub" + vm_num;
-    else cost.className = id + "-sub vm-sub" + vm_num;
+    cost.setAttribute("name", id + "-sub" + vm_num + item_num);
+    if (id == "st-vm" || id == "hs-vm"){
+        cost.className = "vm-sub vm-sub" + vm_num;
+        cost.id = id + "-sub" + vm_num + item_num;
+    }
+    else if (id == "pr-str"){
+        cost.className = "cl-str vm-sub" + vm_num;
+        cost.id = id + "-sub" + vm_num + item_num;
+        cost.id = id + "-sub vm-sub" + vm_num;
+    }
+    else if (id == "onetime") {
+        cost.className = "onetime vm-sub" +vm_num;
+        cost.setAttribute("name", "consult-sub" + vm_num + item_num);
+        cost.id = "consult-sub" + vm_num + item_num;
+    }
+    else {
+        cost.className = id + "-sub vm-sub" + vm_num;
+        cost.id = id + "-sub" + vm_num + item_num;
+    }
     cost.className += " price-align";
     // base vm has static cost
     if ((id == "st-vm" || id == "hs-vm") && item_num == 1) {
@@ -387,7 +457,7 @@ function addItemLine(table, item_name, price, id, vm_num, item_num, tooltip, typ
 }
 
 /* Function name: addSubtotalRow
- * Parameters: 
+ * Parameters:
  * Description: This is a helper function for addProduct which will generate the subtotal row
  */
 
@@ -414,7 +484,7 @@ function addSubtotalRow(table, vm_num) {
     cell.setAttribute("colspan", "1");
     vmsubtotal.setAttribute("style", "");
     vmsubtotal.id = "vm-sub" + vm_num + "-total";
-    vmsubtotal.setAttribute("name", vmsubtotal.id);    
+    vmsubtotal.setAttribute("name", vmsubtotal.id);
 }
 
 /* Function name: addProduct
@@ -493,7 +563,7 @@ function addProduct(id)
         cell = row.insertCell(0);
         row.id = "onetimetotals";
         cell.setAttribute("colspan", "1");
-        // cell.setAttribute("width", "654");   
+        // cell.setAttribute("width", "654");
         cell.setAttribute("style", "text-align: right; font-weight: bold");
         var onetime = document.createTextNode("\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0One-time Fees:")
         cell.appendChild(onetime);
@@ -517,7 +587,7 @@ function addProduct(id)
     if (rowCount - 1 === 0) {
         table.removeAttribute("hidden");
         // totals.removeAttribute("hidden");
-    }    
+    }
 
     /* ALL OF THIS IS FOR VM'S!!! */
     if (id == 'ST_VM' || id == 'HS_VM') {
@@ -536,16 +606,16 @@ function addProduct(id)
             slice_text = "High Security VM";
         }
         addTitleOptions(table, slice_text, "ROWS_" + id, id) ;
-        
-        
+
+
         /* Adding Items Lines*/
 
         addItemLine(table, "Base-VM", price_vm[0], id_prefix, vm_num, item_num++, 0, 0, 0, 0, 0, 0);
-        addItemLine(table, "Additional CPUs", price_vm[1], id_prefix, vm_num, item_num++, "Enter a whole number 0 to 11", "mem", id, "/CPU", "CPU(s)", 0);
+        addItemLine(table, "Additional CPUs", price_vm[1], id_prefix, vm_num, item_num++, "Enter a whole number 0 to 11", "cpu", id, "/CPU", "CPU(s)", 0);
         addItemLine(table, "Additional RAM", price_vm[2], id_prefix, vm_num, item_num++, "Enter a whole number 0 to 190", "mem", id, "/GB", "GB", 0 );
         if (id == "ST_VM")
             addItemLine(table, "Additional 'Silver' Storage", price_vm[3], id_prefix, vm_num, item_num++, "Minimum value 0.001TB (1GB). Max value 30TB (30000GB)", "silver", id, "/TB", 0, 1);
-        addItemLine(table, "Additional 'Gold' Storage", price_vm[4], id_prefix, vm_num, item_num++, "Min value 0.001TB (1GB). Max value 4.9TB (4900GB)", "san", id, "/TB", 0, 1);
+        addItemLine(table, "Additional 'Gold' Storage", price_vm[4], id_prefix, vm_num, item_num++, "Min value 0.001TB (1GB). Max value 4.9TB (4900GB)", "gold", id, "/TB", 0,  1);
         addItemLine(table, "Extra Snapshots", price_vm[5], id_prefix, vm_num, item_num++, 0, 0, id, 0, 0, 0);
         if (id == "HS_VM") {
             addItemLine(table, "System Management", 0, id_prefix, vm_num, item_num++,  0, 0, 0, 0, 0);
@@ -584,17 +654,17 @@ function addProduct(id)
         document.getElementById("vm-sub" + vm_num + "-total").setAttribute("value", "$" + price_vm[0]);
         sub('vm-sub');
         sub('sub');
-            
-    } 
-                
+
+    }
+
     /*  CLOUD STORAGES */
     else if (id == 'CL_STR' || id == 'PR_STR' || id == 'PR_CON') {
         ++vm_num;
-        var id_prefix = "cl-str";
+        var id_prefix = "str";
 
         if (id == "CL_STR") {
             addTitleOptions(table, "Cloud Storage", "ROWS_" + id, id);
-            addItemLine(table, "Storage", PRICE_CLOUD_STORAGE_UC, id_prefix, vm_num, item_num++, "Min value 0.100TB (100GB)", "cl-str", id, "/TB", 0, 1);
+            addItemLine(table, "Storage", PRICE_CLOUD_STORAGE_UC, id_prefix, vm_num, item_num++, "Min value 1TB", "cl-str", id, "/TB", 0, 1);
         }
         else if (id== 'PR_STR') {
             addTitleOptions(table, "Project Storage", "ROWS_" + id, id);
@@ -602,21 +672,21 @@ function addProduct(id)
         }
         else {
             addTitleOptions(table, "Project Condo", "ROWS_" + id, id);
-            addItemLine(table, "Storage", PRICE_PROJECT_CONDO_UC, id_prefix, vm_num, item_num++, "", "cl-str", id, "/unit", "unit(s)", 0);
+            addItemLine(table, "Storage", PRICE_PROJECT_CONDO_UC, id_prefix, vm_num, item_num++, "", "str", id, "/unit", "unit(s)", 0);
         }
 
         addSubtotalRow(table, vm_num);
 
         //remove duplicate of sub total row when there are multiple storage items
-        if (document.getElementById("cl-str-sub-total-row") != null) {
-            var elem  = document.getElementById("cl-str-sub-total-row");
+        if (document.getElementById("str-sub-total-row") != null) {
+            var elem  = document.getElementById("str-sub-total-row");
             elem.parentNode.removeChild(elem);
             --rowTotals;
         }
 
         //create Storage Total at the top of totals table
         row1 = totals.insertRow(0);
-        row1.id = "cl-str-sub-total-row";
+        row1.id = "str-sub-total-row";
         var cell = row1.insertCell(0);
         cell.setAttribute("colspan", "1");
         var name = document.createTextNode("\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0Storage Total:");
@@ -627,234 +697,133 @@ function addProduct(id)
         var subtotal = document.createElement("input");
         subtotal.setAttribute("type", "text");
         subtotal.setAttribute("size", 20);
-        subtotal.id = "cl-str-sub-total";
+        subtotal.id = "str-sub-total";
         subtotal.className = "sub";
-        subtotal.name = "cl-str-sub-total";
+        subtotal.name = "str-sub-total";
         subtotal.setAttribute("readonly", "readonly");
-        
+
         cell.appendChild(subtotal);
 
-        sub('cl-str-sub');
+        sub('str-sub');
         sub('sub');
     } /* END CLOUD STORAGE CODE */
-    
 
-    
-    /* BEGIN CONSULTING SERVICES */
-    else if (id == 'DESK' || id == 'SYSTEMS' || id == 'STORAGE' || id == 'RECUR_DESK' || id == 'RECUR_SYSTEMS' || id == 'RECUR_STORAGE') {
+    /* BEGIN SYSTEM MANAGEMENT */
+    else if (id == 'SYS_MAN') {
         ++vm_num;
-        vm_type_sub = "consult-sub"; //for sub id
-        vm_type_price = "consult-price"; //for each price id
-        vm_type_qty = "consult-qty"; //for each input qty id        
-        var consult_price_val;
-        var prod_name;
-        var numRowsRemove;
-        if (id == 'DESK') {
-            consult_price_val = PRICE_DESKTOP_SERVICES_UC;
-            prod_name = "\u00a0\u00a0\u00a0\u00a0Consulting Services - Desktop";
-            numRowsRemove = ROWS_DESKTOP_SERVICES;
-        } else if (id == 'SYSTEMS') {
-            consult_price_val = PRICE_SYSTEMS_SERVICES_UC;
-            prod_name = "\u00a0\u00a0\u00a0\u00a0Consulting Services - Systems";
-            numRowsRemove = ROWS_SYSTEMS_SERVICES;
-        } else if (id == 'STORAGE') {
-            consult_price_val = PRICE_STORAGE_SERVICES_UC;
-            prod_name = "\u00a0\u00a0\u00a0\u00a0Consulting Services - Storage";
-            numRowsRemove = ROWS_STORAGE_SERVICES;
-        } else if (id == 'RECUR_DESK') {
-            consult_price_val = PRICE_RECUR_DESKTOP_UC;
-            prod_name = "\u00a0\u00a0\u00a0\u00a0Recurring Consulting Services - Desktop";
-            numRowsRemove = ROWS_RECURRING_CONSULTING_SERVICES;
-        } else if (id == 'RECUR_SYSTEMS') {
-            consult_price_val = PRICE_RECUR_SYSTEMS_UC;
-            prod_name = "\u00a0\u00a0\u00a0\u00a0Recurring Consulting Services - Systems";
-            numRowsRemove = ROWS_RECURRING_CONSULTING_SERVICES;
-        } else if (id == 'RECUR_STORAGE') {
-            consult_price_val = PRICE_RECUR_STORAGE_UC;
-            prod_name = "\u00a0\u00a0\u00a0\u00a0Recurring Consulting Services - Storage";
-            numRowsRemove = ROWS_RECURRING_CONSULTING_SERVICES;
-        }
-        
-        row1 = table.insertRow(rowCount);
-        row1.id = "row" + vm_num;
-        var cell = row1.insertCell(0);
-        var remove = document.createElement("button");
-        var remove_text = document.createTextNode("-");
-        remove.appendChild(remove_text);
-        cell.appendChild(remove);
-        cell.setAttribute("width", "20");
-        remove.className = "remove-button";
-        remove.setAttribute("value", "-");
-        remove.setAttribute("rownumber", "row" + vm_num);
-        remove.setAttribute("title", "Remove Service");
-        remove.setAttribute("numRows", numRowsRemove);
-        remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), this.getAttribute('numRows'), 'DESK')");
-        
-        var cell = row1.insertCell(1);
-        cell.setAttribute("width", "220");
-        var name = document.createTextNode(prod_name);  
-        cell.appendChild(name);
-        cell.setAttribute("colspan", "1");
-        cell.className = "service-title";
-        cell.className += " pad-bottom";
-        
-        cell = row1.insertCell(2);
-        var description_box = document.createElement("textarea");
-        description_box.setAttribute("colspan", "3");
-        description_box.id = "description" + vm_num;
-        description_box.setAttribute("num", vm_num);
-        description_box.setAttribute("name", " ");
-        description_box.setAttribute("onchange", "changeDescription(this.getAttribute('num'), this.value)");
-        description_box.setAttribute("rows", "5");
-        description_box.setAttribute("cols", "30");
-        cell.appendChild(description_box);
-        cell.setAttribute("colspan", "3");
-        document.getElementById("description" + vm_num).innerHTML = "Enter a description here";
+        id_prefix = "pa";
+        addTitleOptions(table, "System Management", "ROWS_" + id, id);
 
-        var row = table.insertRow(++rowCount);
-        var cell = row.insertCell(0);
-        cell.setAttribute("colspan", "1");
-        
-        var cell = row.insertCell(1);
-        cell.setAttribute("style", "font-weight: bold");
-        var options_text = document.createTextNode("Options");
-        cell.appendChild(options_text);
-        cell.setAttribute("colspan", "1");
-        var row = table.insertRow(++rowCount);
-        var cell = row.insertCell(0);
-        cell.setAttribute("colspan", "1");
-        
-        var cell = row.insertCell(1);
-        cell.setAttribute("colspan", "1");
-        var os_text = document.createTextNode("\u00a0\u00a0\u00a0\u00a0Affiliation:");
-        cell.appendChild(os_text);
+        addItemLine(table, "System", PRICE_SYSTEM_MANAGEMENT_UC[0], id_prefix, vm_num, item_num++, "", "pa-sub", id, 0, 0, 0);
 
-        var cell = row.insertCell(2);
-        var os = document.createElement("select"); 
-        os.setAttribute("name", "affiliation");
-        os.setAttribute("num", vm_num);
-        os.setAttribute("title", "Choose client location");
-        os.setAttribute("value", "UC");
-        os.setAttribute("service", id);
-        os.setAttribute("onchange", "changePrices(this.value, this.getAttribute('service'), this.getAttribute('num'))");
-
-        option = new Option("UC", "UC", false, false);
-        option.id = "UC" + vm_num;
-        os.appendChild(option);
-        option = new Option("External", "External", false, false);
-        option.id = "External" + vm_num;
-        os.appendChild(option);
-        cell.appendChild(os);
-        cell.setAttribute("colspan", "2");
-        os.id = "os" + vm_num;       
-
-        var row = table.insertRow(++rowCount);
-        var cell = row.insertCell(0);
-        cell.setAttribute("colspan", "1");  
-
-        var cell = row.insertCell(1);
-        cell.setAttribute("style", "font-weight: bold");
-        var specifications_text = document.createTextNode("Specifications");
-        cell.appendChild(specifications_text);
-        cell.setAttribute("colspan", "1");
-       
-        var row = table.insertRow(++rowCount);
+        row = table.insertRow(++rowCount);
         cell = row.insertCell(0);
         cell.setAttribute("colspan", "1");
-        
-        cell = row.insertCell(1);
-        cell.setAttribute("style", "font-weight: bold");
-        cell.appendChild(document.createTextNode("\u00a0\u00a0\u00a0\u00a0Item"));
-        cell.setAttribute("colspan", "1");
-        
-        cell = row.insertCell(2);
-        cell.setAttribute("style", "font-weight: bold");
-        cell.appendChild(document.createTextNode("Price"));
-        
-        cell = row.insertCell(3);
-        cell.setAttribute("style", "font-weight: bold");
-        cell.appendChild(document.createTextNode("Qty"));
-        
-        cell = row.insertCell(4);
-        cell.setAttribute("style", "font-weight: bold");
-        cell.appendChild(document.createTextNode("Cost"));
-        
-        var row = table.insertRow(++rowCount);
-        cell = row.insertCell(0);
-        cell.setAttribute("colspan", "1");
-        //cell.setAttribute("style", "border-bottom: 1px #d3d3d3 solid");
-        
-        cell = row.insertCell(1);
-        cell.appendChild(document.createTextNode(prod_name));
-        //cell.setAttribute("style", "border-bottom: 1px #d3d3d3 solid");
-        
-        var cell = row.insertCell(2);
-        var consult_price = document.createTextNode("$" + consult_price_val + "/hr");
-        cell.setAttribute("value", consult_price_val);
-        cell.id = vm_type_price + vm_num + (++item_num);
-        cell.appendChild(consult_price);
-        cell.setAttribute("colspan", "1");
-        //cell.setAttribute("style", "border-bottom: 1px #d3d3d3 solid");
-        
-        var cell = row.insertCell(3);
-        var consult_qty = document.createElement("input");
-        consult_qty.setAttribute("type", "text");
-        consult_qty_in = vm_type_qty + vm_num + item_num;
-        consult_sub_out = vm_type_sub + vm_num + item_num;
-        cell.appendChild(consult_qty);
-        cell.setAttribute("colspan", "1");
-        consult_qty.id = consult_qty_in;
-        consult_qty.className += " consult_qty userinput";
-        consult_qty.setAttribute("dest", "" + consult_sub_out);
-        consult_qty.setAttribute("num", vm_num);
-        consult_qty.setAttribute("consult-price", consult_price_val);
-        consult_qty.setAttribute("name", consult_qty.id);
-        if (id == 'RECUR_DESK' || id == 'RECUR_SYSTEMS' || id == "RECUR_STORAGE") {
-            consult_qty.setAttribute("title", "Number of hours in multiples of tenths (monthly consulting fee)");
-            consult_qty.setAttribute("onchange", "getEstimate('recur', this.id, this.getAttribute('consult-price'), this.getAttribute('dest'), this.getAttribute('num'), 'DESK')");
-        } else {
-            consult_qty.setAttribute("title", "Number of hours in multiples of tenths (One-time consulting fee)");
-            consult_qty.setAttribute("onchange", "getEstimate('consult', this.id, this.getAttribute('consult-price'), this.getAttribute('dest'), this.getAttribute('num'), 'DESK')");
-        }
-        //cell.setAttribute("style", "border-bottom: 1px #d3d3d3 solid");
-        consult_qty.setAttribute("size", 5);
-        cell.appendChild(document.createTextNode("\u00a0\u00a0hr(s)"));
-        var cell = row.insertCell(4);
-        var consult_sub = document.createElement("input");
-        //cell.setAttribute("style", "border-bottom: 1px #d3d3d3 solid");
-        consult_sub.setAttribute("type", "text");
-        cell.appendChild(consult_sub);
-        cell.setAttribute("colspan", "1");
-        consult_sub.id = consult_sub_out;
-        document.getElementById(consult_sub_out).setAttribute("readonly", "readonly");
-        if (id == 'RECUR_DESK' || id == 'RECUR_SYSTEMS' || id == "RECUR_STORAGE") {
-            consult_sub.className = "consult-sub sub vm-sub" + vm_num;
-        } else {
-            consult_sub.className = " onetime vm-sub" + vm_num;
-        }
-        
-        consult_sub.setAttribute("name", consult_sub.id);
-        consult_sub.setAttribute("size", 20);
 
+        cell = row.insertCell(1);
+        cell.setAttribute("style", "font-weight: bold");
+        cell.appendChild(document.createTextNode("\u00a0\u00a0\u00a0\u00a0Surcharge for"));
+
+        addItemLine(table, "Non-recommended hardware", PRICE_SYSTEM_MANAGEMENT_UC[1], id_prefix, vm_num, item_num++, "To receive this option, enter 1", "pa-sub", id, " ", " ", 0);
+
+        addItemLine(table, "Hardware without build-in OS support", PRICE_SYSTEM_MANAGEMENT_UC[2], id_prefix, vm_num, item_num++, "To receive this option, enter 1", "pa-sub", id, 0, 0, 0);
+
+        addItemLine(table, "Each attached storage array", PRICE_SYSTEM_MANAGEMENT_UC[3], id_prefix, vm_num, item_num++, "To receive this option, enter 1", "pa-sub", id, 0, 0, 0);
+
+        addItemLine(table, "Non-OS vendor software", PRICE_SYSTEM_MANAGEMENT_UC[4], id_prefix, vm_num, item_num++, "To receive this option, enter 1", "pa-sub", id, 0, 0, 0);
+
+        addItemLine(table, "Local administration access", PRICE_SYSTEM_MANAGEMENT_UC[5], id_prefix, vm_num, item_num++, "To receive this option, enter 1", "pa-sub", id, 0, 0, 0);
+
+        addItemLine(table, "24/7 system monitoring and support", PRICE_SYSTEM_MANAGEMENT_UC[5], id_prefix, vm_num, item_num++, "To receive this option, enter 1", "pa-sub", id, 0, 0, 0);
+
+        // add line manually
         var row8 = table.insertRow(++rowCount);
         var cell = row8.insertCell(0);
         cell.setAttribute("colspan", "1");
         var cell = row8.insertCell(1);
-        var subtext = document.createTextNode("Subtotal:\u00a0\u00a0");
-        cell.appendChild(subtext);
-        cell.setAttribute("colspan", "3");
-        cell.className += " ";
-        cell.setAttribute("style", "text-align: left;");
-        var cell = row8.insertCell(2);
-        var vmsubtotal = document.createElement("input");
-        vmsubtotal.setAttribute("type", "text");
-        vmsubtotal.setAttribute("size", 20);
-        cell.appendChild(vmsubtotal);
+        var colo = document.createTextNode("\u00a0\u00a0\u00a0\u00a0Colocation Services");
+        cell.appendChild(colo);
         cell.setAttribute("colspan", "1");
-        vmsubtotal.setAttribute("style", "");
-        vmsubtotal.id = "vm-sub" + vm_num + "-total";
-        vmsubtotal.setAttribute("name", vmsubtotal.id);
-        vmsubtotal.setAttribute("readonly", "readonly");
+        var cell = row8.insertCell(2);
+        var colo_price = document.createTextNode("See Colocation Rates");
+        cell.appendChild(colo_price);
+        cell.setAttribute("colspan", "3");
+
+
+        //remove duplicate of sub total row when there are multiple storage items
+        if (document.getElementById("pa-sub-total-row") != null) {
+            var elem  = document.getElementById("pa-sub-total-row");
+            elem.parentNode.removeChild(elem);
+            --rowTotals;
+        }
+
+        addSubtotalRow(table, vm_num);
+
+        //create sys man  at the top of totals table
+        row1 = totals.insertRow(0);
+        row1.id = "pa-sub-total-row";
+        var cell = row1.insertCell(0);
+        cell.setAttribute("colspan", "1");
+        var name = document.createTextNode("\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0Physical Administration Total:");
+        cell.setAttribute("style", "text-align: right;")
+        cell.appendChild(name);
+        var cell = row1.insertCell(1);
+        cell.setAttribute("colspan", "1");
+        var subtotal = document.createElement("input");
+        subtotal.setAttribute("type", "text");
+        subtotal.setAttribute("size", 20);
+        subtotal.id = "pa-sub-total";
+        subtotal.className = "sub";
+        subtotal.name = "pa-sub-total";
+        subtotal.setAttribute("readonly", "readonly");
+        cell.appendChild(subtotal);
+
+        sub('pa-sub');
+        sub('sub');
+    } /* END SYSTEM MANAGEMENT */
+
+    /* BEGIN CONSULTING SERVICES */
+    else if (id == 'DESK' || id == 'SYSTEMS' || id == 'STORAGE' || id == 'RECUR_DESK' || id == 'RECUR_SYSTEMS' || id == 'RECUR_STORAGE') {
+        id_prefix = "consult";
+        ++vm_num;
+
+        vm_type_sub = "consult-sub"; //for sub id
+        vm_type_price = "consult-price"; //for each price id
+        vm_type_qty = "consult-qty"; //for each input qty id
+        var consult_price_val;
+        var prod_name;
+        var numRowsRemove;
+
+        // add appropriate title, options and specifications
+        if (id == 'DESK') {
+            numRowsRemove = ROWS_DESK;
+            addTitleOptions(table, "Consulting Services - Desktop", "ROWS_" + id, id);
+            addItemLine(table, "Consulting Services - Desktop", PRICE_DESKTOP_SERVICES_UC, "onetime", vm_num, item_num++, "Number of hours in multiples of tenths (One-time consulting fee)", id_prefix, id, "/hr", "hr(s)", 0);
+        } else if (id == 'SYSTEMS') {
+            consult_price_val = PRICE_SYSTEMS_SERVICES_UC;
+            numRowsRemove = ROWS_SYSTEMS;
+            addTitleOptions(table, "Consulting Services - Systems", "ROWS_" + id, id);
+            addItemLine(table, "Consulting Services - System", PRICE_SYSTEMS_SERVICES_UC, "onetime", vm_num, item_num++, "Number of hours in multiples of tenths (One-time consulting fee)", id_prefix, id, "/hr", "hr(s)", 0);
+        } else if (id == 'STORAGE') {
+            numRowsRemove = ROWS_STORAGE;
+            addTitleOptions(table, "Consulting Services - Storage", "ROWS_" + id, id);
+            addItemLine(table, "Consulting Services - Storage", PRICE_STORAGE_SERVICES_UC, "onetime", vm_num, item_num++, "Number of hours in multiples of tenths (One-time consulting fee)", id_prefix, id, "/hr", "hr(s)", 0);
+        } else if (id == 'RECUR_DESK') {
+            numRowsRemove = ROWS_RECUR_DESK;
+            addTitleOptions(table, "Recurring Consulting Services - Desktop", "ROWS_" + id, id);
+            addItemLine(table, "Recurring Consulting Services - Desktop", PRICE_RECUR_DESKTOP_UC, "consult", vm_num, item_num++, "Number of hours in multiples of tenths (monthly consulting fee)", "recur", "DESK", "/hr", "hr(s)", 0);
+        } else if (id == 'RECUR_SYSTEMS') {
+            numRowsRemove = ROWS_RECUR_SYSTEMS;
+            addTitleOptions(table, "Recurring Consulting Services - Systems", "ROWS_" + id, id);
+            addItemLine(table, "Recurring Consulting Services - Systems", PRICE_RECUR_SYSTEMS_UC, "consult", vm_num, item_num++, "Number of hours in multiples of tenths (monthly consulting fee)", "recur", "SYSTEMS", "/hr", "hr(s)", 0);
+        } else if (id == 'RECUR_STORAGE') {
+            numRowsRemove = ROWS_RECUR_STORAGE;
+            addTitleOptions(table, "Recurring Consulting Services - Storage", "ROWS_" + id, id);
+            addItemLine(table, "Recurring Consulting Services - Storage", PRICE_RECUR_STORAGE_UC, "consult", vm_num, item_num++, "Number of hours in multiples of tenths (monthly consulting fee)", "recur", "STORAGE", "/hr", "hr(s)", 0);
+
+        }
+        addSubtotalRow(table, vm_num);
+
 
         //remove duplicate of sub total row when there are multiple storage items
         if (document.getElementById("consult-sub-total-row") != null) {
@@ -877,12 +846,13 @@ function addProduct(id)
         subtotal.setAttribute("type", "text");
         subtotal.setAttribute("size", 20);
         subtotal.id = "consult-sub-total";
-        if (id != 'RECUR_DESK' && id != 'RECUR_SYSTEMS' && id != "RECUR_STORAGE") {
+        if (id == 'RECUR_DESK' || id == 'RECUR_SYSTEMS' || id == "RECUR_STORAGE") {
             subtotal.className = "sub";
         }
+        else subtotal.className = "onetime";
         subtotal.name = "consult-sub-total";
         subtotal.setAttribute("readonly", "readonly");
-        
+
         cell.appendChild(subtotal);
 
         if (id == 'RECUR_DESK' || id == 'RECUR_SYSTEMS' || id == "RECUR_STORAGE") {
@@ -892,18 +862,18 @@ function addProduct(id)
 
 
     } /* END CONSULTING SERVICES */
-    
+
     /* BEGIN SHAREPOINT SERVICES */
     else if (id == 'SITE') {
         ++vm_num;
         vm_type_sub = "share-sub"; //for sub id
         vm_type_price = "share-price"; //for each price id
-        vm_type_qty = "share-qty"; //for each input qty id  
+        vm_type_qty = "share-qty"; //for each input qty id
         var share_price = [PRICE_SHAREPOINT_SITES_UC, PRICE_ADD_DA_STORAGE_UC, PRICE_CONSULTATION_SUPPORT_UC];
         var prod_name = "SharePoint Site";
         var unit = "/month";
-        var numRows = ROWS_SHAREPOINT_SITES; 
-        
+        var numRows = ROWS_SHAREPOINT_SITES;
+
         row1 = table.insertRow(rowCount);
         row1.id = "row" + vm_num;
         var cell = row1.insertCell(0);
@@ -918,13 +888,16 @@ function addProduct(id)
         remove.setAttribute("numRows", numRows);
         remove.setAttribute("title", "Remove Service");
         remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), this.getAttribute('numRows'), 'SUPPORT')");
-        
+
         var cell = row1.insertCell(1);
         cell.setAttribute("width", "220");
         var name = document.createTextNode(prod_name);
         cell.appendChild(name);
         cell.setAttribute("colspan", "1");
         cell.className = "service-title";
+
+
+        // create description box
 
         cell = row1.insertCell(2);
         var description_box = document.createElement("textarea");
@@ -941,7 +914,7 @@ function addProduct(id)
         var row = table.insertRow(++rowCount);
         var cell = row.insertCell(0);
         cell.setAttribute("colspan", "1");
-        
+
         var cell = row.insertCell(1);
         cell.setAttribute("style", "font-weight: bold");
         var options_text = document.createTextNode("Options");
@@ -950,14 +923,16 @@ function addProduct(id)
         var row = table.insertRow(++rowCount);
         var cell = row.insertCell(0);
         cell.setAttribute("colspan", "1");
-        
+
         var cell = row.insertCell(1);
         cell.setAttribute("colspan", "1");
         var os_text = document.createTextNode("\u00a0\u00a0\u00a0\u00a0Affiliation:");
         cell.appendChild(os_text);
 
+
+        // added dropdown menu for affiliation
         var cell = row.insertCell(2);
-        var os = document.createElement("select"); 
+        var os = document.createElement("select");
         os.setAttribute("name", "affiliation");
         os.setAttribute("num", vm_num);
         os.setAttribute("title", "Choose client location");
@@ -973,53 +948,53 @@ function addProduct(id)
         os.appendChild(option);
         cell.appendChild(os);
         cell.setAttribute("colspan", "2");
-        os.id = "os" + vm_num;   
-       
+        os.id = "os" + vm_num;
+
         var row = table.insertRow(++rowCount);
         var cell = row.insertCell(0);
         cell.setAttribute("colspan", "1");
-        
+
         cell = row.insertCell(1);
         cell.setAttribute("style", "font-weight: bold");
         cell.appendChild(document.createTextNode("Specifications"));
-        
+
         var row = table.insertRow(++rowCount);
         cell = row.insertCell(0);
         cell.setAttribute("colspan", "1");
-        
+
         cell = row.insertCell(1);
         cell.setAttribute("style", "font-weight: bold");
         cell.appendChild(document.createTextNode("\u00a0\u00a0\u00a0\u00a0Item"));
         cell.setAttribute("colspan", "1");
-        
+
         cell = row.insertCell(2);
         cell.setAttribute("style", "font-weight: bold");
         cell.appendChild(document.createTextNode("Price"));
-        
+
         cell = row.insertCell(3);
         cell.setAttribute("style", "font-weight: bold");
         cell.appendChild(document.createTextNode("Qty"));
-        
+
         cell = row.insertCell(4);
         cell.setAttribute("style", "font-weight: bold");
         cell.appendChild(document.createTextNode("Cost"));
-        
+
         var row = table.insertRow(++rowCount);
         cell = row.insertCell(0);
         cell.setAttribute("colspan", "1");
-        
+
         cell = row.insertCell(1);
         cell.appendChild(document.createTextNode("\u00a0\u00a0\u00a0\u00a0Sites"));
-        
+
         var cell = row.insertCell(2);
         var sp_price = document.createTextNode("$" + share_price[0] + unit);
         cell.id = vm_type_price + vm_num + (++item_num);
         cell.setAttribute("share_price", share_price);
         cell.appendChild(sp_price);
         cell.setAttribute("colspan", "1");
-        
+
         var cell = row.insertCell(3);
-        
+
         var sp_qty = document.createElement("input");
         sp_qty.setAttribute("type", "text");
         sp_qty_in = vm_type_qty + vm_num + item_num;
@@ -1035,7 +1010,7 @@ function addProduct(id)
         sp_qty.setAttribute("title", "Whole numbers only");
         sp_qty.setAttribute("size", 5);
         sp_qty.setAttribute("onchange", "getEstimate('sp', this.id, this.getAttribute('share_price'), this.getAttribute('dest'),  this.getAttribute('num'), 'SITE')");
-        
+
         var cell = row.insertCell(4);
         var sp_sub = document.createElement("input");
         sp_sub.setAttribute("type", "text");
@@ -1047,11 +1022,11 @@ function addProduct(id)
         sp_sub.className += " sub";
         sp_sub.setAttribute("name", sp_sub.id);
         sp_sub.setAttribute("size", 20);
-        
-        var row2 = table.insertRow(++rowCount);    
+
+        var row2 = table.insertRow(++rowCount);
         var cell = row2.insertCell(0);
         cell.setAttribute("colspan", "1");
-        
+
         var cell = row2.insertCell(1);
         var additional_text = document.createTextNode("\u00a0\u00a0\u00a0\u00a0Add'l 25 GB of DA site storage w/backup");
         additional_text.className += " sp-additional";
@@ -1080,7 +1055,7 @@ function addProduct(id)
         additional_qty.setAttribute("name", additional_qty.id);
         additional_qty.setAttribute("size", 5);
         additional_qty.setAttribute("onchange", "getEstimate('additional-sp', this.id, this.getAttribute('share_price'), this.getAttribute('dest'),  this.getAttribute('num'), 'SITE')");
-            
+
         additional_qty.setAttribute("title", "Whole numbers only");
         //cell.appendChild(document.createTextNode("\u00a0\u00a0chunk(s)"));
 
@@ -1094,67 +1069,22 @@ function addProduct(id)
         additional_sub.className = "sp-sub sub vm-sub" + vm_num;
         additional_sub.setAttribute("name", additional_sub.id);
         additional_sub.setAttribute("size", 20);
-        
-        // var row3 = table.insertRow(++rowCount);
-        
-        // var cell = row3.insertCell(0);
-        // cell.setAttribute("colspan", "1");
-        
-        // var cell = row3.insertCell(1);
-        // var name = document.createTextNode("\u00a0\u00a0\u00a0\u00a0Consultation Support");
-        // cell.appendChild(name);
-        // cell.setAttribute("colspan", "1");
-        
-        // var cell = row3.insertCell(2);
-        // var consultation_price = document.createTextNode("$" + share_price[2]);
-        // cell.id = vm_type_price + vm_num + (++item_num);
-        // cell.setAttribute("share_price", share_price[2])
-        // cell.appendChild(consultation_price);
-        // cell.setAttribute("colspan", "1");
-        
-        // var cell = row3.insertCell(3);
-        
-        // var consultation_qty = document.createElement("input");
-        // consultation_qty.setAttribute("type", "text");
-        // consultation_qty_in = vm_type_qty + vm_num + item_num;
-        // consultation_sub_out = vm_type_sub + vm_num + item_num;
-        // cell.appendChild(consultation_qty);
-        // cell.setAttribute("colspan", "1");
-        // consultation_qty.id = consultation_qty_in;
-        // consultation_qty.className += " consultation_qty userinput";
-        // consultation_qty.setAttribute("dest", "" + consultation_sub_out);
-        // consultation_qty.setAttribute("num", vm_num);
-        // consultation_qty.setAttribute("share_price", share_price[2]);
-        // consultation_qty.setAttribute("name", consultation_qty.id);
-        // consultation_qty.setAttribute("title", "Number of hours in tenths increments");
-        // consultation_qty.setAttribute("size", 5);
-        // consultation_qty.setAttribute("onchange", "getEstimate('sp-consult', this.id, this.getAttribute('share_price'), this.getAttribute('dest'),  this.getAttribute('num'), 'SITE')");
-        
-        // var cell = row3.insertCell(4);
-        // var consultation_sub = document.createElement("input");
-        // consultation_sub.setAttribute("type", "text");
-        // cell.appendChild(consultation_sub);
-        // cell.setAttribute("colspan", "1");
-        // consultation_sub.id = consultation_sub_out;
-        // document.getElementById(consultation_sub_out).setAttribute("readonly", "readonly");
-        // consultation_sub.className = "sp-sub vm-sub" + vm_num;
-        // consultation_sub.className += " onetime";
-        // consultation_sub.setAttribute("name", consultation_sub.id);
-        // consultation_sub.setAttribute("size", 20);
-        
+
+
+
         var row4 = table.insertRow(++rowCount);
-        
+
         var cell = row4.insertCell(0);
         cell.setAttribute("style", "border-bottom: 1px solid #d3d3d3;");
         cell.setAttribute("colspan", "1");
-        
+
         var cell = row4.insertCell(1);
         cell.setAttribute("style", "border-bottom: 1px solid #d3d3d3;");
         var subtext = document.createTextNode("Subtotal:");
         cell.appendChild(subtext);
         cell.setAttribute("colspan", "3");
         cell.className += " pad-bottom";
-            
+
         var cell = row4.insertCell(2);
         cell.setAttribute("style", "border-bottom: 1px solid #d3d3d3;");
         var spsubtotal = document.createElement("input");
@@ -1185,545 +1115,19 @@ function addProduct(id)
         subtotal.name = "sp-sub-total";
         subtotal.setAttribute("readonly", "readonly");
         cell.appendChild(subtotal);
-        
+
         sub('sp-sub');
         sub('sub');
     } /* END SHAREPOINT SERVICES */
-    
-    /* BEGIN SYSTEM MANAGEMENT */
-    else if (id == 'SYS_MAN') {
-        ++vm_num;
-        row1 = table.insertRow(rowCount);
-        row1.id = "row" + vm_num;
-        var cell = row1.insertCell(0);
-        var remove = document.createElement("button");
-        var remove_text = document.createTextNode("-");
-        remove.appendChild(remove_text);
-        cell.appendChild(remove);
-        cell.setAttribute("width", "20");
-        remove.className = "remove-button";
-        remove.setAttribute("value", "-");
-        remove.setAttribute("rownumber", "row" + vm_num);
-        remove.setAttribute("title", "Remove Service");
-        remove.setAttribute("numRows", ROWS_SYSTEM_MANAGEMENT);
-        remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), this.getAttribute('numRows'), 'SYS_MAN')");
-        
-        var cell = row1.insertCell(1);
-        cell.setAttribute("width", "220");
-        var name = document.createTextNode("System Management");                      
-        cell.appendChild(name);
-        cell.setAttribute("colspan", "1");
-        cell.className = "service-title";
-            
-        cell = row1.insertCell(2);
-        var description_box = document.createElement("textarea");
-        description_box.setAttribute("colspan", "2");
-        description_box.id = "description" + vm_num;
-        description_box.setAttribute("num", vm_num);
-        description_box.setAttribute("name", " ");
-        description_box.setAttribute("onchange", "changeDescription(this.getAttribute('num'), this.value)");
-        description_box.setAttribute("rows", "5");
-        description_box.setAttribute("cols", "30");
-        cell.appendChild(description_box);
-        document.getElementById("description" + vm_num).innerHTML = "Enter a description here";
-        
-        var row = table.insertRow(++rowCount);
-        var cell = row.insertCell(0);
-        cell.setAttribute("colspan", "1");
-        
-        cell = row.insertCell(1);
-        cell.setAttribute("style", "font-weight: bold");
-        cell.appendChild(document.createTextNode("Options"));
-        
-        var row = table.insertRow(++rowCount);
-        var cell = row.insertCell(0);
-        cell.setAttribute("colspan", "1");
-        
-        cell = row.insertCell(1);
-        cell.appendChild(document.createTextNode("\u00a0\u00a0\u00a0\u00a0Management Type"));
-        
-        cell = row.insertCell(2);
-        var psa = document.createElement("select"); 
-        
-        option = new Option("Standard", "Standard", false, false);
-        option.id = "Standard" + vm_num;
-        psa.appendChild(option);
 
-        option = new Option("Custom", "Custom", false, false);
-        option.id = "Custom" + vm_num;
-        psa.appendChild(option);
-        psa.setAttribute("title", "Choose the Standard option, or customize your own settings. Customization results in different prices.");
 
-        cell.appendChild(psa);
-        cell.setAttribute("colspan", "1");
-        psa.id = "psa" + vm_num;
-        psa.setAttribute("optionval", vm_num);
-        psa.setAttribute("onchange", "processPrice(document.getElementById(this.id).value, this.getAttribute('optionval'))");
-        psa.setAttribute("value", "Standard");
 
-        var row = table.insertRow(++rowCount);
-        var cell = row.insertCell(0);
-        cell.setAttribute("colspan", "1");
-        
-        var cell = row.insertCell(1);
-        cell.setAttribute("colspan", "1");
-        var os_text = document.createTextNode("\u00a0\u00a0\u00a0\u00a0Affiliation:");
-        cell.appendChild(os_text);
-
-        var cell = row.insertCell(2);
-        var os = document.createElement("select"); 
-        os.setAttribute("name", "affiliation");
-        os.setAttribute("title", "Choose client location");
-        os.setAttribute("value", "UC");
-        os.setAttribute("num", vm_num);
-        os.setAttribute("onchange", "changePrices(this.value, 'SYS_MAN', this.getAttribute('num'))");
-
-        option = new Option("UC", "UC", false, false);
-        option.id = "UC" + vm_num;
-        os.appendChild(option);
-
-        option = new Option("External", "External", false, false);
-        option.id = "External" + vm_num;
-        os.appendChild(option);
-
-        cell.appendChild(os);
-        cell.setAttribute("colspan", "2");
-        os.id = "os" + vm_num;
-
-        var row = table.insertRow(++rowCount);
-        var cell = row.insertCell(0);
-        cell.setAttribute("colspan", "1");
-        
-        cell = row.insertCell(1);
-        cell.setAttribute("style", "font-weight: bold");
-        cell.appendChild(document.createTextNode("Specifications"));
-        
-        var row = table.insertRow(++rowCount);
-        cell = row.insertCell(0);
-        cell.setAttribute("colspan", "1");
-        
-        cell = row.insertCell(1);
-        cell.setAttribute("style", "font-weight: bold");
-        cell.appendChild(document.createTextNode("\u00a0\u00a0\u00a0\u00a0Item"));
-        cell.setAttribute("colspan", "1");
-        
-        cell = row.insertCell(2);
-        cell.setAttribute("style", "font-weight: bold");
-        cell.appendChild(document.createTextNode("Price"));
-        
-        cell = row.insertCell(3);
-        cell.setAttribute("style", "font-weight: bold");
-        cell.appendChild(document.createTextNode("Qty"));
-        
-        cell = row.insertCell(4);
-        cell.setAttribute("style", "font-weight: bold");
-        cell.appendChild(document.createTextNode("Cost"));
-        
-        row = table.insertRow(++rowCount);
-        cell = row.insertCell(0);
-        cell.setAttribute("colspan", "1");
-        
-        cell = row.insertCell(1);
-        cell.appendChild(document.createTextNode("\u00a0\u00a0\u00a0\u00a0System"));
-        cell.setAttribute("colspan", "1");
-        
-        cell = row.insertCell(2);
-        var system_price = document.createElement("input");
-        system_price.setAttribute("type", "text");
-        system_price.setAttribute("readonly", "readonly");
-        system_price.setAttribute("value", "$" + parseFloat(PRICE_SYSTEM_MANAGEMENT_UC[0]).toFixed(2));
-        system_price.id = "system-price" + vm_num;
-        system_price.setAttribute("name", system_price.id);
-        cell.appendChild(system_price);
-        cell.setAttribute("colspan", "1");
-        
-        cell = row.insertCell(3);
-        var sys_man_qty = document.createElement("input");
-        sys_man_qty.setAttribute("type", "text");
-        sys_man_qty_in = "sys-man-qty" + vm_num;
-        sys_man_sub_out = "sys-man-sub" + vm_num;
-        cell.appendChild(sys_man_qty);
-        cell.setAttribute("colspan", "1");
-        sys_man_qty.id = sys_man_qty_in;
-        sys_man_qty.className += " sys_man_qty userinput";
-        sys_man_qty.setAttribute("dest", "" + sys_man_sub_out);
-        sys_man_qty.setAttribute("num", vm_num);
-        sys_man_qty.setAttribute("sys-man-price", PRICE_SYSTEM_MANAGEMENT_UC[0]);
-        sys_man_qty.setAttribute("name", sys_man_qty.id);
-        sys_man_qty.setAttribute("size", 5);
-        sys_man_qty.setAttribute("onchange", "getEstimate('sys-man', this.id, this.getAttribute('sys-man-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'SYS_MAN')");
-
-        var cell = row.insertCell(4);
-        var sys_man_sub = document.createElement("input");
-        sys_man_sub.setAttribute("type", "text");
-        cell.appendChild(sys_man_sub);
-        cell.setAttribute("colspan", "1");
-        sys_man_sub.id = sys_man_sub_out;
-        sys_man_sub.setAttribute("name", sys_man_sub.id);
-        sys_man_sub.setAttribute("size", 20);
-        document.getElementById(sys_man_sub_out).setAttribute("readonly", "readonly");
-        sys_man_sub.className = "pa-sub vm-sub" + vm_num;
-        
-        row = table.insertRow(++rowCount);
-        cell = row.insertCell(0); 
-        cell.setAttribute("colspan", "1");
-        
-        cell = row.insertCell(1); 
-        cell.setAttribute("style", "font-weight: bold");
-        cell.appendChild(document.createTextNode("\u00a0\u00a0\u00a0\u00a0Surcharge for"));
-        
-        var row3 = table.insertRow(++rowCount);
-        var cell = row3.insertCell(0);
-        cell.setAttribute("colspan", "1");
-        
-        var cell = row3.insertCell(1);
-        var nonrec = document.createTextNode("\u00a0\u00a0\u00a0\u00a0Non-recommended hardware");                       
-        cell.appendChild(nonrec);
-        cell.setAttribute("colspan", "1");
-
-        cell = row3.insertCell(2);
-        var nonrec_price = document.createElement("input");
-        nonrec_price.setAttribute("type", "text");
-        nonrec_price.setAttribute("readonly", "readonly");
-        nonrec_price.setAttribute("value", "$" + parseFloat(PRICE_SYSTEM_MANAGEMENT_UC[1]).toFixed(2));
-        nonrec_price.id = "nonrec-price" + vm_num;
-        nonrec_price.setAttribute("name", nonrec_price.id);
-        cell.appendChild(nonrec_price);
-        cell.setAttribute("colspan", "1");
-        
-        var cell = row3.insertCell(3);
-        var nonrec_qty = document.createElement("input");
-        nonrec_qty.setAttribute("type", "text");
-        nonrec_qty_in = "nonrec-qty" + vm_num;
-        nonrec_sub_out = "nonrec-sub" + vm_num;
-        cell.appendChild(nonrec_qty);
-        cell.setAttribute("colspan", "1");
-        nonrec_qty.id = nonrec_qty_in;
-        nonrec_qty.className += " nonrec_qty userinput";
-        nonrec_qty.setAttribute("dest", "" + nonrec_sub_out);
-        nonrec_qty.setAttribute("num", vm_num);
-        nonrec_qty.setAttribute("nonrec-price", PRICE_SYSTEM_MANAGEMENT_UC[1]);
-        nonrec_qty.setAttribute("name", nonrec_qty.id);
-        nonrec_qty.setAttribute("title", "To receive this option, enter 1");
-        nonrec_qty.setAttribute("size", 5);
-        nonrec_qty.setAttribute("onchange", "getEstimate('nonrec', this.id, this.getAttribute('nonrec-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'SYS_MAN')");
-
-        var cell = row3.insertCell(4);
-        var nonrec_sub = document.createElement("input");
-        nonrec_sub.setAttribute("type", "text");
-        cell.appendChild(nonrec_sub);
-        cell.setAttribute("colspan", "1");
-        nonrec_sub.id = nonrec_sub_out;
-        nonrec_sub.setAttribute("name", nonrec_sub.id);
-        nonrec_sub.setAttribute("size", 20);
-        document.getElementById(nonrec_sub_out).setAttribute("readonly", "readonly");
-        nonrec_sub.className = "pa-sub vm-sub" + vm_num;
-        
-        var row4 = table.insertRow(++rowCount);
-        
-        var cell = row4.insertCell(0);
-        cell.setAttribute("colspan", "1");
-        
-        var cell = row4.insertCell(1);
-        var no_os = document.createTextNode("\u00a0\u00a0\u00a0\u00a0Hardware without build-in OS support");                       
-        cell.appendChild(no_os);
-        cell.setAttribute("colspan", "1");
-        
-        cell = row4.insertCell(2);
-        var no_os_price = document.createElement("input");
-        no_os_price.setAttribute("type", "text");
-        no_os_price.setAttribute("readonly", "readonly");
-        no_os_price.setAttribute("value", "$" + parseFloat(PRICE_SYSTEM_MANAGEMENT_UC[2]).toFixed(2));
-        no_os_price.id = "no-os-price" + vm_num;
-        no_os_price.setAttribute("name", no_os_price.id);
-        cell.appendChild(no_os_price);
-        cell.setAttribute("colspan", "1");
-        
-        var cell = row4.insertCell(3);
-        var no_os_qty = document.createElement("input");
-        no_os_qty.setAttribute("type", "text");
-        no_os_qty_in = "no-os-qty" + vm_num;
-        no_os_sub_out = "no-os-sub" + vm_num;
-        cell.appendChild(no_os_qty);
-        cell.setAttribute("colspan", "1");
-        no_os_qty.id = no_os_qty_in;
-        no_os_qty.className += " no_os_qty userinput";
-        no_os_qty.setAttribute("dest", "" + no_os_sub_out);
-        no_os_qty.setAttribute("num", vm_num);
-        no_os_qty.setAttribute("no-os-price", PRICE_SYSTEM_MANAGEMENT_UC[2]);
-        no_os_qty.setAttribute("name", no_os_qty.id);
-        no_os_qty.setAttribute("title", "To receive this option, enter 1");
-        no_os_qty.setAttribute("size", 5);
-        no_os_qty.setAttribute("onchange", "getEstimate('no_os', this.id, this.getAttribute('no-os-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'SYS_MAN')");
-
-        var cell = row4.insertCell(4);
-        var no_os_sub = document.createElement("input");
-        no_os_sub.setAttribute("type", "text");
-        cell.appendChild(no_os_sub);
-        cell.setAttribute("colspan", "1");
-        no_os_sub.id = no_os_sub_out;
-        document.getElementById(no_os_sub_out).setAttribute("readonly", "readonly");
-        no_os_sub.className = "pa-sub vm-sub" + vm_num;
-        no_os_sub.setAttribute("name", no_os_sub.id);
-        no_os_sub.setAttribute("size", 20);
-        
-        var row5 = table.insertRow(++rowCount);
-        var cell = row5.insertCell(0);
-        cell.setAttribute("colspan", "1");
-        
-        var cell = row5.insertCell(1);
-        var storage_array = document.createTextNode("\u00a0\u00a0\u00a0\u00a0Each attached storage array");                       
-        cell.appendChild(storage_array);
-        cell.setAttribute("colspan", "1");
-        
-
-        cell = row5.insertCell(2);
-        var storage_array_price = document.createElement("input");
-        storage_array_price.setAttribute("type", "text");
-        storage_array_price.setAttribute("readonly", "readonly");
-        storage_array_price.setAttribute("value", "$" + parseFloat(PRICE_SYSTEM_MANAGEMENT_UC[3]).toFixed(2));
-        storage_array_price.id = "storage-array-price" + vm_num;
-        storage_array_price.setAttribute("name", storage_array_price.id);
-        cell.appendChild(storage_array_price);
-        cell.setAttribute("colspan", "1");        
-
-        var cell = row5.insertCell(3);
-        var storage_array_qty = document.createElement("input");
-        storage_array_qty.setAttribute("type", "text");
-        storage_array_qty_in = "storage-array-qty" + vm_num;
-        storage_array_sub_out = "storage-array-sub" + vm_num;
-        cell.appendChild(storage_array_qty);
-        cell.setAttribute("colspan", "1");
-        storage_array_qty.id = storage_array_qty_in;
-        storage_array_qty.className += " storage_array_qty userinput";
-        storage_array_qty.setAttribute("dest", "" + storage_array_sub_out);
-        storage_array_qty.setAttribute("num", vm_num);
-        storage_array_qty.setAttribute("storage-array-price", PRICE_SYSTEM_MANAGEMENT_UC[3]);
-        storage_array_qty.setAttribute("name", storage_array_qty.id);
-        storage_array_qty.setAttribute("title", "To receive this option, enter 1");
-        storage_array_qty.setAttribute("size", 5);
-        storage_array_qty.setAttribute("onchange", "getEstimate('storage_array', this.id, this.getAttribute('storage-array-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'SYS_MAN')");
-
-        var cell = row5.insertCell(4);
-        var storage_array_sub = document.createElement("input");
-        storage_array_sub.setAttribute("type", "text");
-        cell.appendChild(storage_array_sub);
-        cell.setAttribute("colspan", "1");
-        storage_array_sub.id = storage_array_sub_out;
-        document.getElementById(storage_array_sub_out).setAttribute("readonly", "readonly");
-        storage_array_sub.className = "pa-sub vm-sub" + vm_num;
-        storage_array_sub.setAttribute("name", storage_array_sub.id);
-        storage_array_sub.setAttribute("size", 20);
-        
-        var row6 = table.insertRow(++rowCount);
-        var cell = row6.insertCell(0);
-        cell.setAttribute("colspan", "1");
-        
-        var cell = row6.insertCell(1);
-        var non_os_vendor = document.createTextNode("\u00a0\u00a0\u00a0\u00a0Non-OS vendor software");                       
-        cell.appendChild(non_os_vendor);
-        cell.setAttribute("colspan", "1");
-        
-        cell = row6.insertCell(2);
-        var non_os_vendor_price = document.createElement("input");
-        non_os_vendor_price.setAttribute("type", "text");
-        non_os_vendor_price.setAttribute("readonly", "readonly");
-        non_os_vendor_price.setAttribute("value", "$" + parseFloat(PRICE_SYSTEM_MANAGEMENT_UC[4]).toFixed(2));
-        non_os_vendor_price.id = "non-os-vendor-price" + vm_num;
-        non_os_vendor_price.setAttribute("name", non_os_vendor_price.id);
-        cell.appendChild(non_os_vendor_price);
-        cell.setAttribute("colspan", "1");    
-
-        var cell = row6.insertCell(3);
-        var non_os_vendor_qty = document.createElement("input");
-        non_os_vendor_qty.setAttribute("type", "text");
-        non_os_vendor_qty_in = "non-os-vendor-qty" + vm_num;
-        non_os_vendor_sub_out = "non-os-vendor-sub" + vm_num;
-        cell.appendChild(non_os_vendor_qty);
-        cell.setAttribute("colspan", "1");
-        non_os_vendor_qty.id = non_os_vendor_qty_in;
-        non_os_vendor_qty.className += " non_os_vendor_qty userinput";
-        non_os_vendor_qty.setAttribute("dest", "" + non_os_vendor_sub_out);
-        non_os_vendor_qty.setAttribute("num", vm_num);
-        non_os_vendor_qty.setAttribute("size", 5);
-        non_os_vendor_qty.setAttribute("name", non_os_vendor_qty.id);
-        non_os_vendor_qty.setAttribute("title", "To receive this option, enter 1");
-        non_os_vendor_qty.setAttribute("non-os-vendor-price", PRICE_SYSTEM_MANAGEMENT_UC[4]);
-        non_os_vendor_qty.setAttribute("onchange", "getEstimate('non_os_vendor', this.id, this.getAttribute('non-os-vendor-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'SYS_MAN')");
-
-        var cell = row6.insertCell(4);
-        var non_os_vendor_sub = document.createElement("input");
-        non_os_vendor_sub.setAttribute("type", "text");
-        cell.appendChild(non_os_vendor_sub);
-        cell.setAttribute("colspan", "1");
-        non_os_vendor_sub.id = non_os_vendor_sub_out;
-        document.getElementById(non_os_vendor_sub_out).setAttribute("readonly", "readonly");
-        non_os_vendor_sub.className = "pa-sub vm-sub" + vm_num;
-        non_os_vendor_sub.setAttribute("name", non_os_vendor_sub.id);
-        non_os_vendor_sub.setAttribute("size", 20);
-        
-        var row7 = table.insertRow(++rowCount);
-        var cell = row7.insertCell(0);
-        cell.setAttribute("colspan", "1");
-        
-        var cell = row7.insertCell(1);
-        var local_admin_access = document.createTextNode("\u00a0\u00a0\u00a0\u00a0Local administration access");                       
-        cell.appendChild(local_admin_access);
-        cell.setAttribute("colspan", "1");
-        
-        cell = row7.insertCell(2);
-        var local_admin_access_price = document.createElement("input");
-        local_admin_access_price.setAttribute("type", "text");
-        local_admin_access_price.setAttribute("readonly", "readonly");
-        local_admin_access_price.setAttribute("value", "$" + parseFloat(PRICE_SYSTEM_MANAGEMENT_UC[5]).toFixed(2));
-        local_admin_access_price.id = "local-admin-access-price" + vm_num;
-        local_admin_access_price.setAttribute("name", local_admin_access_price.id);
-        cell.appendChild(local_admin_access_price);
-        cell.setAttribute("colspan", "1");  
-        
-        var cell = row7.insertCell(3);
-        var local_admin_access_qty = document.createElement("input");
-        local_admin_access_qty.setAttribute("type", "text");
-        local_admin_access_qty_in = "local-admin-access-qty" + vm_num;
-        local_admin_access_sub_out = "local-admin-access-sub" + vm_num;
-        cell.appendChild(local_admin_access_qty);
-        cell.setAttribute("colspan", "1");
-        local_admin_access_qty.id = local_admin_access_qty_in;
-        local_admin_access_qty.className += " local_admin_access_qty userinput";
-        local_admin_access_qty.setAttribute("dest", "" + local_admin_access_sub_out);
-        local_admin_access_qty.setAttribute("num", vm_num);
-        local_admin_access_qty.setAttribute("local-admin-access-price", PRICE_SYSTEM_MANAGEMENT_UC[5]);
-        local_admin_access_qty.setAttribute("name", local_admin_access_qty.id);
-        local_admin_access_qty.setAttribute("title", "To receive this option, enter 1");
-        local_admin_access_qty.setAttribute("size", 5);
-        local_admin_access_qty.setAttribute("onchange", "getEstimate('local_admin_access', this.id, this.getAttribute('local-admin-access-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'SYS_MAN')");
-
-        var cell = row7.insertCell(4);
-        var local_admin_access_sub = document.createElement("input");
-        local_admin_access_sub.setAttribute("type", "text");
-        cell.appendChild(local_admin_access_sub);
-        cell.setAttribute("colspan", "1");
-        local_admin_access_sub.id = local_admin_access_sub_out;
-        document.getElementById(local_admin_access_sub_out).setAttribute("readonly", "readonly");
-        local_admin_access_sub.className = "pa-sub vm-sub" + vm_num;
-        local_admin_access_sub.setAttribute("name", local_admin_access_sub.id);
-        local_admin_access_sub.setAttribute("size", 20);
-        
-        var row8 = table.insertRow(++rowCount);
-        var cell = row8.insertCell(0);
-        cell.setAttribute("colspan", "1");
-        
-        var cell = row8.insertCell(1);
-        var sys_monitor = document.createTextNode("\u00a0\u00a0\u00a0\u00a024/7 system monitoring and support");                       
-        cell.appendChild(sys_monitor);
-        cell.setAttribute("colspan", "1");
- 
-        cell = row8.insertCell(2);
-        var sys_monitor_price = document.createElement("input");
-        sys_monitor_price.setAttribute("type", "text");
-        sys_monitor_price.setAttribute("readonly", "readonly");
-        sys_monitor_price.setAttribute("value", "$" + parseFloat(PRICE_SYSTEM_MANAGEMENT_UC[6]).toFixed(2));
-        sys_monitor_price.id = "sys-monitor-price" + vm_num;
-        sys_monitor_price.setAttribute("name", sys_monitor_price.id);
-        cell.appendChild(sys_monitor_price);
-        cell.setAttribute("colspan", "1");  
-
-        var cell = row8.insertCell(3);
-        var sys_monitor_qty = document.createElement("input");
-        sys_monitor_qty.setAttribute("type", "text");
-        sys_monitor_qty_in = "sys-monitor-qty" + vm_num;
-        sys_monitor_sub_out = "sys-monitor-sub" + vm_num;
-        cell.appendChild(sys_monitor_qty);
-        cell.setAttribute("colspan", "1");
-        sys_monitor_qty.id = sys_monitor_qty_in;
-        sys_monitor_qty.className += " sys_monitor_qty userinput";
-        sys_monitor_qty.setAttribute("dest", "" + sys_monitor_sub_out);
-        sys_monitor_qty.setAttribute("num", vm_num);
-        sys_monitor_qty.setAttribute("sys-monitor-price", PRICE_SYSTEM_MANAGEMENT_UC[6]);
-        sys_monitor_qty.setAttribute("name", sys_monitor_qty.id);
-        sys_monitor_qty.setAttribute("title", "To receive this option, enter 1");
-        sys_monitor_qty.setAttribute("size", 5);
-        sys_monitor_qty.setAttribute("onchange", "getEstimate('sys_monitor', this.id, this.getAttribute('sys-monitor-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'SYS_MAN')");
-
-        var cell = row8.insertCell(4);
-        var sys_monitor_sub = document.createElement("input");
-        sys_monitor_sub.setAttribute("type", "text");
-        cell.appendChild(sys_monitor_sub);
-        cell.setAttribute("colspan", "1");
-        sys_monitor_sub.id = sys_monitor_sub_out;
-        document.getElementById(sys_monitor_sub_out).setAttribute("readonly", "readonly");
-        sys_monitor_sub.className = "pa-sub vm-sub" + vm_num;
-        sys_monitor_sub.setAttribute("name", sys_monitor_sub.id);
-        sys_monitor_sub.setAttribute("size", 20);
-        
-        var row8 = table.insertRow(++rowCount);
-        var cell = row8.insertCell(0);
-        cell.setAttribute("colspan", "1");
-        
-        var cell = row8.insertCell(1);
-        var colo = document.createTextNode("\u00a0\u00a0\u00a0\u00a0Colocation Services");                       
-        cell.appendChild(colo);
-        cell.setAttribute("colspan", "1");
-        
-        var cell = row8.insertCell(2);
-        var colo_price = document.createTextNode("See Colocation Rates");
-        cell.appendChild(colo_price);
-        cell.setAttribute("colspan", "3");
-        
-        var row9 = table.insertRow(++rowCount);
-
-        var cell = row9.insertCell(0);
-        cell.setAttribute("style", "border-bottom: 1px solid #d3d3d3;");
-        cell.setAttribute("colspan", "1");
-        
-        var cell = row9.insertCell(1);
-        cell.setAttribute("style", "border-bottom: 1px solid #d3d3d3;");
-        var subtext = document.createTextNode("Subtotal:");
-        cell.appendChild(subtext);
-        cell.setAttribute("colspan", "3");
-        cell.className += " pad-bottom";
-
-        var cell = row9.insertCell(2);
-        cell.setAttribute("style", "border-bottom: 1px solid #d3d3d3;");
-        var vmsubtotal = document.createElement("input");
-        vmsubtotal.setAttribute("type", "text");
-        cell.appendChild(vmsubtotal);
-        cell.setAttribute("colspan", "1");
-        vmsubtotal.id = "vm-sub" + vm_num + "-total";
-        //vmsubtotal.className = "sub";
-        vmsubtotal.setAttribute("name", vmsubtotal.id);
-        vmsubtotal.setAttribute("size", 20);
-        document.getElementById(vmsubtotal.id).setAttribute("readonly", "readonly");
-
-        //create sys man  at the top of totals table
-        row1 = totals.insertRow(0);
-        row1.id = "pa-sub-total-row";
-        var cell = row1.insertCell(0);
-        cell.setAttribute("colspan", "1");
-        var name = document.createTextNode("\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0Physical Administration Total:");
-        cell.setAttribute("style", "text-align: right;")
-        cell.appendChild(name);
-        var cell = row1.insertCell(1);
-        cell.setAttribute("colspan", "1");
-        var subtotal = document.createElement("input");
-        subtotal.setAttribute("type", "text");
-        subtotal.setAttribute("size", 20);
-        subtotal.id = "pa-sub-total";
-        subtotal.className = "sub";
-        subtotal.name = "pa-sub-total";
-        subtotal.setAttribute("readonly", "readonly");
-        cell.appendChild(subtotal);
-
-        sub('pa-sub');
-        sub('sub');
-    } /* END SYSTEM MANAGEMENT */
-    
     /* BEGIN COMMVAULT BACKUP */
     else if (id == 'RAW') {
-        ++vm_num; 
+        ++vm_num;
         vm_type_sub = "comm-sub"; //for sub id
         vm_type_price = "comm-price"; //for each price id
-        vm_type_qty = "comm-qty";      
+        vm_type_qty = "comm-qty";
         raw_price_val = PRICE_RAW_BACKUP_DATA_UC;
         full_price_val = PRICE_FULL_BACKUP_UC;
         diff_price_val = PRICE_DIFFERENTIAL_INCREMENTAL_UC;
@@ -1745,11 +1149,11 @@ function addProduct(id)
 
         var cell = row1.insertCell(1);
         cell.setAttribute("width", "220");
-        var name = document.createTextNode("CommVault Backup");                      
+        var name = document.createTextNode("CommVault Backup");
         cell.appendChild(name);
         cell.setAttribute("colspan", "1");
         cell.className = "service-title";
-        
+
         cell = row1.insertCell(2);
         var description_box = document.createElement("textarea");
         description_box.setAttribute("colspan", "3");
@@ -1761,24 +1165,24 @@ function addProduct(id)
         description_box.setAttribute("cols", "15");
         cell.appendChild(description_box);
         document.getElementById("description" + vm_num).innerHTML = "Enter a brief description here";
-        
+
         var row = table.insertRow(++rowCount);
         var cell = row.insertCell(0);
         cell.setAttribute("colspan", "1");
-        
+
         cell = row.insertCell(1);
         cell.setAttribute("style", "font-weight: bold");
         cell.appendChild(document.createTextNode("Options"));
-        
+
         var row = table.insertRow(++rowCount);
         cell = row.insertCell(0);
         cell.setAttribute("colspan", "1");
-        
+
         cell = row.insertCell(1);
         cell.appendChild(document.createTextNode("\u00a0\u00a0\u00a0\u00a0Backup Plan"));
-        
+
         var cell = row.insertCell(2);
-        var package = document.createElement("select"); 
+        var package = document.createElement("select");
 
         /* add all operating systems options */
         option = new Option("Standard 3-mo. Retention", "Standard 3-mo. Retention", false, false);
@@ -1792,7 +1196,9 @@ function addProduct(id)
         option = new Option("Custom", "Custom", false, false);
         option.id = "Custom" + vm_num;
         package.appendChild(option);
-        
+
+
+        // add text description for CommVault
         cell.appendChild(package);
         cell.setAttribute("colspan", "2");
         package.id = "package" + vm_num;
@@ -1808,14 +1214,16 @@ function addProduct(id)
         var row = table.insertRow(++rowCount);
         var cell = row.insertCell(0);
         cell.setAttribute("colspan", "1");
-        
+
         var cell = row.insertCell(1);
         cell.setAttribute("colspan", "1");
         var os_text = document.createTextNode("\u00a0\u00a0\u00a0\u00a0Affiliation:");
         cell.appendChild(os_text);
 
+
+        // add dropdown for affiliation
         var cell = row.insertCell(2);
-        var os = document.createElement("select"); 
+        var os = document.createElement("select");
         os.setAttribute("name", "affiliation");
         os.setAttribute("title", "Choose client location");
         os.setAttribute("value", "UC");
@@ -1832,54 +1240,54 @@ function addProduct(id)
 
         cell.appendChild(os);
         cell.setAttribute("colspan", "2");
-        os.id = "os" + vm_num;
-        
+        os.id = "affiliation" + vm_num; // changed from "os"
+
         var row = table.insertRow(++rowCount);
         var cell = row.insertCell(0);
         cell.setAttribute("colspan", "1");
-        
+
         var cell = row.insertCell(1);
         cell.setAttribute("style", "font-weight: bold");
         var specifications_text = document.createTextNode("Specifications");
         cell.appendChild(specifications_text);
-        
+
         var row = table.insertRow(++rowCount);
         var cell = row.insertCell(0);
         cell.setAttribute("colspan", "1");
-        
+
         var cell = row.insertCell(1);
         cell.setAttribute("style", "font-weight: bold;");
         cell.setAttribute("colspan", "1");
         var item_text = document.createTextNode("\u00a0\u00a0\u00a0\u00a0Item");
         cell.appendChild(item_text);
-        
+
         var cell = row.insertCell(2);
         cell.setAttribute("style", "font-weight: bold;");
         cell.setAttribute("colspan", "1");
         var item_text = document.createTextNode("Price");
         cell.appendChild(item_text);
-        
+
         var cell = row.insertCell(3);
         cell.setAttribute("style", "font-weight: bold;");
         cell.setAttribute("colspan", "1");
         var item_text = document.createTextNode("Qty");
         cell.appendChild(item_text);
-        
+
         var cell = row.insertCell(4);
         cell.setAttribute("style", "font-weight: bold;");
         cell.setAttribute("colspan", "1");
         var item_text = document.createTextNode("Cost");
         cell.appendChild(item_text);
-        
+
         var row2 = table.insertRow(++rowCount);
         var cell = row2.insertCell(0);
         cell.setAttribute("colspan", "1");
-        
+
         var cell = row2.insertCell(1);
-        var raw = document.createTextNode("\u00a0\u00a0\u00a0\u00a0Raw Backup Data");                       
+        var raw = document.createTextNode("\u00a0\u00a0\u00a0\u00a0Raw Backup Data");
         cell.appendChild(raw);
         cell.setAttribute("colspan", "1");
-        
+
         var cell = row2.insertCell(2);
         var raw_price = document.createTextNode("$" + raw_price_val + "/TB");
         cell.id = vm_type_price + vm_num + (++item_num);
@@ -1904,15 +1312,15 @@ function addProduct(id)
         raw_qty.setAttribute("onchange", "getEstimate('raw', this.id, this.getAttribute('comm-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'RAW')");
         var blanknode = document.createTextNode("\u00a0");
         cell.appendChild(blanknode);
-        
-        
+
+
         var raw_units = document.createElement("select");
         raw_units.setAttribute("name", "raw-units" + vm_num + item_num);
         raw_units.setAttribute("value", "TB");
         raw_units.setAttribute("title", "Choose the units");
         raw_units.setAttribute("num", vm_num);
         raw_units.id = "raw-units" + vm_num + item_num;
-            
+
         /* add all unit options */
         option = new Option("TB", "TB", false, false);
         option.id = "TB" + vm_num + item_num;
@@ -1922,9 +1330,9 @@ function addProduct(id)
         option.id = "GB" + vm_num + item_num;
         raw_units.appendChild(option);
         raw_units.setAttribute("item_num", item_num);
-        raw_units.setAttribute("onchange", "changeUnits(this.id, this.value, this.getAttribute('num'), this.getAttribute('item_num'), 'raw')");
+        raw_units.setAttribute("onchange", "changeUnits('raw_units', this.id, this.value ,this.getAttribute('num'), this.getAttribute('item_num'), 'raw')");
         cell.appendChild(raw_units);
-        
+
         var cell = row2.insertCell(4);
         var raw_sub = document.createElement("input");
         raw_sub.setAttribute("type", "text");
@@ -1935,16 +1343,16 @@ function addProduct(id)
         raw_sub.className = "backup-sub vm-sub" + vm_num;
         raw_sub.setAttribute("name", raw_sub.id);
         raw_sub.setAttribute("size", 20);
-        
+
         var row3 = table.insertRow(++rowCount);
         var cell = row3.insertCell(0);
         cell.setAttribute("colspan", "1");
-        
+
         var cell = row3.insertCell(1);
-        var full = document.createTextNode("\u00a0\u00a0\u00a0\u00a0Full Backups");                       
+        var full = document.createTextNode("\u00a0\u00a0\u00a0\u00a0Full Backups");
         cell.appendChild(full);
         cell.setAttribute("colspan", "1");
-        
+
         var cell = row3.insertCell(2);
         var full_price = document.createTextNode("$" + full_price_val + "/TB");
         cell.setAttribute("value", full_price_val);
@@ -1969,7 +1377,7 @@ function addProduct(id)
         full_qty.setAttribute("readonly", "readonly");
         //full_qty.setAttribute("onchange", "getEstimate('full', this.id, this.getAttribute('full-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'RAW')");
         cell.appendChild(document.createTextNode("\u00a0\u00a0TB"));
-                         
+
         var cell = row3.insertCell(4);
         var full_sub = document.createElement("input");
         full_sub.setAttribute("type", "text");
@@ -1980,17 +1388,17 @@ function addProduct(id)
         full_sub.className = "backup-sub vm-sub" + vm_num;
         full_sub.setAttribute("name", full_sub.id);
         full_sub.setAttribute("size", 20);
-        
+
         var row4 = table.insertRow(++rowCount);
         var cell = row4.insertCell(0);
         cell.setAttribute("colspan", "1");
-        
+
         var cell = row4.insertCell(1);
         var monthlybackup = document.createTextNode("\u00a0\u00a0\u00a0\u00a0-Full backups/month");
         monthlybackup.className += " smalltext";
         cell.appendChild(monthlybackup);
         cell.setAttribute("colspan", "2");
-        
+
         var cell = row4.insertCell(2);
         var monthlybackup_qty = document.createElement("input");
         monthlybackup_qty.setAttribute("type", "text");
@@ -2004,17 +1412,18 @@ function addProduct(id)
         monthlybackup_qty.setAttribute("num", vm_num);
         monthlybackup_qty.setAttribute("size", 5);
         monthlybackup_qty.setAttribute("onchange", "changeValue(this.id, this.value, this.getAttribute('num'))");
-        
+
         var row5 = table.insertRow(++rowCount);
         var cell = row5.insertCell(0);
         cell.setAttribute("colspan", "1");
-        
+
         var cell = row5.insertCell(1);
         var durmonthlybackup = document.createTextNode("\u00a0\u00a0\u00a0\u00a0-Months backups are saved");
         durmonthlybackup.className += " smalltext";
         cell.appendChild(durmonthlybackup);
         cell.setAttribute("colspan", "2");
-        
+
+        // add input box for backups
         var cell = row5.insertCell(2);
         var durmonthlybackup_qty = document.createElement("input");
         durmonthlybackup_qty.setAttribute("type", "text");
@@ -2028,16 +1437,16 @@ function addProduct(id)
         durmonthlybackup_qty.setAttribute("size", 5);
         durmonthlybackup_qty.setAttribute("num", vm_num);
         durmonthlybackup_qty.setAttribute("onchange", "changeValue(this.id, this.value, this.getAttribute('num'))");
-        
+
         var row6 = table.insertRow(++rowCount);
         var cell = row6.insertCell(0);
         cell.setAttribute("colspan", "1");
-        
+
         var cell = row6.insertCell(1);
-        var diff = document.createTextNode("\u00a0\u00a0\u00a0\u00a0Differentials/Incrementals");                       
+        var diff = document.createTextNode("\u00a0\u00a0\u00a0\u00a0Differentials/Incrementals");
         cell.appendChild(diff);
         cell.setAttribute("colspan", "1");
-        
+
         var cell = row6.insertCell(2);
         var diff_price = document.createTextNode("$" + diff_price_val + "/TB");
         cell.setAttribute("value", diff_price_val);
@@ -2061,9 +1470,9 @@ function addProduct(id)
         diff_qty.setAttribute("size", 5);
         diff_qty.setAttribute("readonly", "readonly");
         diff_qty.setAttribute("onchange", "getEstimate('diff', this.id, this.getAttribute('comm-price'), this.getAttribute('dest'),  this.getAttribute('num'), 'RAW')");
-        
+
         cell.appendChild(document.createTextNode("\u00a0\u00a0TB"));
-        
+
         var cell = row6.insertCell(4);
         var diff_sub = document.createElement("input");
         diff_sub.setAttribute("type", "text");
@@ -2074,17 +1483,17 @@ function addProduct(id)
         diff_sub.className = "backup-sub vm-sub" + vm_num;
         diff_sub.setAttribute("name", diff_sub.id);
         diff_sub.setAttribute("size", 20);
-        
+
         var row7 = table.insertRow(++rowCount);
         var cell = row7.insertCell(0);
         cell.setAttribute("colspan", "1");
-        
+
         var cell = row7.insertCell(1);
-        var diffwk = document.createTextNode("\u00a0\u00a0\u00a0\u00a0-Differentials taken/week");    
+        var diffwk = document.createTextNode("\u00a0\u00a0\u00a0\u00a0-Differentials taken/week");
         diffwk.className += " smalltext";
         cell.appendChild(diffwk);
         cell.setAttribute("colspan", "2");
-        
+
         var cell = row7.insertCell(2);
         var diffwk_qty = document.createElement("input");
         diffwk_qty.setAttribute("type", "text");
@@ -2099,17 +1508,17 @@ function addProduct(id)
         diffwk_qty.setAttribute("size", 5);
         diffwk_qty.setAttribute("num", vm_num);
         diffwk_qty.setAttribute("onchange", "changeValue(this.id, this.value, this.getAttribute('num'))");
-        
+
         var row8 = table.insertRow(++rowCount);
         var cell = row8.insertCell(0);
         cell.setAttribute("colspan", "1");
-        
+
         var cell = row8.insertCell(1);
-        var incwk = document.createTextNode("\u00a0\u00a0\u00a0\u00a0-Incrementals taken/week?");    
+        var incwk = document.createTextNode("\u00a0\u00a0\u00a0\u00a0-Incrementals taken/week?");
         incwk.className += " smalltext";
         cell.appendChild(incwk);
         cell.setAttribute("colspan", "2");
-        
+
         var cell = row8.insertCell(2);
         var incwk_qty = document.createElement("input");
         incwk_qty.setAttribute("type", "text");
@@ -2123,17 +1532,17 @@ function addProduct(id)
         incwk_qty.setAttribute("size", 5);
         incwk_qty.setAttribute("num", vm_num);
         incwk_qty.setAttribute("onchange", "changeValue(this.id, this.value, this.getAttribute('num'))");
-        
+
         var row9 = table.insertRow(++rowCount);
         var cell = row9.insertCell(0);
         cell.setAttribute("colspan", "1");
-        
+
         var cell = row9.insertCell(1);
-        var durdiffinc = document.createTextNode("\u00a0\u00a0\u00a0\u00a0-Months diff/inc saved");    
+        var durdiffinc = document.createTextNode("\u00a0\u00a0\u00a0\u00a0-Months diff/inc saved");
         durdiffinc.className += " smalltext";
         cell.appendChild(durdiffinc);
         cell.setAttribute("colspan", "2");
-        
+
         var cell = row9.insertCell(2);
         var durdiffinc_qty = document.createElement("input");
         durdiffinc_qty.setAttribute("type", "text");
@@ -2147,12 +1556,12 @@ function addProduct(id)
         durdiffinc_qty.setAttribute("size", 5);
         durdiffinc_qty.setAttribute("num", vm_num);
         durdiffinc_qty.setAttribute("onchange", "changeValue(this.id, this.value, this.getAttribute('num'))");
-        
+
         var row10 = table.insertRow(++rowCount);
         var cell = row10.insertCell(0);
         cell.setAttribute("style", "border-bottom: 1px solid #d3d3d3;");
         cell.setAttribute("colspan", "1");
-        
+
         var cell = row10.insertCell(1);
         cell.setAttribute("style", "border-bottom: 1px solid #d3d3d3; ");
         var subtext = document.createTextNode("Subtotal");
@@ -2170,13 +1579,13 @@ function addProduct(id)
         //vmsubtotal.className = "sub";
         vmsubtotal.setAttribute("name", vmsubtotal.id);
         vmsubtotal.setAttribute("size", 20);
-        
+
         document.getElementById(vmsubtotal.id).setAttribute("readonly", "readonly");
 
         /* DEFAULT VALUES OF STANDARD 3 MONTH RETENTION */
         document.getElementById('monthlybackup-qty' + vm_num).setAttribute("value", "1");
         document.getElementById('monthlybackup-qty' + vm_num).setAttribute("readonly", "readonly");
-    
+
         document.getElementById('durmonthlybackup-qty' + vm_num).setAttribute("value", "3");
         document.getElementById('durmonthlybackup-qty' + vm_num).setAttribute("readonly", "readonly");
 
@@ -2209,9 +1618,9 @@ function addProduct(id)
         cell.appendChild(subtotal);
         sub('backup-sub');
         sub('sub');
-        
+
     } /* END COMMVAULT BACKUP */
-    
+
     /* BEGIN CLOUD COMPUTING SERVICES */
     else if (id == 'CL_COMPUTE') {
         ++vm_num;
@@ -2234,12 +1643,12 @@ function addProduct(id)
 
         var cell = row1.insertCell(1);
         cell.setAttribute("width", "220");
-        var name = document.createTextNode(prod_name);                      
+        var name = document.createTextNode(prod_name);
         cell.appendChild(name);
         cell.setAttribute("colspan", "1");
         cell.className = "service-title";
         cell.className += " pad-bottom";
-        
+
         cell = row1.insertCell(2);
         var description_box = document.createElement("textarea");
         description_box.setAttribute("colspan", "3");
@@ -2252,10 +1661,10 @@ function addProduct(id)
         cell.appendChild(description_box);
         cell.setAttribute("colspan", "3");
         document.getElementById("description" + vm_num).innerHTML = "Enter a description here";
-        
+
         var row = table.insertRow(++rowCount);
         var cell = row.insertCell(0);
-        cell.setAttribute("colspan", "1");  
+        cell.setAttribute("colspan", "1");
 
         var cell = row.insertCell(1);
         cell.setAttribute("style", "font-weight: bold");
@@ -2266,14 +1675,14 @@ function addProduct(id)
         var row = table.insertRow(++rowCount);
         var cell = row.insertCell(0);
         cell.setAttribute("colspan", "1");
-        
+
         var cell = row.insertCell(1);
         cell.setAttribute("colspan", "1");
         var os_text = document.createTextNode("\u00a0\u00a0\u00a0\u00a0Affiliation:");
         cell.appendChild(os_text);
 
         var cell = row.insertCell(2);
-        var os = document.createElement("select"); 
+        var os = document.createElement("select");
         os.setAttribute("name", "affiliation");
         os.setAttribute("title", "Choose client location");
         os.setAttribute("value", "UC");
@@ -2294,7 +1703,7 @@ function addProduct(id)
 
         var row = table.insertRow(++rowCount);
         var cell = row.insertCell(0);
-        cell.setAttribute("colspan", "1");  
+        cell.setAttribute("colspan", "1");
 
         var cell = row.insertCell(1);
         cell.setAttribute("style", "font-weight: bold");
@@ -2305,31 +1714,31 @@ function addProduct(id)
         var row = table.insertRow(++rowCount);
         var cell = row.insertCell(0);
         cell.setAttribute("colspan", "1");
-        
+
         var cell = row.insertCell(1);
         cell.setAttribute("style", "font-weight: bold;");
         cell.setAttribute("colspan", "1");
         var item_text = document.createTextNode("\u00a0\u00a0\u00a0\u00a0Item");
         cell.appendChild(item_text);
-        
+
         var cell = row.insertCell(2);
         cell.setAttribute("style", "font-weight: bold;");
         cell.setAttribute("colspan", "1");
         var item_text = document.createTextNode("Price");
         cell.appendChild(item_text);
-        
+
         var cell = row.insertCell(3);
         cell.setAttribute("style", "font-weight: bold;");
         cell.setAttribute("colspan", "1");
         var item_text = document.createTextNode("Qty");
         cell.appendChild(item_text);
-        
+
         var cell = row.insertCell(4);
         cell.setAttribute("style", "font-weight: bold;");
         cell.setAttribute("colspan", "1");
         var item_text = document.createTextNode("Cost");
         cell.appendChild(item_text);
-        
+
         var flavor = ["m1.medium", "m1.large", "m1.xlarge", "m1.2xlarge", "c1.large", "c1.xlarge", "c1.2xlarge", "r1.large", "r1.xlarge", "r1.2xlarge", "Additional Volume", "Additional Image"];
         var vcpu = ["1","2","4","8","2","4","8", "2", "4", "8", "0", "0"];
         var memcount = ["4GB","8GB","16GB","32GB","4GB","8GB","16GB", "16GB", "32GB", "64GB","0", "0"];
@@ -2369,7 +1778,7 @@ function addProduct(id)
             }
             cell.appendChild(cl_compute_price);
             cell.setAttribute("colspan", "1");
-            cell.id = "cl-compute-price" + vm_num + item_num;    
+            cell.id = "cl-compute-price" + vm_num + item_num;
             var cell = row.insertCell(3);
             var cl_compute_instances = document.createElement("input");
             cl_compute_instances.setAttribute("type", "text");
@@ -2411,14 +1820,14 @@ function addProduct(id)
 
             var row = table.insertRow(++rowCount);
             var cell1 = row.insertCell(0);
-            cell1.setAttribute("colspan", "1"); 
+            cell1.setAttribute("colspan", "1");
             var cell2 = row.insertCell(1);
             cell2.id = "flavor-specifications" + vm_num + item_num;
             if (i<10) {
                 var cpu = document.createTextNode("\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0" + vcpu[i] + "vCPU, " + memcount[i] + "Memory");
                 cell2.appendChild(cpu);
-                cell2.setAttribute("style", "color:#fff");  
-            }   
+                cell2.setAttribute("style", "color:#fff");
+            }
             var cell3 = row.insertCell(2);
             cell3.setAttribute("colspan", "1");
             var cell4 = row.insertCell(3);
@@ -2468,7 +1877,7 @@ function addProduct(id)
         vmsubtotal.id = "vm-sub" + vm_num + "-total";
         vmsubtotal.setAttribute("name", vmsubtotal.id);
         vmsubtotal.setAttribute("readonly", "readonly");
-    
+
 
         //create cl compute at the top of totals table
         row1 = totals.insertRow(0);
@@ -2489,7 +1898,7 @@ function addProduct(id)
         subtotal.setAttribute("readonly", "readonly");
         cell.appendChild(subtotal);
         sub('cl-compute-sub');
-        sub('sub');        
+        sub('sub');
     }
     // console.log(numProducts);
     // if (numProducts == 1) {
@@ -2497,6 +1906,5 @@ function addProduct(id)
     //     var cell = row1.insertCell(0);
     //     cell.setAttribute("colspan", "5");
     // }
-    
+
 } /* END ADDPRODUCT FUNCTION */
-  
