@@ -146,7 +146,7 @@
                         Consulting Services - Storage
                         </span>
                         <span class="service-price">
-                        $98.83
+                        $98.93
                         </span>
                     </div>
                     
@@ -178,7 +178,7 @@
                         Recurring Consulting Services - Storage
                         </span>
                         <span class="service-price">
-                        $98.83
+                        $98.93
                         </span>
                     </div>
                     <button class="add-button" title="Add Service" onclick="addProduct('SITE');">+
