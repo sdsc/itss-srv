@@ -453,7 +453,7 @@ function changePrices(affiliation, id, num)
                 break;
 
     }
-    document.getElementsById("affiliation")[0].setAttribute("value", affiliation);
+    document.getElementById("affiliation" + num).setAttribute("value", affiliation);
 }
 /* Function Name: getEstimate
  * Description: This function calculates the subtotals within one line item and populates the subtotal column at the farthest right.
