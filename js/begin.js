@@ -1,16 +1,16 @@
 var count = 0;
 var oldCode;
 $(document).ready(function() {
-    
+
     /* perform initial subtotaling */
-    
-    var valid = true; 
-    
+
+    var valid = true;
+
     //sub('sub');
-    
+
     /* Create PDF from the content */
 
-    
+
     $('body').on('keydown', 'input, select', function(e) {
         var self = $(this)
           , form = self.parents('form:eq(0)')
@@ -28,7 +28,7 @@ $(document).ready(function() {
             return false;
         }
     });
-    
+
     document.getElementById('vm-table').setAttribute("hidden", "hidden");
     // document.getElementById('vm-table-totals').setAttribute("hidden", "hidden");
     document.getElementById('pa-table').setAttribute("hidden", "hidden");
@@ -44,7 +44,7 @@ $(document).ready(function() {
     document.getElementById('cl-compute-table').setAttribute("hidden", "hidden");
     // document.getElementById('cl-compute-table-totals').setAttribute("hidden", "hidden");
     document.getElementById('totals').setAttribute("hidden", "hidden");
-    
+
 });
 
 function validateForm() {
@@ -56,10 +56,10 @@ function validateForm() {
             }
         });
     if (valid) {
-        
+
         //$('.tables tr *:nth-child(1)').attr("width", "1px");
         //$('.tables td').attr("height", "1px");
-        
+
         oldCode = $('#quote-content').clone();
         var child = document.getElementById('vm-table');
         // var child2 = document.getElementById('vm-table-totals');
@@ -68,7 +68,7 @@ function validateForm() {
             // child2.parentNode.removeChild(child2);
         }
         child.setAttribute("colspan", "4");
-        
+
         var child = document.getElementById('str-table');
         // var child2 = document.getElementById('str-table-totals');
         if (child.rows.length - 1 === 0) {
@@ -76,7 +76,7 @@ function validateForm() {
             // child2.parentNode.removeChild(child2);
         }
         child.setAttribute("colspan", "4");
-        
+
         var child = document.getElementById('pa-table');
         var child2 = document.getElementById('pa-table-totals');
         if (child.rows.length - 1 === 0) {
@@ -84,7 +84,7 @@ function validateForm() {
             // child2.parentNode.removeChild(child2);
         }
         child.setAttribute("colspan", "4");
-        
+
         var child = document.getElementById('backup-table');
         // var child2 = document.getElementById('backup-table-totals');
         if (child.rows.length - 1 === 0) {
@@ -92,7 +92,7 @@ function validateForm() {
             // child2.parentNode.removeChild(child2);
         }
         child.setAttribute("colspan", "4");
-        
+
         var child = document.getElementById('consult-table');
         // var child2 = document.getElementById('consult-table-totals');
         if (child.rows.length - 1 === 0) {
@@ -100,7 +100,7 @@ function validateForm() {
             // child2.parentNode.removeChild(child2);
         }
         child.setAttribute("colspan", "4");
-        
+
         var child = document.getElementById('sp-table');
         // var child2 = document.getElementById('sp-table-totals');
         if (child.rows.length - 1 === 0) {
@@ -108,7 +108,7 @@ function validateForm() {
             // child2.parentNode.removeChild(child2);
         }
         child.setAttribute("colspan", "4");
-        
+
         var child = document.getElementById('cl-compute-table');
         // var child2 = document.getElementById('cl-compute-table-totals');
         if (child.rows.length - 1 === 0) {
@@ -116,56 +116,77 @@ function validateForm() {
             // child2.parentNode.removeChild(child2);
         }
         child.setAttribute("colspan", "4");
-        
+
         var child = document.getElementById('totals');
         if (child.getAttribute("hidden") == "hidden") {
             child.parentNode.removeChild(child);
         }
         child.setAttribute("colspan", "4");
-        
+
         $('.remove-button').each(function(i, e) {
             e.parentNode.removeChild(e);
         });
-        
+
         var child = document.getElementById('pdfbutton');
         child.parentNode.removeChild(child);
 
         var child = document.getElementById('estimatebutton');
         child.parentNode.removeChild(child);
-        
+
         var child = document.getElementById('savebutton');
         child.parentNode.removeChild(child);
-        
+
         var child = document.getElementById('loadbutton');
         child.parentNode.removeChild(child);
-        
+
         var child = document.getElementById('cleardata');
         child.parentNode.removeChild(child);
-        
+
         $('.userinput').each(function(i, e) {
             if (e.value == "") {
                 e.setAttribute("value", "0");
             }
         });
-        
+
         $('.vm-sub, .str-sub, .pa-sub, .backup-sub, .consult-sub, .sp-sub').each(function(i, e) {
             if (e.value == "") {
                 e.setAttribute("value", "$0.00");
             }
         });
-        
-        
+
+
         document.getElementById('formcode').value = $("#quote-content").html();
-        
+
         document.getElementById("quote").submit();
         $("#quote-content").replaceWith(oldCode.clone());
         $("#quote-content").replaceWith(oldCode);
-        
+        /* The affiliation textbox reverts back to UC reagardless of what it was set to.
+           The following code loops thorugh all elements that have the name "affiliation"
+           and then checks whether the value of its "value" attribute is the same as the
+           label of the selected option of each affiliaion select box. If they do not match,
+           the option is updated to match the value of the affiliaion's "value" attribute.
+           */
+                // affiliations is assumed to be an array of select elements
+                var affiliations = document.getElementsByName("affiliation");
+                // Do not do anything if there are no elements with this name
+                if(affiliations.length != 0){
+                  //Loop though each element in affiliations array
+                  //(They are all expected to select objects)
+                  for(i = 0; i < affiliations.length; i++){
+                    //Loop through the options of each affiliation select object
+                    for(j = 0; j < affiliations[i].options.length; j++){
+                      // Update the selected option to match with the affiliation's "value" attribute
+                      if(affiliations[i].options[j].label == affiliations[i].getAttribute("value")){
+                        affiliations[i].options[j].selected = true;
+                      }
+                    }
+                  }
+                }
     } else {
         alert("There are some invalid input fields. Please correct them before continuing.");
-        
+
     }
-        
+
 }
 
 function saveForm()

@@ -345,6 +345,7 @@ function changePrices(affiliation, id, num)
                 item_num = 1;
                 document.getElementById("str-price" + num + item_num).value = parseFloat(price_cl_str).toFixed(2);
                 document.getElementById("str-qty" + num + item_num).setAttribute("str-price", price_cl_str);
+                document.getElementById("str-qty" + num + item_num).setAttribute("price",price_cl_str);
                 document.getElementById("str-price" + num + item_num).innerHTML = "$" + parseFloat(price_cl_str).toFixed(2) + "/TB";
                 document.getElementById("units" + num + item_num).setAttribute("value", "TB");
                 document.getElementById("GB" + num + item_num).removeAttribute("selected");
@@ -452,7 +453,7 @@ function changePrices(affiliation, id, num)
                 break;
 
     }
-    document.getElementsByName("affiliation")[0].setAttribute("value", affiliation);
+    document.getElementsById("affiliation")[0].setAttribute("value", affiliation);
 }
 /* Function Name: getEstimate
  * Description: This function calculates the subtotals within one line item and populates the subtotal column at the farthest right.
