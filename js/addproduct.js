@@ -447,7 +447,7 @@ function addItemLine(table, item_name, price, id, vm_num, item_num, tooltip, typ
     cost.className += " price-align";
     // base vm has static cost
     if ((id == "st-vm" || id == "hs-vm") && item_num == 1) {
-        cost.value = "$" + price;
+        cost.setAttribute("value","$" + price);
     }
     cost.setAttribute("size", 20);
     cost.setAttribute("readonly", "readonly");
