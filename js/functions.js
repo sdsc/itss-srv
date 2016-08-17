@@ -1230,7 +1230,7 @@ function extraSnaps(vm_num, item_num, id)
     var val = document.getElementById(id).value;
     document.getElementById("No" + vm_num).removeAttribute("selected");
     document.getElementById("Yes" + vm_num).removeAttribute("selected");
-    if (document.getElementById("os" + vm_num).value == "UC") var price = PRICE_ST_VM_UC[5];
+    if (document.getElementById("affiliation" + vm_num).value == "UC") var price = PRICE_ST_VM_UC[5];
     else var price = PRICE_ST_VM_EXT[5];
     if (val == 'Yes') {
         //document.getElementById('vm-sub' + vm_num + '-total').setAttribute("value", '$' + (currentPrice + price));
