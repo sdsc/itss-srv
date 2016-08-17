@@ -45,8 +45,8 @@
             }
         </style>
     </head>
-    
-    
+
+
     <!-- BEGIN THE HTML HERE -->
     <body>
        <div class="content">
@@ -73,7 +73,7 @@
                     <button class="add-button" title="Add Service" onclick="addProduct('CL_STR');">+
     </button>
                     <div class="vm-services">
-                        <span class="service-name" title=""> 
+                        <span class="service-name" title="">
                         Cloud Storage</span>
                         <span class="service-price">
                         $32.16
@@ -82,7 +82,7 @@
                     <button class="add-button" title="Add Service" onclick="addProduct('PR_STR');">+
     </button>
                     <div class="vm-services">
-                        <span class="service-name" title=""> 
+                        <span class="service-name" title="">
                         Project Storage
                         </span>
                         <span class="service-price">
@@ -92,27 +92,28 @@
                     <button class="add-button" title="Add Service" onclick="addProduct('PR_CON');">+
     </button>
                     <div class="vm-services">
-                        <span class="service-name" title=""> 
+                        <span class="service-name" title="">
                         Project Condo
                         </span>
                         <span class="service-price">
                         $782.08
                         </span>
                     </div>
-                    <button class="add-button" title="Add Service" onclick="addProduct('SYS_MAN');">+
+
+                    <!-- <button class="add-button" title="Add Service" onclick="addProduct('SYS_MAN');">+
     </button>
                     <div class="vm-services">
-                        <span class="service-name" title=""> 
+                        <span class="service-name" title="">
                         System Management
                         </span>
                         <span class="service-price">
                         $69.00
                         </span>
-                    </div>
+                    </div> -->
                     <button class="add-button" title="Add Service" onclick="addProduct('RAW');">+
     </button>
                     <div class="vm-services">
-                        <span class="service-name" title=""> 
+                        <span class="service-name" title="">
                         Backups
                         </span>
                         <span class="service-price">
@@ -122,7 +123,7 @@
                     <button class="add-button" title="Add Service" onclick="addProduct('DESK');">+
     </button>
                     <div class="vm-services">
-                        <span class="service-name" title=""> 
+                        <span class="service-name" title="">
                         Consulting Services - Desktop
                         </span>
                         <span class="service-price">
@@ -132,7 +133,7 @@
                     <button class="add-button" title="Add Service" onclick="addProduct('SYSTEMS');">+
     </button>
                     <div class="vm-services">
-                        <span class="service-name" title=""> 
+                        <span class="service-name" title="">
                         Consulting Services - Systems
                         </span>
                         <span class="service-price">
@@ -142,18 +143,18 @@
                     <button class="add-button" title="Add Service" onclick="addProduct('STORAGE');">+
     </button>
                     <div class="vm-services">
-                        <span class="service-name" title=""> 
+                        <span class="service-name" title="">
                         Consulting Services - Storage
                         </span>
                         <span class="service-price">
                         $98.93
                         </span>
                     </div>
-                    
+
                     <button class="add-button" title="Add Service" onclick="addProduct('RECUR_DESK');">+
     </button>
                     <div class="vm-services">
-                        <span class="service-name" title=""> 
+                        <span class="service-name" title="">
                         Recurring Consulting Services - Desktop
                         </span>
                         <span class="service-price">
@@ -164,7 +165,7 @@
                     <button class="add-button" title="Add Service" onclick="addProduct('RECUR_SYSTEMS');">+
     </button>
                     <div class="vm-services">
-                        <span class="service-name" title=""> 
+                        <span class="service-name" title="">
                         Recurring Consulting Services - Systems
                         </span>
                         <span class="service-price">
@@ -174,7 +175,7 @@
                     <button class="add-button" title="Add Service" onclick="addProduct('RECUR_STORAGE');">+
     </button>
                     <div class="vm-services">
-                        <span class="service-name" title=""> 
+                        <span class="service-name" title="">
                         Recurring Consulting Services - Storage
                         </span>
                         <span class="service-price">
@@ -183,9 +184,9 @@
                     </div>
                     <button class="add-button" title="Add Service" onclick="addProduct('SITE');">+
     </button>
-                   
+
                     <div class="vm-services">
-                        <span class="service-name" title=""> 
+                        <span class="service-name" title="">
                         SharePoint Site
                         </span>
                         <span class="service-price">
@@ -194,9 +195,9 @@
                     </div>
                     <button class="add-button" title="Add Service" onclick="addProduct('CL_COMPUTE');">+
     </button>
-                   
+
                     <div class="vm-services">
-                        <span class="service-name" title=""> 
+                        <span class="service-name" title="">
                         Cloud Compute
                         </span>
                         <span class="service-price">
