@@ -297,7 +297,7 @@ function changePrices(affiliation, id, num)
                             break;
                         case 5:
                             document.getElementById("st-vm-price" + num + item_num).innerHTML = "$" + parseFloat(price_vm[n]).toFixed(2);
-                            if (document.getElementById("st-vm").value == "Yes") extraSnaps(num, item_num, "st-vm");
+                            if (document.getElementById("st-vm-qty"+num+item_num).value == "Yes") extraSnaps(num, item_num, "st-vm");
                             break;
                     }
                 }
@@ -1227,31 +1227,21 @@ function changeDescription(num, value)
 function extraSnaps(vm_num, item_num, id)
 {
     var currentPrice = parseFloat(document.getElementById('vm-sub' + vm_num + '-total').value.replace("$", ""));
-    var val = document.getElementById(id).value;
+    var val = document.getElementById(id+'-qty'+vm_num+item_num).value;
     document.getElementById("No" + vm_num).removeAttribute("selected");
     document.getElementById("Yes" + vm_num).removeAttribute("selected");
     if (document.getElementById("affiliation" + vm_num).value == "UC") var price = PRICE_ST_VM_UC[5];
     else var price = PRICE_ST_VM_EXT[5];
     if (val == 'Yes') {
-        //document.getElementById('vm-sub' + vm_num + '-total').setAttribute("value", '$' + (currentPrice + price));
         document.getElementById('Yes' + vm_num).setAttribute("selected", "selected");
-        //var tempval = parseFloat(document.getElementById('vm-sub-total').value.replace("$", ""));
-        //var temptotalval = parseFloat(document.getElementById('sub-total').value.replace("$", ""));
-        //document.getElementById('vm-sub-total').setAttribute("value", "$" + parseFloat(tempval + price).toFixed(2));
-        //document.getElementById('sub-total').setAttribute("value", "$" + parseFloat(temptotalval + price).toFixed(2));
         document.getElementById(id + "-sub" + vm_num + item_num).setAttribute("value", "$" + parseFloat(price).toFixed(2));
-        document.getElementById(id).setAttribute("value", "Yes");
-        document.getElementById(id).setAttribute("name", "Yes");
+        document.getElementById(id+'-qty'+vm_num+item_num).setAttribute("value", "Yes");
+        document.getElementById(id+'-qty'+vm_num+item_num).setAttribute("name", "Yes");
     } else if (val == 'No') {
-        //document.getElementById('vm-sub' + vm_num + '-total').setAttribute("value", '$' + (currentPrice - price));
         document.getElementById('No' + vm_num).setAttribute("selected", "selected");
-        //var tempval = parseFloat(document.getElementById('vm-sub-total').value.replace("$", ""));
-        //var temptotalval = parseFloat(document.getElementById('sub-total').value.replace("$", ""));
-        //document.getElementById('vm-sub-total').setAttribute("value", "$" + parseFloat(tempval - price).toFixed(2));
-        //document.getElementById('sub-total').setAttribute("value", "$" + parseFloat(temptotalval - price).toFixed(2));
         document.getElementById(id + "-sub" + vm_num + item_num).setAttribute("value", "$" + parseFloat(0).toFixed(2));
-        document.getElementById(id).setAttribute("value", "No");
-        document.getElementById(id).setAttribute("name", "No");
+        document.getElementById(id+'-qty'+vm_num+item_num).setAttribute("value", "No");
+        document.getElementById(id+'-qty'+vm_num+item_num).setAttribute("name", "No");
     }
     sub("vm-sub");
     sub("vm-sub" + vm_num);

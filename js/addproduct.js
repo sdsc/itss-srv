@@ -332,13 +332,20 @@ function addItemLine(table, item_name, price, id, vm_num, item_num, tooltip, typ
             // extra snapshots don't have an input field
             var cell = row.insertCell(3);
             var extrasnap = document.createElement("select");
-            extrasnap.id = id;
+            extrasnap.id = id+ "-qty" + vm_num + item_num;
             extrasnap.setAttribute("value", "No");
             extrasnap.setAttribute("vm_num", vm_num);
             extrasnap.setAttribute("item_num", item_num)
             extrasnap.setAttribute("name", extrasnap.id);
             extrasnap.setAttribute("title", "Marking yes will add $" + price + " to the subtotal");
-            extrasnap.setAttribute("onchange", "extraSnaps(this.getAttribute('vm_num'),this.getAttribute('item_num'), this.getAttribute('id'))");
+            if (id == "st-vm") {
+              extrasnap.setAttribute("onchange", "extraSnaps(this.getAttribute('vm_num'),this.getAttribute('item_num'), 'st-vm')");
+
+            }
+            else {
+              extrasnap.setAttribute("onchange", "extraSnaps(this.getAttribute('vm_num'),this.getAttribute('item_num'), 'hs-vm')");
+
+            }
 
             var options = new Option("No", "No", false, false);
             options.id = "No" + vm_num;
@@ -1900,11 +1907,6 @@ function addProduct(id)
         sub('cl-compute-sub');
         sub('sub');
     }
-    // console.log(numProducts);
-    // if (numProducts == 1) {
-    //     row1 = totals.insertRow(0);
-    //     var cell = row1.insertCell(0);
-    //     cell.setAttribute("colspan", "5");
-    // }
+
 
 } /* END ADDPRODUCT FUNCTION */
