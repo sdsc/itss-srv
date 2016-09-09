@@ -1,27 +1,3 @@
-<!-- Connect to the database -->
-<!--<?php
-    /*try
-    {
-        $db = new PDO("mysql:host=localhost;dbname=itss_srv", "root", "");
-        $db->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
-        $db->exec("SET NAMES 'utf8'");
-    }
-    catch(Exception $e)
-    {
-        echo "ERROR: Could not connect to the database.";
-        exit;
-    }
-
-    try
-    {
-        $services = $db->query("SELECT * FROM services");
-    }
-    catch(Exception $e)
-    {
-        echo "ERROR: This action cannot be performed.";
-        exit;
-    } */
-?> -->
 <!DOCTYPE html>
 <html>
     <head>

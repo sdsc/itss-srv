@@ -21,11 +21,6 @@ function addTitleOptions(table, title, rowsString, category) {
     remove.setAttribute("title", "Remove Service");
     var removeProduct = "removeProduct(this.getAttribute('rownumber'), " + rowsString + ",'" + category + "')";
     remove.setAttribute("onclick", removeProduct);
-    // if (id == 'ST_VM') {
-    //     remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), ROWS_STANDARD_VM, 'ST_VM')");
-    // } else {
-    //     remove.setAttribute("onclick", "removeProduct(this.getAttribute('rownumber'), ROWS_HIGH_SECURITY_VM, 'ST_VM')");
-    // }
 
     var cell = row1.insertCell(1);
     var name = document.createTextNode(title);
@@ -77,11 +72,6 @@ function addTitleOptions(table, title, rowsString, category) {
     os.setAttribute("value", "UC");
     var changePrices = "changePrices(this.value, " + "'" + category + "', this.getAttribute('num'))";
     os.setAttribute("onchange", changePrices);
-    // if (id == 'ST_VM'){
-    //     os.setAttribute("onchange", "changePrices(this.value, 'ST_VM', this.getAttribute('num'))");
-    // }
-    // else os.setAttribute("onchange", "changePrices(this.value, 'HS_VM', this.getAttribute('num'))");
-
     option = new Option("UC", "UC", false, false);
     option.id = "UC" + vm_num;
     os.appendChild(option);
@@ -551,7 +541,6 @@ function addProduct(id)
         row1.id = "monthlytotals";
         var cell = row1.insertCell(0);
         cell.setAttribute("colspan", "1");
-        // cell.setAttribute("width", "654");
         cell.setAttribute("style", "text-align: right; font-weight: bold; padding-left: 340px");
         var monthly = document.createTextNode("\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0Monthly Total:")
         cell.appendChild(monthly);
@@ -570,7 +559,6 @@ function addProduct(id)
         cell = row.insertCell(0);
         row.id = "onetimetotals";
         cell.setAttribute("colspan", "1");
-        // cell.setAttribute("width", "654");
         cell.setAttribute("style", "text-align: right; font-weight: bold");
         var onetime = document.createTextNode("\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0One-time Fees:")
         cell.appendChild(onetime);

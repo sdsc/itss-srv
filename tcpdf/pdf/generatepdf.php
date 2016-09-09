@@ -1,15 +1,11 @@
 <?php
     require_once('tcpdf_include.php');
-    
+
     class MYPDF extends TCPDF
     {
         public function Header()
         {
-            //$image = '../../images/SDSClogo.jpg';
-            //$this->Image($image, 10, 10, 56, 14, 'JPEG', '', '', '', '', '', '', '', '', '', false, true, false, '');
-            //$this->Text('50', '10', 'SDSC Service Level Agreement', false, false, false, '', '', 'M', false, '', '', false, 'T', 'T', false);
             $this->SetFont('helvetica', 'b', 15, '', '', true);
-            // $this->Rect(10, 10, 100 ,10,'F',array(),array(173, 173, 173));
             $this->Write(30, 'Exhibit A - Service Estimates and Customer Information', '', false, 'C', false, '', false, false, 150, '', '');
         }
     }
@@ -23,7 +19,7 @@
     $pdf->writeHTML($html, true, false, true, false, '');
 
     $pdf->AddPage();
-    
+
     $html = '<b><u><font style="font-size: 11px">Customer Contact and Signatures:</font></u></b><br>
         <font style="font-size: 10px; color: #ff0000;">
             (to be completed by customer)

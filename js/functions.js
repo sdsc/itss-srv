@@ -541,6 +541,8 @@ function getEstimate(type, id, price, dest, num, category)
                 if (category == 'ST_VM') var snapQty = "st-vm-qty" + num + "5";
                 else var snapQty = "hs-vm-qty" + num + "4";
                 if (document.getElementById(snapQty).value == 'Yes') {
+                    /** TO DO --- look in later */
+
                     //var tempval = parseFloat(document.getElementById('st-vm-total').value.replace("$", ""));
                     //document.getElementById('vm-sub' + num + '-total').setAttribute("value", "$" + (eval(tempval - parseFloat(PRICE_ADD_SNAPSHOT_STANDARD_VM_UC))));
                     //document.getElementById("extra-sub-out" + num).value = "$" + document.getElementById("st-m")
@@ -551,16 +553,9 @@ function getEstimate(type, id, price, dest, num, category)
         if (type == 'sys-man' && document.getElementById('psa' + num).value == 'Custom') {
             document.getElementById('vm-sub' + num + '-total').setAttribute("value", 'Custom');
         }
-
-        //if (type == 'consult' || type == 'sp-consult') {
             sub("onetime");
-        //}
-        //else {
             sub(theclass);
             sub('sub');
-        //}
-        // sub(theclass);
-        // sub('sub');
         if (category == 'ST_VM' || category == 'HS_VM') {
                 if (category == 'ST_VM') var snapQty = "st-vm-qty" + num + "5";
                 else var snapQty = "hs-vm-qty" + num + "4";
@@ -573,7 +568,6 @@ function getEstimate(type, id, price, dest, num, category)
         }
 
 
-        //sub('vm-sub');
     }
     document.getElementById(dest).setAttribute("value", document.getElementById(dest).value);
     document.getElementById(id).setAttribute("value", document.getElementById(id).value);
@@ -864,22 +858,6 @@ function processOS(id, o, system, manager, num) {
         name = "" + o;
     }
 
-    /*// determines the type of system management
-    if((o == 'Windows' || o == 'Red Hat 6 64-bit') && id != 'HS_VM') {
-        document.getElementById(system).setAttribute("value", "Included");
-    } else {
-        document.getElementById(system).setAttribute("value", "User-managed OR Added Premium (Contact SDSC for details)");
-    }
-
-    // determines the manager
-    if(o != 'Red Hat 6 64-bit' || id == 'HS_VM') {
-        document.getElementById(manager).setAttribute("value", "Brian Balderston");
-    } else {
-        document.getElementById(manager).setAttribute("value", "Andrew Ferbert");
-    } */
-
-    /*document.getElementById("os" + num).defaultValue = o;
-    document.getElementById("os" + num).defaultSelected = o; */
     document.getElementById("os" + num).setAttribute("value", o);
     document.getElementById("RedHat" + num).removeAttribute("selected");
     document.getElementById("Windows" + num).removeAttribute("selected");
