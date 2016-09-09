@@ -8,6 +8,27 @@
         {
             $this->SetFont('helvetica', 'b', 15, '', '', true);
             $this->Write(30, 'SDSC IT Services Estimate', '', false, 'C', false, '', false, false, 150, '', '');
+            if ($this->PageNo() == 1) {
+              $this->Ln(10);
+              $this->SetFont('helvetica', 'b', 13, '', '', true);
+              $this->SetX(128);
+              $this->Write(30,'Date: ','',false,'C',false,''.false,150,'','');
+              $this->SetFont('helvetica','', 13, '', '', true);
+              $this->Write(30,date('m/n/Y'));
+              $this->Ln(5);
+              $this->SetX(128);
+              $this->SetFont('helvetica', 'b', 13, '', '', true);
+              $this->Write(30,'Created For: ','',false,'C',false,''.false,150,'','');
+              $this->SetFont('helvetica','', 13, '', '', true);
+              $this->Write(30,$_POST['CustomerHidden'],'',false,'C',false,''.false,150,'','');
+              $this->Ln(5);
+              $this->SetX(128);
+              $this->SetFont('helvetica', 'b', 13, '', '', true);
+              $this->Write(30,'Created By: ','',false,'C',false,''.false,150,'','');
+              $this->SetFont('helvetica','', 13, '', '', true);
+              $this->Write(30,$_POST['CreatedHidden'],'',false,'C',false,''.false,150,'','');
+
+            }
         }
     }
     $stylecode = '<style>'.file_get_contents('../../css/global.css').'</style>';

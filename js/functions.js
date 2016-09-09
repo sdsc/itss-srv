@@ -1225,3 +1225,9 @@ function extraSnaps(vm_num, item_num, id)
     sub("vm-sub" + vm_num);
     sub("sub");
 }
+
+function headerInfo(id){
+  document.getElementById(id).setAttribute("value",document.getElementById(id).value);
+  document.getElementById(id+"Hidden").setAttribute("value",document.getElementById(id).value);
+
+}

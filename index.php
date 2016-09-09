@@ -181,14 +181,23 @@
                         </span>
                     </div>
            </div>
+
+           <form name="headerLines" id="headerLines" action="" method="post" target="_blank">
+           Customer: <input id='Customer' type="text" name="Customer" onchange="headerInfo(this.id)"><br>
+           Created by: <input id ='Created' type="text" name="Created" onchange="headerInfo(this.id)"><br>
+          </form>
             <div id = "quote-content">
                 <button type="button" id="pdfbutton" onclick="changeForm(id);validateForm();">Generate PDF</button>
                 <button type="button" id="estimatebutton" onclick="changeForm(id);validateForm();">Generate Estimate</button>
                 <button type="button" id="savebutton" onclick="saveForm()">Save Form</button>
                 <button type="button" id="loadbutton" onclick="loadForm()">Load Form</button>
                 <button type="button" id="cleardata" onclick="clearData()">Clear Saved Forms</button>
+
+
                 <!--<strong id="table-title">Your SDSC Cost Estimate </strong>-->
                 <form name="quote" id="quote" action="" method="post" target="_blank">
+                  <input id='CustomerHidden'  name="CustomerHidden" type="hidden">
+                  <input id='CreatedHidden' name="CreatedHidden" type="hidden">
                     <br/><br/>
                     <table class="tables" id="vm-table" colspan="5" cellspacing="0" style="border-bottom: 1px solid #d3d3d3">
                         <tr>

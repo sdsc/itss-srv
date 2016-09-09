@@ -1571,7 +1571,6 @@ function addProduct(id)
         cell.appendChild(vmsubtotal);
         cell.setAttribute("colspan", "1");
         vmsubtotal.id = "vm-sub" + vm_num + "-total";
-        //vmsubtotal.className = "sub";
         vmsubtotal.setAttribute("name", vmsubtotal.id);
         vmsubtotal.setAttribute("size", 20);
 
@@ -1810,8 +1809,7 @@ function addProduct(id)
             cl_compute_sub.setAttribute("size", 20);
             document.getElementById(cl_compute_sub_out).setAttribute("readonly", "readonly");
             cl_compute_sub.className = "sub cl-compute-sub vm-sub" + vm_num;
-            // sub('cl-compute-sub');
-            // sub('sub');
+
 
             var row = table.insertRow(++rowCount);
             var cell1 = row.insertCell(0);
@@ -1852,7 +1850,6 @@ function addProduct(id)
         var row8 = table.insertRow(++rowCount);
         var cell = row8.insertCell(0);
         cell.setAttribute("colspan", "1");
-        // cell.setAttribute("style", "border-bottom: 1px solid #d3d3d3;");
         var cell = row8.insertCell(1);
         var subtext = document.createTextNode("Subtotal:\u00a0\u00a0");
         cell.appendChild(subtext);
@@ -1866,7 +1863,6 @@ function addProduct(id)
         vmsubtotal.setAttribute("type", "text");
         vmsubtotal.setAttribute("size", 20);
         cell.appendChild(vmsubtotal);
-        // cell.setAttribute("style", "border-bottom: 1px solid #d3d3d3;")
         cell.setAttribute("colspan", "1");
         vmsubtotal.setAttribute("style", "");
         vmsubtotal.id = "vm-sub" + vm_num + "-total";
@@ -1888,7 +1884,6 @@ function addProduct(id)
         subtotal.setAttribute("type", "text");
         subtotal.setAttribute("size", 20);
         subtotal.id = "cl-compute-sub-total";
-        // subtotal.className = "sub";
         subtotal.name = "cl-compute-sub-total";
         subtotal.setAttribute("readonly", "readonly");
         cell.appendChild(subtotal);
