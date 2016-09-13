@@ -6,27 +6,41 @@
     {
         public function Header()
         {
+            $customer = $_POST['CustomerHidden'];
+            $creator = $_POST['CreatedHidden'];
+            $length = max([strlen($customer),strlen($creator)]);
+            $offset = 128;
+            $cf = 'Created For: ';
+            $cb = 'Created By: ';
+            $maxlength = $offset + strlen($cf) + 13; // max width of page
+            // limit is 17 for name,
             $this->SetFont('helvetica', 'b', 15, '', '', true);
             $this->Write(30, 'SDSC IT Services Estimate', '', false, 'C', false, '', false, false, 150, '', '');
             if ($this->PageNo() == 1) {
+
+              // Creates line for date
               $this->Ln(10);
               $this->SetFont('helvetica', 'b', 13, '', '', true);
-              $this->SetX(128);
+              $this->SetX($maxlength - strlen($cf) - $length);
               $this->Write(30,'Date: ','',false,'C',false,''.false,150,'','');
               $this->SetFont('helvetica','', 13, '', '', true);
               $this->Write(30,date('m/n/Y'));
+
+              // creates line for customer
               $this->Ln(5);
-              $this->SetX(128);
+              $this->SetX($maxlength - strlen($cf) - $length);
               $this->SetFont('helvetica', 'b', 13, '', '', true);
-              $this->Write(30,'Created For: ','',false,'C',false,''.false,150,'','');
+              $this->Write(30,$cf,'',false,'C',false,''.false,150,'','');
               $this->SetFont('helvetica','', 13, '', '', true);
-              $this->Write(30,$_POST['CustomerHidden'],'',false,'C',false,''.false,150,'','');
+              $this->Write(30,$customer,'',false,'C',false,''.false,150,'','');
+
+              // Creates line for Creater
               $this->Ln(5);
-              $this->SetX(128);
+              $this->SetX($maxlength - strlen($cf) - $length);
               $this->SetFont('helvetica', 'b', 13, '', '', true);
-              $this->Write(30,'Created By: ','',false,'C',false,''.false,150,'','');
+              $this->Write(30,$cb,'',false,'C',false,''.false,150,'','');
               $this->SetFont('helvetica','', 13, '', '', true);
-              $this->Write(30,$_POST['CreatedHidden'],'',false,'C',false,''.false,150,'','');
+              $this->Write(30,$creator,'',false,'C',false,''.false,150,'','');
 
             }
         }
