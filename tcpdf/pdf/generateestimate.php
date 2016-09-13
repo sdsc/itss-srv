@@ -6,29 +6,38 @@
     {
         public function Header()
         {
-            $customer = $_POST['CustomerHidden'];
-            $creator = $_POST['CreatedHidden'];
-            $length = max([strlen($customer),strlen($creator)]);
-            $offset = 128;
-            $cf = 'Created For: ';
-            $cb = 'Created By: ';
-            $maxlength = $offset + strlen($cf) + 13; // max width of page
-            // limit is 17 for name,
-            $this->SetFont('helvetica', 'b', 15, '', '', true);
-            $this->Write(30, 'SDSC IT Services Estimate', '', false, 'C', false, '', false, false, 150, '', '');
+          $customer = $_POST['CustomerHidden'];
+          $creator = $_POST['CreatedHidden'];
+          //$vals = [strlen($customer),strlen($creator)];
+          //$length = max($vals); max does not seem to work on holonet
+          $length = 0;
+          if ( strlen($customer) > strlen($creator) ) {
+              $length = strlen($customer);
+          }
+          else {
+              $length = strlen($creator);
+          }
+          $cf = 'Created For: ';
+          $cb = 'Created By: ';
+          $line = strlen($cf);
+          $maxlength = 128 + strlen($cf) + 13; // max width of page
+          $offset = $maxlength - strlen($cf) - $length;
+          $this->SetFont('helvetica', 'b', 15, '', '', true);
+          $this->Write(30, 'SDSC IT Services Estimate', '', false, 'C', false, '', false, false, 150, '', '');
             if ($this->PageNo() == 1) {
 
               // Creates line for date
               $this->Ln(10);
               $this->SetFont('helvetica', 'b', 13, '', '', true);
-              $this->SetX($maxlength - strlen($cf) - $length);
+              $this->SetX($offset);
               $this->Write(30,'Date: ','',false,'C',false,''.false,150,'','');
               $this->SetFont('helvetica','', 13, '', '', true);
-              $this->Write(30,date('m/n/Y'));
+              $date = date('m/d/Y');
+              $this->Write(30,$date);
 
               // creates line for customer
               $this->Ln(5);
-              $this->SetX($maxlength - strlen($cf) - $length);
+              $this->SetX($offset);
               $this->SetFont('helvetica', 'b', 13, '', '', true);
               $this->Write(30,$cf,'',false,'C',false,''.false,150,'','');
               $this->SetFont('helvetica','', 13, '', '', true);
@@ -36,7 +45,7 @@
 
               // Creates line for Creater
               $this->Ln(5);
-              $this->SetX($maxlength - strlen($cf) - $length);
+              $this->SetX($offset);
               $this->SetFont('helvetica', 'b', 13, '', '', true);
               $this->Write(30,$cb,'',false,'C',false,''.false,150,'','');
               $this->SetFont('helvetica','', 13, '', '', true);
