@@ -24,7 +24,7 @@
           $maxlength = 128 + $this->getStringWidth($cf) + 38; // max width of page
           $offset = $maxlength - $this->getStringWidth($cf) - $length;
           $this->SetFont('helvetica', 'b', 15, '', '', true);
-          $this->Write(30, 'SDSC IT Services Estimate'.$this->getStringWidth("aaaaaaaaaaaaa"), '', false, 'C', false, '', false, false, 150, '', '');
+          $this->Write(30, 'SDSC IT Services Estimate', '', false, 'C', false, '', false, false, 150, '', '');
             if ($this->PageNo() == 1) {
 
               // Creates line for date
