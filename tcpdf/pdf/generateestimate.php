@@ -11,19 +11,20 @@
           //$vals = [strlen($customer),strlen($creator)];
           //$length = max($vals); max does not seem to work on holonet
           $length = 0;
-          if ( strlen($customer) > strlen($creator) ) {
-              $length = strlen($customer);
+          $this->SetFont('helvetica', 'b', 13, '', '', true);
+          if ( $this->getStringWidth($customer) > $this->getStringWidth($creator) ) {
+              $length = $this->getStringWidth($customer);
           }
           else {
-              $length = strlen($creator);
+              $length = $this->getStringWidth($creator);
           }
           $cf = 'Created For: ';
           $cb = 'Created By: ';
           $line = strlen($cf);
-          $maxlength = 128 + strlen($cf) + 13; // max width of page
-          $offset = $maxlength - strlen($cf) - $length;
+          $maxlength = 128 + $this->getStringWidth($cf) + 38; // max width of page
+          $offset = $maxlength - $this->getStringWidth($cf) - $length;
           $this->SetFont('helvetica', 'b', 15, '', '', true);
-          $this->Write(30, 'SDSC IT Services Estimate', '', false, 'C', false, '', false, false, 150, '', '');
+          $this->Write(30, 'SDSC IT Services Estimate'.$this->getStringWidth("aaaaaaaaaaaaa"), '', false, 'C', false, '', false, false, 150, '', '');
             if ($this->PageNo() == 1) {
 
               // Creates line for date
