@@ -190,8 +190,32 @@
                 <button type="button" id="pdfbutton" onclick="changeForm(id);validateForm();">Generate PDF</button>
                 <button type="button" id="estimatebutton" onclick="changeForm(id);validateForm();">Generate Estimate</button>
                 <button type="button" id="savebutton" onclick="saveForm()">Save Form</button>
-                <button type="button" id="loadbutton" onclick="loadForm()">Load Form</button>
-                <button type="button" id="cleardata" onclick="clearData()">Clear Saved Forms</button>
+                <input type="text" id="saveFormNameInput"> </input>
+                <label for="loadselect"> Load Form </label>
+                <select id="loadselect" onchange="loadForm()">
+                  <option>-- Select File --</option>
+                  <?php
+                    $files = scandir("tcpdf/pdf/savedForms");
+                    foreach ($files as $key) {
+                      if(! is_dir($key)){
+                        echo "<option> $key </option>";
+                      }
+                    }
+                  ?>
+                </select>
+
+                <label for="cleardata">Clear Form</label>
+                <select id="cleardata" onclick="clearData()">
+                <option>-- Select File --</option>
+                <?php
+                  $files = scandir("tcpdf/pdf/savedForms");
+                  foreach ($files as $key) {
+                    if(! is_dir($key)){
+                      echo "<option> $key </option>";
+                    }
+                  }
+                ?>
+                </select>
 
 
                 <!--<strong id="table-title">Your SDSC Cost Estimate </strong>-->
