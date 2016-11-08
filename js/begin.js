@@ -200,6 +200,7 @@ function saveForm()
     }
     postObj.html = sourceCode;
     postObj.filename = filename;
+    postObj.num = numProducts;
     $.post("tcpdf/pdf/saveForm.php", postObj, function(data){
       if(!data){
         alert("A form with that name has already been saved. Please choose another name and try again.");
@@ -216,13 +217,12 @@ function loadForm()
     if(postObj.filename == "-- Select File --"){
       return;
     }
-    $.post("/tcpdf/pdf/loadForm.php", postObj, function(data){
-        if(data){
-          $("#quote-content").html(data);
-          resetFields();
-        }else{
-          alert("This file no longer exists");
-        }
+    $.post("tcpdf/pdf/loadForm.php", postObj, function(data){
+
+        data = JSON.parse(data);
+        $("#quote-content").html(data.html);
+        numProducts = data.num;
+        resetFields();
 
     });
 }
@@ -235,7 +235,7 @@ function clearData(){
   }
   var clearForm = confirm("Delete the form named " + postObj.filename + "?");
   if(clearForm){
-    $.post("/tcpdf/pdf/clearForm.php", postObj);
+    $.post("tcpdf/pdf/clearForm.php", postObj);
   }
   renewSelectOptions();
 }
@@ -261,7 +261,7 @@ function resetFields(){
 }
 
 function renewSelectOptions(){
-  $.post("/tcpdf/pdf/getForms.php", function(data){
+  $.post("tcpdf/pdf/getForms.php", function(data){
     var obj = eval('(' + data + ')');
     var formSelect = document.getElementById("loadselect");
     var clearFormSelect = document.getElementById("cleardata");
