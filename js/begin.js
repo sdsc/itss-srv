@@ -139,7 +139,13 @@ function validateForm() {
         var child = document.getElementById('loadselect');
         child.parentNode.removeChild(child);
 
+        var child = document.getElementById('loadLabel');
+        child.parentNode.removeChild(child);
+
         var child = document.getElementById('cleardata');
+        child.parentNode.removeChild(child);
+
+        var child = document.getElementById('clearLabel');
         child.parentNode.removeChild(child);
 
         $('.userinput').each(function(i, e) {
@@ -198,16 +204,34 @@ function saveForm()
       alert("Please enter a filename for the form");
       return;
     }
-    postObj.html = sourceCode;
-    postObj.filename = filename;
-    postObj.num = numProducts;
-    $.post("tcpdf/pdf/saveForm.php", postObj, function(data){
-      if(!data){
-        alert("A form with that name has already been saved. Please choose another name and try again.");
-      }else{
-        renewSelectOptions();
-      }
-    });
+    $("#dialog-confirm").html("The Saved sorm is accessible to everyone. Do you still want to save the form?");
+
+    $("#dialog-confirm").dialog({
+        resizable: false,
+        modal: true,
+        title: "Confirm Saved Form",
+        height: 250,
+        width: 400,
+        buttons: {
+          "Yes": function() {
+            $(this).dialog('close');
+            postObj.html = sourceCode;
+            postObj.filename = filename;
+            postObj.num = numProducts;
+            $.post("tcpdf/pdf/saveForm.php", postObj, function(data){
+              if(!data){
+                alert("A form with that name has already been saved. Please choose another name and try again.");
+              }else{
+                renewSelectOptions();
+              }
+            });
+          },
+          "No": function() {
+            $(this).dialog('close');
+          }
+        }
+      });
+
 }
 
 function loadForm()
