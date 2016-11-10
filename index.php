@@ -207,7 +207,7 @@
                 </select>
 
                 <label id="clearLabel" for="cleardata">Clear Form</label>
-                <select id="cleardata" onclick="clearData()">
+                <select id="cleardata" onchange="clearData()">
                 <option>-- Select File --</option>
                 <?php
                   $files = scandir("tcpdf/pdf/savedForms");
