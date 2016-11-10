@@ -1226,6 +1226,10 @@ function extraSnaps(vm_num, item_num, id)
     sub("sub");
 }
 
+/* Function Name: headerInfo
+ * Parameters: id - the identifier of the Created by or Created for input box
+ * Result: Allows user input for Customer name and author for the generated Estimate PDF
+ */
 function headerInfo(id){
   document.getElementById(id).setAttribute("value",document.getElementById(id).value);
   document.getElementById(id+"Hidden").setAttribute("value",document.getElementById(id).value);

@@ -187,11 +187,13 @@
            Created by: <input id ='Created' type="text" name="Created" onchange="headerInfo(this.id)"><br>
           </form>
             <div id = "quote-content">
+                <div id="dialog-confirm"></div>
                 <button type="button" id="pdfbutton" onclick="changeForm(id);validateForm();">Generate PDF</button>
                 <button type="button" id="estimatebutton" onclick="changeForm(id);validateForm();">Generate Estimate</button>
                 <button type="button" id="savebutton" onclick="saveForm()">Save Form</button>
                 <input type="text" id="saveFormNameInput"> </input>
-                <label for="loadselect"> Load Form </label>
+
+                <label id="loadLabel" for="loadselect"> Load Form </label>
                 <select id="loadselect" onchange="loadForm()">
                   <option>-- Select File --</option>
                   <?php
@@ -204,7 +206,7 @@
                   ?>
                 </select>
 
-                <label for="cleardata">Clear Form</label>
+                <label id="clearLabel" for="cleardata">Clear Form</label>
                 <select id="cleardata" onclick="clearData()">
                 <option>-- Select File --</option>
                 <?php
@@ -216,6 +218,7 @@
                   }
                 ?>
                 </select>
+
 
 
                 <!--<strong id="table-title">Your SDSC Cost Estimate </strong>-->
