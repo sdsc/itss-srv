@@ -204,7 +204,7 @@ function saveForm()
       alert("Please enter a filename for the form");
       return;
     }
-    $("#dialog-confirm").html("The saved form is accessible to everyone. Do you still want to save the form?");
+    $("#dialog-confirm").html("Saved forms are accessible to everyone. Do you still want to save the form?");
 
     $("#dialog-confirm").dialog({
         resizable: false,
