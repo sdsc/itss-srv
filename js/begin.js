@@ -204,33 +204,19 @@ function saveForm()
       alert("Please enter a filename for the form");
       return;
     }
-    $("#dialog-confirm").html("Saved forms are accessible to everyone. Do you still want to save the form?");
-
-    $("#dialog-confirm").dialog({
-        resizable: false,
-        modal: true,
-        title: "Confirm Saved Form",
-        height: 250,
-        width: 400,
-        buttons: {
-          "Yes": function() {
-            $(this).dialog('close');
-            postObj.html = sourceCode;
-            postObj.filename = filename;
-            postObj.num = numProducts;
-            $.post("tcpdf/pdf/saveForm.php", postObj, function(data){
-              if(!data){
-                alert("A form with that name has already been saved. Please choose another name and try again.");
-              }else{
-                renewSelectOptions();
-              }
-            });
-          },
-          "No": function() {
-            $(this).dialog('close');
-          }
+    var clearForm = confirm("Saved forms are shared among all users. Do you still want to save the form?");
+    if(clearForm){
+      postObj.html = sourceCode;
+      postObj.filename = filename;
+      postObj.num = numProducts;
+      $.post("tcpdf/pdf/saveForm.php", postObj, function(data){
+        if(!data){
+          alert("A form with that name has already been saved. Please choose another name and try again.");
+        }else{
+          renewSelectOptions();
         }
       });
+    }
 
 }
 
@@ -257,7 +243,8 @@ function clearData(){
   if(postObj.filename == "-- Select File --"){
     return;
   }
-  var clearForm = confirm("Delete the form named " + postObj.filename + "?");
+  var clearForm = confirm("Saved forms are shared among all Holonet users." +
+  " Are you sure you want to delete the saved form " + postObj.filename + "?");
   if(clearForm){
     $.post("tcpdf/pdf/clearForm.php", postObj);
   }

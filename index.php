@@ -187,7 +187,6 @@
            Created by: <input id ='Created' type="text" name="Created" onchange="headerInfo(this.id)"><br>
           </form>
             <div id = "quote-content">
-                <div id="dialog-confirm"></div>
                 <button type="button" id="pdfbutton" onclick="changeForm(id);validateForm();">Generate PDF</button>
                 <button type="button" id="estimatebutton" onclick="changeForm(id);validateForm();">Generate Estimate</button>
                 <button type="button" id="savebutton" onclick="saveForm()">Save Form</button>
