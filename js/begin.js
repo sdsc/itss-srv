@@ -199,6 +199,9 @@ function saveForm()
 {
     var postObj = new Object();
     var sourceCode = $('#quote-content').html();
+    if(sourceCode.charAt(0) == '\n') {
+      sourceCode = sourceCode.substring(1);
+    }
     var filename = document.getElementById("saveFormNameInput").value;
     if(filename == ""){
       alert("Please enter a filename for the form");
